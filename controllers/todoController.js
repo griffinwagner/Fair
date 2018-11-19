@@ -865,17 +865,45 @@ module.exports = function(app, db) {
                     for (var i = 0; i < 21; i++) {
                       dataForNitrate.push({time:allThreeWeeksData[i].data, temperature: allThreeWeeksData[i].nitrateLevel})
                     }
-                    console.log(dataForNitrate);
+
+                    var dataForSaline = []
+                    for (var i = 0; i < 21; i++) {
+                      dataForSaline.push({time:allThreeWeeksData[i].data, saline: allThreeWeeksData[i].salineLevel})
+                    }
+
                     var londonTempData = {
                     // city: 'Florida',
                     // unit: 'celsius',
-                    dataPoints: dataForNitrate
-                  }
+                      dataPoints: dataForNitrate
+                    }
 
-                  app.get('/getTemperature', function(req,res){
+                    var salineLevelDataForGraph = {
+                    // city: 'Florida',
+                    // unit: 'celsius',
+                      dataPoints: dataForSaline
+                    }
+
+
+                    var dataFortheTemp = []
+                    for (var i = 0; i < 21; i++) {
+                      dataFortheTemp.push({time:allThreeWeeksData[i].data, theTemp: allThreeWeeksData[i].temp})
+                    }
+
+                    var theTempDataForGraph = {
+                    // city: 'Florida',
+                    // unit: 'celsius',
+                      dataPoints: dataFortheTemp
+                    }
+
+                    console.log(theTempDataForGraph);
+                    console.log(londonTempData);
+
+
+                    //for Nitrate
+                    app.get('/getTemperature', function(req,res){
                     res.send(londonTempData);
                   });
-                  app.get('/addTemperature', function(req,res){
+                    app.get('/addTemperature', function(req,res){
                     var temp = parseInt(req.query.temperature);
                     var time = parseInt(req.query.time);
                     if(temp && time && !isNaN(temp) && !isNaN(time)){
@@ -892,6 +920,50 @@ module.exports = function(app, db) {
                       res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
                     }
                   });
+
+                    //forSaline
+                    app.get('/getSaline', function(req,res){
+                      res.send(salineLevelDataForGraph);
+                    });
+                    app.get('/addSaline', function(req,res){
+                      var saline = parseInt(req.query.saline);
+                      var time = parseInt(req.query.time);
+                      if(saline && time && !isNaN(saline) && !isNaN(time)){
+                        var newDataPoint = {
+                          saline: saline,
+                          time: time
+                        };
+                        salineLevelDataForGraph.dataPoints.push(newDataPoint);
+                        pusher.trigger('salineLevelDataForGraph-chart', 'new-saline', {
+                          dataPoint: newDataPoint
+                        });
+                        res.send({success:true});
+                      }else{
+                        res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - saline & time.'});
+                      }
+                    });
+
+                    //forSaline
+                    app.get('/gettheTemp', function(req,res){
+                      res.send(theTempDataForGraph);
+                    });
+                    app.get('/addtheTemp', function(req,res){
+                      var theTemp = parseInt(req.query.theTemp);
+                      var time = parseInt(req.query.time);
+                      if(theTemp && time && !isNaN(theTemp) && !isNaN(time)){
+                        var newDataPoint = {
+                          theTemp: theTemp,
+                          time: time
+                        };
+                        theTempDataForGraph.dataPoints.push(newDataPoint);
+                        pusher.trigger('theTempDataForGraph-chart', 'new-theTemp', {
+                          dataPoint: newDataPoint
+                        });
+                        res.send({success:true});
+                      }else{
+                        res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTemp & time.'});
+                      }
+                    });
 
                     res.render('lpdata', {monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
                     // console.log(twoWeeksAgoData);
