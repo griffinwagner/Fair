@@ -6,16 +6,13 @@ const XLSX = require('xlsx');
 var Pusher = require('pusher');
 
 var pusher = new Pusher({
-  appId: '652171',
-  key: '39e817ed79fb90973ea2',
-  secret: 'e9edd43f7b1daffa5cd1',
+  appId: '652206',
+  key: '8f0b8b639e16af0e7e40',
+  secret: '57a030d7b69abe1ab039',
   cluster: 'us2',
   encrypted: true
 });
 
-pusher.trigger('my-channel', 'my-event', {
-  "message": "hello world"
-});
 
 
 
@@ -861,7 +858,47 @@ module.exports = function(app, db) {
                     } else if (!chanceOfAnAlgaeBloom) {
                       StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
                     }
+                    var dataForNitrate = []
+                    var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                    var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                    for (var i = 0; i < 21; i++) {
+                      dataForNitrate.push({time:allThreeWeeksData[i].data, temperature: allThreeWeeksData[i].nitrateLevel})
+                    }
+                    console.log(dataForNitrate);
+                    var londonTempData = {
+                    // city: 'Florida',
+                    // unit: 'celsius',
+                    dataPoints: dataForNitrate
+                  }
+
+                  app.get('/getTemperature', function(req,res){
+                    res.send(londonTempData);
+                  });
+                  app.get('/addTemperature', function(req,res){
+                    var temp = parseInt(req.query.temperature);
+                    var time = parseInt(req.query.time);
+                    if(temp && time && !isNaN(temp) && !isNaN(time)){
+                      var newDataPoint = {
+                        temperature: temp,
+                        time: time
+                      };
+                      londonTempData.dataPoints.push(newDataPoint);
+                      pusher.trigger('london-temp-chart', 'new-temperature', {
+                        dataPoint: newDataPoint
+                      });
+                      res.send({success:true});
+                    }else{
+                      res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
+                    }
+                  });
+
                     res.render('lpdata', {monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                    // console.log(twoWeeksAgoData);
+                    // console.log(oneWeekAgoData);
+                    // console.log(currentWeekData);
+
+
 
                       } //ends if (rr+ 1 == twoWeeksAgoData.length) {
                     } //ends final for loop
@@ -875,6 +912,11 @@ module.exports = function(app, db) {
     }) // ends   db.query (sql, (err, result)=>{
   }); // ends app.get('/lpdata', function (req, res) {
 
+
+
+  app.get('/test', function (req, res) {
+    res.render('test')
+  })
 
 
 
