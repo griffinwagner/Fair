@@ -12,13 +12,23 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <title></title>
-  </head>
-  <body class="container">
-    <header>
-      <span style="padding:5vh"> <div class= "jumbotron"> <h1> Temperature Levels Analyzed </h1> </div> </span>
-    </header>
-    <h2>Temperature Levels Analyzed</h2>
-    <a href="/search"><button type="button" name="button" class="button">Search Data</button></a>
+    <link rel="stylesheet" href="/assets/topBanner.css">
 
+  </head>
+  <body>
+    <section class="topBanner">
+      <div id="textAlign">
+        <a class="aTag" href="/">Home</a> |          <a class="aTag" href="/delete">Delete</a>          |          <a class="aTag" href="/create">Create</a>
+      </div>
+    </section>
+
+  <div class="container">
+
+          <header>
+            <span style="padding:5vh"> <div class= "jumbotron"> <h1> Temperature Levels Analyzed </h1> </div> </span>
+          </header>
+          <h2>Temperature Levels Analyzed</h2>
+          <a href="/search"><button type="button" name="button" class="button">Search Data</button></a>
+  </div>
   </body>
 </html>

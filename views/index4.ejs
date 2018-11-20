@@ -1,21 +1,106 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<!DOCTYPE>
+<html>
+    <head>
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+      <!-- load bottstrap 3.0.2-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+      <!-- load fontawesome 4.0.3-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body class="container">
-    <h1 class="jumbotron"> <%=date%></h1>
-    <h2>Nitrate Level: <%=nitrate %> mM</h2>
-    <h2>Saline Level: <%=saline %> ppt</h2>
-    <h2>Temperature Level: <%=temp %>°C</h2>
-  </body>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+        <title>Search Data</title
+
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
+        <link rel="stylesheet" href="/assets/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/assets/topBanner.css">
+
+    </head>
+
+
+
+    <body class="">
+      <section class="topBanner">
+        <div id="textAlign">
+          <a class="aTag" href="/resetSearch">ResetSearch</a>
+        </div>
+      </section>
+
+      <section class="container">
+        <h1 class="jumbotron" style="font-size:5vh"> At Site IRL-LP, on <%=date%> </h1>
+        <h2 class="jumbotron"> <%=StringChanceOfAnAlgaeBloom%> <br>Nitrate: <%=nitrate%> mM <br>Saline: <%=saline%> ppt <br>Temperature: <%=temp%> C </h2>
+      </section>
+
+      <div class="panel-group" id="accordion">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Saline Conditions</a>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">
+
+              <section>
+                 <div id="loader2" class="loader">
+                 </div>
+                 <canvas id="salineForSearchChart">
+                 </canvas>
+              </section>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Nitrate Conditions</a>
+            </h4>
+          </div>
+          <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+              <section>
+                 <div id="loaderForSearch" class="loader">
+                 </div>
+                 <canvas id="weatherForSearchChart">
+                 </canvas>
+              </section>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Temperature</a>
+            </h4>
+          </div>
+          <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+              <section>
+                 <div id="loader3ForSearch" class="loader">
+                 </div>
+                 <canvas id="theTempForSearchChart">
+                 </canvas>
+              </section>
+          </div>
+          </div>
+        </div>
+      </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+        <script src="https://js.pusher.com/4.0/pusher.min.js"></script>
+        <script type="text/javascript" src="/assets/app2.js"></script>
+    </body>
 </html>

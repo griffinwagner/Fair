@@ -1,0 +1,19 @@
+.topBanner {
+  background-color: black;
+  padding: 2.5vh;
+  color:white;
+}
+
+.aTag {
+  color:white;
+  padding:2vw;
+  font-size: 1vw;
+}
+
+.aTag:hover {
+  color:red
+}
+
+#textAlign {
+  text-align: center;
+}

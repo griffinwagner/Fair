@@ -11,16 +11,26 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" href="/assets/topBanner.css">
+
   </head>
-  <body class="container">
-    <h1 class="jumbotron">Data Analyzed!</h1>
-    <form  action="/date" method="post">
-      <div class="input-group input-group-lg">
-        <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-calendar"></span></span>
-        <input type="text" name = 'date' class="form-control" placeholder="Choose Date" aria-describedby="sizing-addon1">
-      </div> <br>
-      <button style="width:100%; height:5vh"class="btn btn-success" type="submit" name="button">Search</button>
-    </form>
+  <body>
+    <section class="topBanner">
+      <div id="textAlign">
+        <a class="aTag" href="/">Home</a> |          <a class="aTag" href="/delete">Delete</a>          |          <a class="aTag" href="/create">Create</a>
+      </div>
+    </section>
+    <div class="container">
+      <h1 class="jumbotron">Data Analyzed!</h1>
+      <form  action="/date" method="post">
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-calendar"></span></span>
+          <input type="text" name = 'date' class="form-control" placeholder="Choose Date" aria-describedby="sizing-addon1">
+        </div> <br>
+        <button style="width:100%; height:5vh"class="btn btn-success" type="submit" name="button">Search</button>
+      </form>
+    </div>
+
 
   </body>
 

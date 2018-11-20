@@ -19,14 +19,23 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
         <link rel="stylesheet" href="/assets/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/assets/topBanner.css">
+
     </head>
-    <section class="container">
-      <h1 class="jumbotron">LP DATA </h1>
-      <h2 class="jumbotron"> <%=StringChanceOfAnAlgaeBloom%></h2>
-    </section>
 
 
-    <body>
+
+    <body class="">
+      <section class="topBanner">
+        <div id="textAlign">
+          <a class="aTag" href="/">Home</a> |          <a class="aTag" href="/delete">Delete</a>          |          <a class="aTag" href="/create">Create</a>
+        </div>
+      </section>
+
+      <section class="container">
+        <h1 class="jumbotron" style="font-size:5vh">LP DATA </h1>
+        <h2 class="jumbotron"> <%=StringChanceOfAnAlgaeBloom%></h2>
+      </section>
 
       <div class="panel-group" id="accordion">
 
@@ -87,7 +96,6 @@
           </div>
         </div>
       </div>
-
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
