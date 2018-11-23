@@ -11,6 +11,8 @@ if (widthOfScreen <= 1200) {
   $(document).ready(function(){
     $('.glyphicon-chevron-right').hide()
     $('.expandedLabelInfo').hide()
+    $('.glyphicon-chevron-left').append("<br> <br><p style= 'font-size: 2vw'>Click On Any Site To Interact</p>")
+    $('#map').addClass('mapHeightiPad')
   })
 
   $('.clickHere').click(function(){
@@ -45,6 +47,7 @@ if (widthOfScreen <= 1200) {
   $(document).ready(function(){
     $('.glyphicon-chevron-right').hide()
     $('.expandedLabelInfo').hide()
+    $('#map').addClass('mapHeightComputer')
   })
 
   $('.clickHere').click(function(){

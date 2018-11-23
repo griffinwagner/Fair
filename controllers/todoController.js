@@ -1528,10 +1528,13 @@ module.exports = function(app, db) {
 
 
                       var StringChanceOfAnAlgaeBloom
+                      var alert
                       if (chanceOfAnAlgaeBloom) {
                         StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        alert = 'alert-danger'
                       } else if (!chanceOfAnAlgaeBloom) {
                         StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        alert = 'alert-success'
                       }
                       var dataForNitrateForSearch = []
                       var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
@@ -1641,7 +1644,7 @@ module.exports = function(app, db) {
                         }
                       });
                     console.log(monthData);
-                    res.render('index4', {nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                    res.render('index4', {alert: alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
 
                       // console.log(twoWeeksAgoData);
                       // console.log(oneWeekAgoData);
@@ -2538,12 +2541,14 @@ module.exports = function(app, db) {
                               chanceOfAnAlgaeBloom = false
                             }
 
-
+                        var alert
                         var StringChanceOfAnAlgaeBloom
                         if (chanceOfAnAlgaeBloom) {
                           StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                          alert = "alert-danger"
                         } else if (!chanceOfAnAlgaeBloom) {
                           StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                          alert = "alert-success"
                         }
                         var dataForNitrateForSearch = []
                         var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
@@ -2655,7 +2660,7 @@ module.exports = function(app, db) {
                           }
                         });
                       console.log(monthData);
-                      res.render('index4FP', {nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                      res.render('index4FP', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
 
                         // console.log(twoWeeksAgoData);
                         // console.log(oneWeekAgoData);
