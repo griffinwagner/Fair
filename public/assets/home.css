@@ -1,0 +1,177 @@
+.labelInfo {
+  margin: 0 0 0 80vw;
+  width: 20vw;
+  position:fixed;
+  overflow-y: scroll;
+  height: 92vh;
+
+}
+
+.labelInfoAnimation {
+  animation-name:labelInfoAnimation;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  position:fixed;
+  overflow-y: scroll;
+  height: 92vh;
+}
+
+.labelInfoAnimationForSmallScreens {
+  animation-name:labelInfoAnimationForSmallScreens;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  position:fixed;
+  overflow-y: scroll;
+  height: 92vh;
+}
+
+
+@keyframes labelInfoAnimation {
+  from {
+    margin: 0 0 0 20vw;
+    width: 80vw;
+  }
+  to {
+    margin: 0 0 0 80vw;
+    width:20vw
+  }
+}
+
+@keyframes labelInfoAnimationForSmallScreens {
+  from {
+    margin: 0 0 0 30vw;
+    width: 70vw;
+  }
+  to {
+    margin: 0 0 0 90vw;
+    width:10vw
+  }
+}
+
+.labelInfoForSmallScreens {
+  margin: 0 0 0 90vw;
+  width: 10vw;
+  overflow-y: scroll;
+  position:fixed;
+  height: 92vh;
+}
+
+body {
+  background-color: black;
+}
+
+.mapWidth80 {
+  width:80vw;
+}
+
+.mapWidth80Animation {
+  animation-fill-mode: forwards;
+  animation-name: mapWidth80Animation;
+  animation-duration: 2.5s;
+}
+.widthForSmallScreensAnimations{
+  animation-fill-mode: forwards;
+  animation-name: widthForSmallScreensAnimations;
+  animation-duration: 2.5s;
+}
+
+@keyframes mapWidth80Animation {
+  from {
+    width:20vw
+  }
+  to {
+    width:80vw
+  }
+}
+
+@keyframes widthForSmallScreensAnimations {
+  from {
+    width:30vw
+  }
+  to {
+    width:90vw
+  }
+}
+
+.widthForSmallScreens {
+  width:90vw;
+
+}
+
+
+
+.glyphicon-chevron-left {
+  font-size:3vh
+}
+
+.glyphicon-chevron-right {
+  font-size:3vh
+}
+
+.labelInfoExpanded {
+  animation-name: labelInfoClassExpanding;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  position:fixed;
+  overflow-y: scroll;
+  height: 92vh;
+}
+
+.labelInfoExpandedForSmallScreens {
+  animation-name: labelInfoClassExpandingForSmallScreens;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  position:fixed;
+  overflow-y: scroll;
+  height: 92vh;
+}
+
+@keyframes labelInfoClassExpanding {
+  from {
+    margin: 0 0 0 80vw;
+    width: 20vw;
+  }
+  to {
+    margin: 0 0 0 20vw;
+    width: 80vw;
+  }
+}
+
+@keyframes labelInfoClassExpandingForSmallScreens {
+  from {
+    margin: 0 0 0 90vw;
+    width: 10vw;
+  }
+  to {
+    margin: 0 0 0 30vw;
+    width: 70vw;
+  }
+}
+
+.mapShrunk {
+  animation-name: shrinkingMap;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+
+}
+
+.mapShrunkForSmallScreens {
+  animation-name: shrinkingMapForSmallScreens;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes shrinkingMap {
+  from {width:80vw}
+  to {width: 20vw}
+}
+
+
+@keyframes shrinkingMapForSmallScreens {
+  from {width:90vw}
+  to {width: 30vw}
+}
+.randomClass {
+
+  visibility: none;
+}

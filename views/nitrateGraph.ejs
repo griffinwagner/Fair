@@ -1,0 +1,30 @@
+<section class="topBanner">
+  <div id="textAlign">
+    <a class="aTag" href="/">Home</a> |          <a class="aTag" href="/delete">Delete</a>          |          <a class="aTag" href="/create">Create</a>
+  </div>
+</section>
+
+<div class="container">
+  <h1 class="jumbotron"> Algae Bloom Predictamator!</h1>
+  <section class="container">
+    <a href="/lpdata"><span class = "container"> <h2 class="jumbotron">IRL-LP</span> <br> <small> <a href="/lp">Analyze New LP Data</a></small>   <small> <br> <a href="/search">Search LP Data</a></small></h2>
+  </section>
+</div>
+
+<div id="map"></div>
+<script>
+  var map;
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: -34.397, lng: 150.644},
+      zoom: 8
+    });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+async defer></script>
+<style media="screen">
+  #map {
+    height:100%
+  }
+</style>

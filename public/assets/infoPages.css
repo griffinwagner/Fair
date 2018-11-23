@@ -1,0 +1,23 @@
+.sidenav {
+    height: 92vh;
+    width: 30vw;
+    position: fixed;
+    z-index: 1;
+    top: 8vh;
+    right: 0;
+    background-color: rgb(238,238,238);
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.leftSection {
+  width:70vw;
+  top:8vh;
+  position: relative;
+}
+
+.topBanner {
+  position:fixed;
+  width:100vw;
+  z-index: 1000;
+}

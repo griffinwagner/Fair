@@ -2,7 +2,6 @@
 <html lang="en" dir="ltr">
   <head>
 
-
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 
@@ -17,8 +16,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <title></title>
     <link rel="stylesheet" href="/assets/topBanner.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/assets/home.css">
   </head>
   <body>
     <section class="topBanner" style="position:relative; z-index: 1000">
@@ -27,55 +24,25 @@
       </div>
     </section>
     <section>
-      <div class="jumbotron labelInfo infoLabelClass">
-
+      <div id="labelInfo" class="jumbotron infoLabelClass">
         <div class="container">
-
-          <span class="clickHere">
-            <span class="glyphicon glyphicon-chevron-left "></span>
-
-          </span>
-          <span class="whenSmallInfo">
-            <h2 class="irrelevantText">Algae Bloom Predictamator</h2>
-            <p class="irrelevantText">The Algae Bloom Predictamator is a privately-funded and developed algorithm to predict Blue-Green Algae blooms in the Indian River Lagoon. </p> <p class="irrelevantText"> This program uses data from the Harbor Branch Oceanagraphic Institute's LOBO network which is a public database of water conditions in the lagoon.</p> <p class="irrelevantText">For More Information About This Computer Program, <span class="clickHere">Click Here</span> </p>
-
-            <u><h1 class="irrelevantText" style="text-align:center;">Sites</h1></u>
-            <span class="irrelevantText">  <a href="/lpdata"><h3 style="text-align:center;">IRL-LP</h3></a> <small> <h4 style="text-align:center;"> <a href="/search">Search</a> </h4> </small> <br> </span>
-
-            <span class="irrelevantText">  <a href="/fpdata"><h3 style="text-align:center;">IRL-FP</h3></a> <small> <h4 style="text-align:center;"> <a href="/searchForSiteFP">Search</a> </h4> </small> <br></span>
-          </span>
+          <h2>Algae Bloom Predictamator <small>How This Works</small> </h2>
+          <span class="p">Hello</span>
         </div>
 
-        <section class="container expandedLabelInfo">
-          <div class="goBack">
-            <span id="hello" class="glyphicon glyphicon-chevron-right "></span>
-          </div>
 
-          <h2>Algae Bloom Predictamator <small>How It Works</small> </h2>
-          <p>The Algae Bloom Predictamator is a privately funded and developed algorithm to detect algae blooms in the Indian River Lagoon at various sites. It relies on privately collected data in addition to publicly available data. </p> <p>Privately collected data includes the nitrate, saline, and temperature levels at which are needed for an algae bloom to occur. This data was collected from 2015 through 2017 in a Science Fair setting. Publicly available data includes the current and past nitrate, saline, and temperature levels in the Indian River Lagoon. This data has been collected since 2014 through Harbor Branch Oceanographic Institute’s LOBO Network. </p>
-          <p>This computer program compared current and past levels in the lagoon to the required nitrate, saline, and temperature conditions needed for an algae bloom. Accounting for the synergistic relationship between nitrate and saline (discovered in 2016/2017)  and the relationship temperature has, a NitrateSalineScore and a TemperatureScore are created. </p> <p> The NitrateSaline score runs from 0.525 to 10.5 and the TemperatureScore runs from 3.5 to 8.75. An algae bloom’s optimal conditions are a NitrateSaline score of 6.85 and a TemperatureScore of 7.15. The computer program also looks at the Nitrate and Saline trend (slope) and the temperatures trend (slope) to determine if an algae bloom is possible.</p>
-          <p>Overall, this program is able to predict Blue-Green Algae Blooms in the Indian River Lagoon. Using the procedures tested and performed in the 2015 to 2019 research, this algae could be grown in a lab-setting and then could be used to grow crops in an agricultural setting.</p>
-          <br>
-          <h2>LOBO Network<small>  How It Works</small> </h2>
-          <p> Produced by SeaBird Scientific, the Land/Ocean Biogeochemical Observatory (LOBO) device and deployed by Harbor Branch Oceanographic Institute, the LOBO network analyzes a variety of variables at 10 different sites. Variables measured by LOBOs include: nitrate, salinity, temperature, chlorophyll, conductivity, turbidity, depth, phosphate concentration, and many other variables. LOBOs are floating platforms in the Indian River Lagoon and connecting bodies of water that record water measurements at the beginning of every hour </p>
 
-        </section>
+
+
       </div>
     </section>
-    <div id="map" class="map mapWidth80"></div>
-
-
-
-
-
-
-
-
     <head>
     <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
     <style>
+
     #map {
         height: 92vh;
+        width:20vw;;
     }
 
     a:link, a:visited {
@@ -156,6 +123,7 @@
 
     <body>
 
+    <div id="map"></div>
     <script>
     mapkit.init({
         authorizationCallback: function(done) {
@@ -195,8 +163,6 @@
     });
 
     var map = new mapkit.Map("map");
-    map.mapType = "hybrid"
-
     map.showItems(annotations);
 
     // Landmark annotation custom callout
@@ -254,13 +220,6 @@
     }
     </script>
     </body>
-    <script type="text/javascript" src="/assets/moreInfo.js">
-
-    </script>
-
-    <script type="text/javascript">
-
-    </script>
 
 
 

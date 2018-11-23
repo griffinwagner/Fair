@@ -2,12 +2,15 @@
   background-color: black;
   padding: 2.5vh;
   color:white;
+  position:fixed;
+  width:100vw;
+  z-index: 10000;
 }
 
 .aTag {
   color:white;
   padding:2vw;
-  font-size: 1vw;
+  font-size: 2vh;
 }
 
 .aTag:hover {
