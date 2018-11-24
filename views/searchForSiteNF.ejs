@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/assets/topBanner.css">
+
+  </head>
+  <body>
+    <section class="topBanner">
+      <div id="textAlign">
+        <a class="aTag" href="/">Home</a>
+      </div>
+    </section>
+    <div class="container">
+      <h1 style="margin-top:12vh;" class="jumbotron">Search SLE-NF Data</h1>
+      <form  action="/dateNF" method="post">
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-calendar"></span></span>
+          <input type="text" name = 'date' class="form-control" placeholder="Choose Date" aria-describedby="sizing-addon1">
+        </div> <br>
+        <button style="width:100%; height:5vh"class="btn btn-success" type="submit" name="button">Search</button>
+      </form>
+    </div>
+
+
+  </body>
+
+
+
+
+</html>

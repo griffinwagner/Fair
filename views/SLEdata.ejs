@@ -1,0 +1,271 @@
+<!DOCTYPE>
+<html>
+    <head>
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+      <!-- load bottstrap 3.0.2-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+      <!-- load fontawesome 4.0.3-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+        <title>LP DATA</title
+
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
+        <link rel="stylesheet" href="/assets/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/assets/infoPages.css">
+
+        <link rel="stylesheet" href="/assets/topBanner.css">
+        <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
+      <style>
+
+
+        a:link, a:visited {
+            color: #2aaef5;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .landmark {
+            width: 250px;
+            padding: 7px 0 0 0;
+            background: rgba(247, 247, 247, 0.9);
+            border-radius: 5px;
+            box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.29);
+            font-family: Helvetica, Arial, sans-serif;
+            -webkit-transform-origin: 0 10px;
+            transform-origin: 0 10px;
+        }
+
+        .landmark h1 {
+            margin-top: 0;
+            padding: 5px 15px;
+            background: #2aaef5;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .landmark section {
+            padding: 0 15px 5px;
+            font-size: 14px;
+        }
+
+        .landmark section p {
+            margin: 5px 0;
+        }
+
+        .landmark:after {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: -13px;
+            width: 0;
+            height: 0;
+            margin-bottom: -13px;
+            border-right: 13px solid #2aaef5;
+            border-top: 13px solid rgba(0, 0, 0, 0);
+            border-bottom: 13px solid rgba(0, 0, 0, 0);
+        }
+
+        @-webkit-keyframes scale-and-fadein {
+            0% {
+                -webkit-transform: scale(0.2);
+                opacity: 0;
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scale-and-fadein {
+            0% {
+                transform: scale(0.2);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        </style>
+
+
+    </head>
+
+    <section class="topBanner">
+      <div id="textAlign">
+        <a class="aTag" href="/">Home</a>
+      </div>
+    </section>
+
+
+    <section class="container sidenav">
+      <div class="container">
+        <u> <h3>IRL-SLE</h3> </u>
+        <h4>NitrateSalineScore: <br> <%=monthData.thirdWeekNitrateSalineScore%> → <%=monthData.secondWeekNitrateSalineScore%> →  <%=monthData.firstWeekNitrateSalineScore%></h4>
+        <i><h4>Optimal: 6.85</h4></i> <br>
+
+        <h4>TemperatureScore: <br> <%=monthData.thirdWeekTempScore%> → <%=monthData.secondWeekTempScore%> →  <%=monthData.firstWeekTempScore%></h4>
+        <i><h4>Optimal: 7.15</h4></i> <br>
+
+        <u> <h3>Today</h3> </u>
+        <h4>Nitrate Level: <br> <%=conditions.nitrateLevel%>mM</h4>
+        <i><h4>Optimal: 6-9mM</h4></i> <br>
+
+        <h4>Saline Level: <br> <%=conditions.salineLevel%>ppt</h4>
+        <i><h4>Optimal: 15-23ppt</h4></i> <br>
+
+        <h4>Temperature: <br> <%=conditions.tempLevel%> °C </h4>
+        <i><h4>Optimal: 31.4 C</h4></i> <br>
+
+      </div>
+      <div id="map"></div>
+      <br>
+
+      <script>
+
+      var MarkerAnnotation = mapkit.MarkerAnnotation,
+            clickAnnotation;
+        var vero = new mapkit.Coordinate(27.6386, -80.3973),
+            work = new mapkit.Coordinate(27.164975, -80.17184722222223);
+
+
+        mapkit.init({
+            authorizationCallback: function(done) {
+                done('eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFZUFg5SFlGSzIifQ.eyJpc3MiOiJCOUo1V0tSNlhBIiwiaWF0IjoxNTQyOTAyMzI4LCJleHAiOjEwNTQyOTAyMzI4fQ.G32LeRw7eHKuxGEcKqWvwewW2JTso1SEHZoEjEiscqXqN83w1lkDKsAYq503SQwFnB7qHZzyb0V_fmW1J4I2Dw');
+            }
+        });
+
+        // var Cupertino = new mapkit.CoordinateRegion(
+        // new mapkit.Coordinate(37.3316850890998, -122.030067374026),
+        // new mapkit.CoordinateSpan(0.167647972, 0.354985255)
+        // );
+        //
+        // var map = new mapkit.Map("map");
+        // map.region = Cupertino;
+        // map.mapType = 'satellite'
+
+        var map = new mapkit.Map("map");
+        map.mapType = "hybrid"
+
+        // Setting properties on creation:
+        var veroAnnotation = new MarkerAnnotation(vero, { color: "#f4a56d", title: "Vero Beach", glyphText: "🏖" });
+
+        // Setting properties after creation:
+        var workAnnotation = new MarkerAnnotation(work);
+        workAnnotation.color = "#969696";
+        workAnnotation.title = "Site";
+        workAnnotation.subtitle = "IRL-SLE";
+        workAnnotation.selected = "true";
+        workAnnotation.glyphText = "♻️";
+
+        // Add and show both annotations on the map
+        map.showItems([veroAnnotation, workAnnotation]);
+
+        // Drop an annotation where a Shift-click is detected:
+        map.element.addEventListener("click", function(event) {
+            if(!event.shiftKey) {
+                return;
+            }
+
+            if(clickAnnotation) {
+                map.removeAnnotation(clickAnnotation);
+            }
+
+            var coordinate = map.convertPointOnPageToCoordinate(new DOMPoint(event.pageX, event.pageY));
+            clickAnnotation = new MarkerAnnotation(coordinate, {
+                title: "Click!",
+                color: "#c969e0"
+            });
+            map.addAnnotation(clickAnnotation);
+        });
+      </script>
+
+
+
+    </section>
+    <body class="body">
+
+    <div class="leftSection">
+
+      <div class="alert <%=alert%>" role="alert">  <div style="text-align:center; font-size:3vh"> <%=StringChanceOfAnAlgaeBloom%></div> </div>
+
+
+
+      <div class="panel-group" id="accordion">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" style="text-align:center"><div style="text-align:center" > Saline Conditions </div></a>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+
+              <section>
+                 <div id="loader2" class="loader">
+                 </div>
+                 <canvas id="salineChart">
+                 </canvas>
+              </section>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" ><div style="text-align:center" > Nitrate Conditions </div></a>
+            </h4>
+          </div>
+          <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+              <section>
+                 <div id="loader" class="loader">
+                 </div>
+                 <canvas id="weatherChart">
+                 </canvas>
+              </section>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" > <div style="text-align:center" > Temperature </div></a>
+            </h4>
+          </div>
+          <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+              <section>
+                 <div id="loader3" class="loader">
+                 </div>
+                 <canvas id="theTempChart">
+                 </canvas>
+              </section>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+        <script src="https://js.pusher.com/4.0/pusher.min.js"></script>
+        <script type="text/javascript" src="/assets/appSLE.js"></script>
+    </body>
+</html>
