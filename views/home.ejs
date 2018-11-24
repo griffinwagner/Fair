@@ -110,13 +110,15 @@
         padding: 5px 15px;
         background: #2aaef5;
         color: rgba(255, 255, 255, 0.9);
-        font-size: 16px;
         font-weight: 300;
     }
 
     .landmark section {
         padding: 0 15px 5px;
-        font-size: 14px;
+    }
+
+    .landmark h1 {
+      font-size: 2.5vh;
     }
 
     .landmark section p {
@@ -175,7 +177,10 @@
 
     var sanFranciscoLandmarks = [
         { coordinate: new mapkit.Coordinate(27.53500000, -80.34217888888889), title: "IRL-LP",url: "/lpdata", website: "/search", newData: '/lp', create: "/createLP", delete: "/deleteLP"},
-        { coordinate: new mapkit.Coordinate(27.475569444444442, -80.3266), title: "IRL-FP", url: "/fpdata",  website: "/searchForSiteFP", newData: "/fp", create: "/createFP", delete:"/deleteFP"}
+        { coordinate: new mapkit.Coordinate(27.475569444444442, -80.3266), title: "IRL-FP", url: "/fpdata",  website: "/searchForSiteFP", newData: "/fp", create: "/createFP", delete:"/deleteFP"},
+        { coordinate: new mapkit.Coordinate(27.18815, -80.261425), title: "SFE-SF", url: "/sfdata",  website: "/searchForSiteSF", newData: "/sf", create: "/createSF", delete:"/deleteSF"},
+        { coordinate: new mapkit.Coordinate(27.839125, -80.47081944444444), title: "IRL-SB", url: "/sbdata",  website: "/searchForSiteSB", newData: "/sb", create: "/createSB", delete:"/deleteSB"},
+
     ];
 
     // Landmark annotation callout delegate

@@ -111,7 +111,7 @@
 
     <section class="container sidenav">
       <div class="container">
-        <u> <h3>IRL-LP</h3> </u>
+        <u> <h3>SLE-SF</h3> </u>
         <h4>NitrateSalineScore: <br> <%=monthData.thirdWeekNitrateSalineScore%> → <%=monthData.secondWeekNitrateSalineScore%> →  <%=monthData.firstWeekNitrateSalineScore%></h4>
         <i><h4>Optimal: 6.85</h4></i> <br>
 
@@ -137,7 +137,7 @@
       var MarkerAnnotation = mapkit.MarkerAnnotation,
             clickAnnotation;
         var vero = new mapkit.Coordinate(27.6386, -80.3973),
-            work = new mapkit.Coordinate(27.475569444444442, -80.3266);
+            work = new mapkit.Coordinate(27.18815, -80.261425);
 
 
         mapkit.init({
@@ -165,7 +165,7 @@
         var workAnnotation = new MarkerAnnotation(work);
         workAnnotation.color = "#969696";
         workAnnotation.title = "Site";
-        workAnnotation.subtitle = "IRL-LP";
+        workAnnotation.subtitle = "SLE-SF";
         workAnnotation.selected = "true";
         workAnnotation.glyphText = "♻️";
 
@@ -266,6 +266,6 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
         <script src="https://js.pusher.com/4.0/pusher.min.js"></script>
-        <script type="text/javascript" src="/assets/appFP.js"></script>
+        <script type="text/javascript" src="/assets/appSF.js"></script>
     </body>
 </html>
