@@ -9760,7 +9760,6 @@ module.exports = function(app, db) {
                 });
                  res.redirect('/')
         })
-
   app.get('/VBdata', function (req, res) {
                 let sql = 'SELECT COUNT(*) FROM VB'
                 db.query (sql, (err, result)=>{
@@ -11231,6 +11230,3510 @@ module.exports = function(app, db) {
                 });
                  res.redirect('/')
         })
+  app.get('/MEdata', function (req, res) {
+                let sql = 'SELECT COUNT(*) FROM ME'
+                db.query (sql, (err, result)=>{
+                  var day = result[0]["COUNT(*)"]
+                  var week = day - 7
+                  let sql2 = `SELECT * FROM ME WHERE id > ` + week + ';'
+                  db.query(sql2, (err, result)=>{
+                    var currentWeekData = []
+                    for (var i = 0; i < 7; i++) {
+                      currentWeekData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                    }
+                    var nitrateSalineScore = 0
+                    var nitrateSalineScoreArray = []
+                    var tempScore = 0
+                    var tempScoreArray = []
+                    var score
+
+                    for (var i = 0; i < currentWeekData.length; i++) {
+                      function analyzeWeekData (weekData, i) {
+                        if (weekData[i].nitrateLevel < 6) {
+                            if (weekData[i].salineLevel >= 23) {
+                              score = .125
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                              score = .25
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                              score = .375
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 2) {
+                              score = .5
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+                            }
+                          } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                            if (weekData[i].salineLevel >= 23) {
+                              score = .25
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                              score = .375
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                              score = 1
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 2) {
+                              score = 1.5
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+                            }
+                          } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                            if (weekData[i].salineLevel >= 23) {
+                              score = .5
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                              score = .75
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                              score = 1
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 2) {
+                              score = 1.5
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+                            }
+                          } else if (weekData[i].nitrateLevel >= 12) {
+                            if (weekData[i].salineLevel >= 23) {
+                              score = .75
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                              score = 1
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                              score = 1.25
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+
+                            } else if (weekData[i].salineLevel < 2) {
+                              score = 2
+                              nitrateSalineScore += score
+                              nitrateSalineScoreArray.push(score)
+                            }
+                          }
+
+                        if (weekData[i].temp <= 28.4) {
+                            score = 0.5
+                            tempScoreArray.push(score)
+                            tempScore += score
+                          } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                            score = .9
+                            tempScoreArray.push(score)
+                            tempScore += score
+                          } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                            score = 1.05
+                            tempScoreArray.push(score)
+                            tempScore += score
+                          }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                            score = 1.25
+                            tempScoreArray.push(score)
+                            tempScore += score
+                          } else if (weekData[i].temp > 35) {
+                            score = -1
+                            tempScoreArray.push(score)
+                            tempScore -= score
+                          }
+
+                      }
+
+
+                      analyzeWeekData(currentWeekData, i) //SYP{ HEE}
+                      if (i+1 == currentWeekData.length) {
+                        var oneWeekAgo = week - 7
+                        let sql3 = `SELECT * FROM ME WHERE id > ` + oneWeekAgo + ' && id <='+week+';'
+                        db.query(sql3, (err, result)=> {
+                          var oneWeekAgoData = []
+                          for (var i = 0; i < 7; i++) {
+                            oneWeekAgoData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                          }
+                          var OneWeekAgoNitrateSalineScore = 0
+                          var OneWeekAgoNitrateSalineScoreArray = []
+                          var OneWeekAgoTempScore = 0
+                          var OneWeekAgoTempScoreArray = []
+                          var points
+                          function analyzeWeekTwoData (weekData, i) {
+                            if (weekData[i].nitrateLevel < 6) {
+                                if (weekData[i].salineLevel >= 23) {
+                                  points = .075
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                  points = .125
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                  points = .25
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 2) {
+                                  points = .375
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+                                }
+                              } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                if (weekData[i].salineLevel >= 23) {
+                                  points = .125
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                  points = .25
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                  points = .75
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 2) {
+                                  points = 1
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+                                }
+                              } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                if (weekData[i].salineLevel >= 23) {
+                                  points = .25
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                  points = .75
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                  points = 1
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 2) {
+                                  points = 1.25
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+                                }
+                              } else if (weekData[i].nitrateLevel >= 12) {
+                                if (weekData[i].salineLevel >= 23) {
+                                  points = .5
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                  points = .875
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                  points = 1.25
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                } else if (weekData[i].salineLevel < 2) {
+                                  points = 1.5
+                                  OneWeekAgoNitrateSalineScore += points
+                                  OneWeekAgoNitrateSalineScoreArray.push(points)
+                                }
+                              }
+
+                            if (weekData[i].temp <= 28.4) {
+                                points = 0.5
+                                OneWeekAgoTempScoreArray.push(points)
+                                OneWeekAgoTempScore += points
+                              } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                points = .9
+                                OneWeekAgoTempScoreArray.push(points)
+                                OneWeekAgoTempScore += points
+                              } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                points = 1.05
+                                OneWeekAgoTempScoreArray.push(points)
+                                OneWeekAgoTempScore += points
+                              }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                points = 1.25
+                                OneWeekAgoTempScoreArray.push(points)
+                                OneWeekAgoTempScore += points
+                              } else if (weekData[i].temp > 35) {
+                                points = -1
+                                OneWeekAgoTempScoreArray.push(points)
+                                OneWeekAgoTempScore -= points
+                              }
+
+                          }
+
+                          // console.log(oneWeekAgoData);
+                          for (var a = 0; a < oneWeekAgoData.length; a++) {
+                            analyzeWeekTwoData(oneWeekAgoData, a)
+                            if (a + 1 == oneWeekAgoData.length) {
+                              // monthData.push({secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore})
+                              // monthData.push({secondWeekTempScoreArray:OneWeekAgoTempScoreArray})
+                              // monthData.push({secondWeekTempScore:OneWeekAgoTempScore})
+                              var twoWeeksAgo = oneWeekAgo - 7
+                              let sql4 = `SELECT * FROM ME WHERE id > ` + twoWeeksAgo + ' && id <= '+oneWeekAgo+';'
+                              // console.log(sql4);
+                              db.query(sql4, (err, result)=>{
+                                // console.log(result);
+                                var twoWeeksAgoData = []
+                                for (var u = 0; u < 7; u++) {
+                                  twoWeeksAgoData.push({data:result[u].date, nitrateLevel: result[u].nitrateLevel, salineLevel: result[u].salineLevel, temp: result[u].tempLevel})
+                                }
+                                var TwoWeeksAgoNitrateSalineScore = 0
+                                var TwoWeeksAgoNitrateSalineScoreArray = []
+                                var TwoWeeksAgoTempScore = 0
+                                var TwoWeeksAgoTempScoreArray = []
+                                var pts
+                                function analyzeWeekThreeData (weekData, i) {
+                                  if (weekData[i].nitrateLevel < 6) {
+                                      if (weekData[i].salineLevel >= 23) {
+                                        pts = .075
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                        pts = .125
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                        pts = .25
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 2) {
+                                        pts = .375
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                      }
+                                    } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                      if (weekData[i].salineLevel >= 23) {
+                                        pts = .125
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                        pts = .25
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                        pts = .75
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 2) {
+                                        pts = 1
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                      }
+                                    } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                      if (weekData[i].salineLevel >= 23) {
+                                        pts = .25
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                        pts = .75
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                        pts = 1
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 2) {
+                                        pts = 1.25
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                      }
+                                    } else if (weekData[i].nitrateLevel >= 12) {
+                                      if (weekData[i].salineLevel >= 23) {
+                                        pts = .5
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                        pts = .875
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                        pts = 1.25
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                      } else if (weekData[i].salineLevel < 2) {
+                                        pts = 1.5
+                                        TwoWeeksAgoNitrateSalineScore += pts
+                                        TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                      }
+                                    }
+
+                                  if (weekData[i].temp <= 28.4) {
+                                      pts = 0.5
+                                      TwoWeeksAgoTempScoreArray.push(pts)
+                                      TwoWeeksAgoTempScore += pts
+                                    } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                      pts = .9
+                                      TwoWeeksAgoTempScoreArray.push(pts)
+                                      TwoWeeksAgoTempScore += pts
+                                    } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                      pts = 1.05
+                                      TwoWeeksAgoTempScoreArray.push(pts)
+                                      TwoWeeksAgoTempScore += pts
+                                    }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                      pts = 1.25
+                                      TwoWeeksAgoTempScoreArray.push(pts)
+                                      TwoWeeksAgoTempScore += pts
+                                    } else if (weekData[i].temp > 35) {
+                                      pts = -1
+                                      TwoWeeksAgoTempScoreArray.push(pts)
+                                      TwoWeeksAgoTempScore -= pts
+                                    }
+
+                                }
+
+                                for (var rr = 0; rr < twoWeeksAgoData.length; rr++) {
+                                  analyzeWeekThreeData(twoWeeksAgoData, rr)
+                                  if (rr+ 1 == twoWeeksAgoData.length) {
+                                    var monthData = {
+                                      firstWeekNitrateSalineScoreArray:nitrateSalineScoreArray,
+                                      firstWeekNitrateSalineScore:nitrateSalineScore,
+                                      firstWeekTempScoreArray:tempScoreArray,
+                                      firstWeekTempScore:tempScore,
+                                      secondWeekNitrateSalineScoreArray:OneWeekAgoNitrateSalineScoreArray,
+                                      secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore,
+                                      secondWeekTempScoreArray:OneWeekAgoTempScoreArray,
+                                      secondWeekTempScore:OneWeekAgoTempScore,
+                                      thirdWeekNitrateSalineScoreArray:TwoWeeksAgoNitrateSalineScoreArray,
+                                      thirdWeekNitrateSalineScore:TwoWeeksAgoNitrateSalineScore,
+                                      thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
+                                      thirdWeekTempScore:TwoWeeksAgoTempScore
+                                    }
+                                    function slopeMaker (first, second, third) {
+                                      var addedFirstValues = second - first
+                                      var firstSlope = addedFirstValues / 2
+                                      var addedSecondValues = third - second
+                                      var secondSlope = addedSecondValues / 2
+                                      var finalAddedValues = firstSlope + secondSlope
+                                      var finalSlope = finalAddedValues / 2
+                                      return finalSlope
+                                    }
+
+                                    var nitrateSalineSlope = slopeMaker(monthData.firstWeekNitrateSalineScore, monthData.secondWeekNitrateSalineScore, monthData.thirdWeekNitrateSalineScore)
+                                    console.log(nitrateSalineSlope);
+
+                                    var tempSlope = slopeMaker(monthData.firstWeekTempScore, monthData.secondWeekTempScore, monthData.thirdWeekTempScore)
+                                    console.log(tempSlope);
+                                    var chanceOfAnAlgaeBloom
+
+
+                                    var aChanceOfAnAlgaeBloom
+
+                                  var chanceOfAnAlgaeBloom = determineChanceOfAlgaeBloom(monthData, nitrateSalineSlope, tempSlope, aChanceOfAnAlgaeBloom)
+
+
+                                var StringChanceOfAnAlgaeBloom
+                                var alert
+                                if (chanceOfAnAlgaeBloom) {
+                                  StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                  alert = "alert-danger"
+                                } else if (!chanceOfAnAlgaeBloom) {
+                                  StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                  alert = "alert-success"
+                                }
+                                var dataForNitrate = []
+                                var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                                var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                                for (var i = 0; i < 21; i++) {
+                                  dataForNitrate.push({time:allThreeWeeksData[i].data, temperature: allThreeWeeksData[i].nitrateLevel})
+                                }
+
+                                var dataForSaline = []
+                                for (var i = 0; i < 21; i++) {
+                                  dataForSaline.push({time:allThreeWeeksData[i].data, saline: allThreeWeeksData[i].salineLevel})
+                                }
+
+                                var londonTempData = {
+                                // city: 'Florida',
+                                // unit: 'celsius',
+                                  dataPoints: dataForNitrate
+                                }
+
+                                var salineLevelDataForGraph = {
+                                // city: 'Florida',
+                                // unit: 'celsius',
+                                  dataPoints: dataForSaline
+                                }
+
+
+                                var dataFortheTemp = []
+                                for (var i = 0; i < 21; i++) {
+                                  dataFortheTemp.push({time:allThreeWeeksData[i].data, theTemp: allThreeWeeksData[i].temp})
+                                }
+
+                                var theTempDataForGraph = {
+                                // city: 'Florida',
+                                // unit: 'celsius',
+                                  dataPoints: dataFortheTemp
+                                }
+
+
+
+                                //for Nitrate
+                                app.get('/getTemperatureME', function(req,res){ //styppsxd
+                                res.send(londonTempData);
+                              });
+                                app.get('/addTemperatureME', function(req,res){
+                                var temp = parseInt(req.query.temperature);
+                                var time = parseInt(req.query.time);
+                                if(temp && time && !isNaN(temp) && !isNaN(time)){
+                                  var newDataPoint = {
+                                    temperature: temp,
+                                    time: time
+                                  };
+                                  londonTempData.dataPoints.push(newDataPoint);
+                                  pusher.trigger('london-temp-chart', 'new-temperature', {
+                                    dataPoint: newDataPoint
+                                  });
+                                  res.send({success:true});
+                                }else{
+                                  res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
+                                }
+                              });
+
+                                //forSaline
+                                app.get('/getSalineME', function(req,res){
+                                  res.send(salineLevelDataForGraph);
+                                });
+                                app.get('/addSalineME', function(req,res){
+                                  var saline = parseInt(req.query.saline);
+                                  var time = parseInt(req.query.time);
+                                  if(saline && time && !isNaN(saline) && !isNaN(time)){
+                                    var newDataPoint = {
+                                      saline: saline,
+                                      time: time
+                                    };
+                                    salineLevelDataForGraph.dataPoints.push(newDataPoint);
+                                    pusher.trigger('salineLevelDataForGraph-chart', 'new-saline', {
+                                      dataPoint: newDataPoint
+                                    });
+                                    res.send({success:true});
+                                  }else{
+                                    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - saline & time.'});
+                                  }
+                                });
+
+                                //forSaline
+                                app.get('/gettheTempME', function(req,res){
+                                  res.send(theTempDataForGraph);
+                                });
+                                app.get('/addtheTempME', function(req,res){
+                                  var theTemp = parseInt(req.query.theTemp);
+                                  var time = parseInt(req.query.time);
+                                  if(theTemp && time && !isNaN(theTemp) && !isNaN(time)){
+                                    var newDataPoint = {
+                                      theTemp: theTemp,
+                                      time: time
+                                    };
+                                    theTempDataForGraph.dataPoints.push(newDataPoint);
+                                    pusher.trigger('theTempDataForGraph-chart', 'new-theTemp', {
+                                      dataPoint: newDataPoint
+                                    });
+                                    res.send({success:true});
+                                  }else{
+                                    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTemp & time.'});
+                                  }
+                                });
+
+                                let sql10 = `SELECT * FROM ME WHERE id ="` + day + `";`
+                                console.log(sql10);
+                                db.query(sql10, (err, result)=>{
+                                  var conditions = result[0]
+                                  res.render('MEdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                                });                      // console.log(twoWeeksAgoData);
+                                // console.log(oneWeekAgoData);
+                                // console.log(currentWeekData);
+
+
+
+                                  } //ends if (rr+ 1 == twoWeeksAgoData.length) {
+                                } //ends final for loop
+                              }) //ends a query
+                            } // ends if (a + 1 == oneWeekAgoData.length) {
+                          } // ends  for (var a = 0; a < oneWeekAgoData.length; a++) {
+                        }) // ends db.query(sql3, (err, result)=> {
+                      } // ends if (i+1 == currentWeekData.length) {
+                    } // ends for (var i = 0; i < currentWeekData.length; i++) {
+                  }) // ends db.query(sql2, (err, result)=>{
+                }) // ends   db.query (sql, (err, result)=>{
+              }); // ends app.get('/lpdata', function (req, res) {
+
+// JB
+  app.get('/createJB', function(req,res) {
+      let createJB = `CREATE TABLE JB (id int AUTO_INCREMENT, date VARCHAR(255), nitrateLevel FLOAT, salineLevel FLOAT, tempLevel FLOAT, PRIMARY KEY (id));`
+      db.query(createJB, (err, result)=>{
+        console.log(result);
+      })
+      //
+      let sql5 = `CREATE TABLE JBnumberPoint (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql5, (err,result)=>{
+        console.log(result);
+      })
+      //
+      let sql6 = `CREATE TABLE JBnumberPointSaline (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql6, (err,result)=>{
+        console.log(result);
+      })
+      //
+      let sql8 = `CREATE TABLE JBnumberPointTemp (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql8, (err,result)=>{
+        console.log(result);
+      })
+      res.render('home')
+
+    })
+  app.get('/deleteJB', function(req,res){
+      let JBsql = `DROP TABLE JB;`
+      db.query(JBsql, (err,result)=> {
+      })
+      let JBnumberPointSQL = `DROP TABLE JBnumberPoint;`
+      db.query(JBnumberPointSQL, (err,result)=>{
+      })
+      let JBsalineSQL = `DROP TABLE JBnumberPointSaline;`
+      db.query(JBsalineSQL, (err,result)=>{
+      })
+      let JBtempSQL = `DROP Table JBnumberPointTemp;`
+      db.query(JBtempSQL, (err, result)=>{
+      })
+      res.render('home')
+    });
+  app.get('/JB', function(req, res) {
+
+
+     var JBNitrate = XLSX.readFile('IRL-JB-Nitrate.xlsx');
+     const sheet_name_list = JBNitrate.sheetNames;
+     var hello = JBNitrate.Sheets.Sheet1
+     var allValues = []
+     for(var sequence in hello) {
+       allValues.push(JBNitrate.Sheets.Sheet1[sequence].w)
+     }
+     console.log(allValues.length);
+     var numberOfEntries = 0
+     var totalForDay = 0.0
+     var allValuesJSON = JSON.stringify(allValues);
+     allValues.shift()
+
+
+     console.log("Hello");
+     req.session.okay = "hello"
+     // ***PUT ALL VALUES INTO DB************************************************************************************************
+     for (var i = 0; i < allValues.length; i++) {
+       // console.log("All Values == "+ allValues.length); IS WOrkING
+       if (i % 3 == 0) {
+         var theVariable = JSON.stringify(allValues[i])
+         let sql = `INSERT INTO JBnumberPoint (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+         db.query(sql, (err, result)=> {
+         })
+       }
+
+     }
+     var allValuesDates = []
+     for (var i = 0; i < allValues.length; i++) {
+         if (i % 3 == 0) {
+           allValuesDates.push(allValues[i])
+         }
+     }
+     console.log(allValuesDates);
+     //
+     //
+     uniqueValueDates = allValuesDates.filter( function( item, index, inputArray ) {
+            return inputArray.indexOf(item) == index;
+     });
+
+     console.log(uniqueValueDates);
+
+
+     // console.log(uniqueValueDates);
+     var array = []
+     function getTheAverageJB(uniqueValueDates, theArray) {
+       req.session.hello = 2+3
+       for (var i = 0; i < uniqueValueDates.length ; i++) {
+         req.session.dates = uniqueValueDates;
+         let sql2 = 'SELECT AVG(level) AS averageLevel FROM JBnumberPoint WHERE date = "' + uniqueValueDates[i] +'";'
+         req.session.length = uniqueValueDates.length;
+         db.query(sql2, array, (err, result)=> {
+              array.push(result[0].averageLevel);
+              req.session.averageLevels = array
+              if (array.length == req.session.length) {
+                // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                req.session.array = array
+                array.pop(); // to remove null. Array.length -1 = final measurement
+                var dates = req.session.dates
+                dates.pop();
+                for (var z = 0; z < dates.length; z++) {
+                  var dateString = JSON.stringify(dates[z])
+                  let sql3 = `INSERT INTO JB (date) VALUES (`+dateString+`);`
+                  db.query (sql3, (err, result)=> {
+                  })
+                  if (z+1 == dates.length) {
+                    for (var q = 0; q < array.length; q++) {
+                      // console.log("q = "+ q);
+                      var theLevel = array[q];
+                      var idMatch = q+1;
+                      // console.log(idMatch);
+                      let sql4 = `UPDATE JB SET nitrateLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                      db.query (sql4, (err,result)=> {
+                        console.log(sql4);
+                      })
+                    }
+
+                  }
+                }
+
+              }
+         });
+       }
+     }
+     getTheAverageJB(uniqueValueDates, array)
+     res.render('nitrateAnalyzedJB')
+     })
+  app.get('/salineJB', function(req, res) {
+          var JBSaline = XLSX.readFile('IRL-JB-Saline.xlsx');
+          const sheet_name_list = JBSaline.sheetNames;
+
+
+          var hello = JBSaline.Sheets.Sheet1
+          var allValues = []
+          for(var sequence in hello) {
+            allValues.push(JBSaline.Sheets.Sheet1[sequence].w)
+
+          }
+          var numberOfEntries = 0
+          var totalForDay = 0.0
+          var allValuesJSON = JSON.stringify(allValues);
+          allValues.shift()
+
+
+          console.log("Hello");
+          req.session.okay = "hello"
+          // ***PUT ALL VALUES INTO DB************************************************************************************************
+          for (var i = 0; i < allValues.length; i++) {
+            if (i % 3 == 0) {
+              var theVariable = JSON.stringify(allValues[i])
+              let sql = `INSERT INTO JBnumberPointSaline (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+              db.query(sql, (err, result)=> {
+              })
+            }
+
+          }
+          var allValuesDates = []
+          for (var i = 0; i < allValues.length; i++) {
+              if (i % 3 == 0) {
+                allValuesDates.push(allValues[i])
+              }
+          }
+          function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+          }
+          var uniqueValueDates = allValuesDates.filter( onlyUnique );
+          var array = []
+          function getTheAverageJB(uniqueValueDates, theArray) {
+            req.session.hello = 2+3
+            for (var i = 0; i < uniqueValueDates.length ; i++) {
+              req.session.dates = uniqueValueDates;
+              let sql2 = 'SELECT AVG(level) AS averageLevel FROM JBnumberPointSaline WHERE date = "' + uniqueValueDates[i] +'";'
+              req.session.length = uniqueValueDates.length;
+              db.query(sql2, array, (err, result)=> {
+                   array.push(result[0].averageLevel);
+                   req.session.averageLevels = array
+                   if (array.length == req.session.length) {
+                     // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                     req.session.array = array
+                     array.pop(); // to remove null. Array.length -1 = final measurement
+                     var dates = req.session.dates
+                     dates.pop();
+                     for (var z = 0; z < dates.length; z++) {
+                       var dateString = JSON.stringify(dates[z])
+                       // let sql3 = `INSERT INTO LP (date) VALUES (`+dateString+`);`
+                       // db.query (sql3, (err, result)=> {
+                       // })
+                       if (z+1 == dates.length) {
+                         for (var q = 0; q < array.length; q++) {
+                           var theLevel = array[q];
+                           var idMatch = q+1;
+                           console.log(idMatch);
+                           let sql4 = `UPDATE JB SET salineLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                           db.query (sql4, (err,result)=> {
+                             console.log(sql4);
+                           })
+                         }
+
+                       }
+                     }
+
+                   }
+              });
+            }
+          }
+          getTheAverageJB(uniqueValueDates, array)
+          res.render('salineAnalyzedJB')
+          })
+  app.get('/JBSearch', function(req, res) {
+                      var JBTemp = XLSX.readFile('IRL-JB-Temp.xlsx');
+                      const sheet_name_list = JBTemp.sheetNames;
+
+
+                      var hello = JBTemp.Sheets.Sheet1
+                      var allValues = []
+                      for(var sequence in hello) {
+                        allValues.push(JBTemp.Sheets.Sheet1[sequence].w)
+
+                      }
+                      var numberOfEntries = 0
+                      var totalForDay = 0.0
+                      var allValuesJSON = JSON.stringify(allValues);
+                      allValues.shift()
+
+
+                      console.log("Hello");
+                      req.session.okay = "hello"
+                      // ***PUT ALL VALUES INTO DB************************************************************************************************
+                      for (var i = 0; i < allValues.length; i++) {
+                        if (i % 3 == 0) {
+                          var theVariable = JSON.stringify(allValues[i])
+                          let sql = `INSERT INTO JBnumberPointTemp (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+                          db.query(sql, (err, result)=> {
+                          })
+                        }
+
+                      }
+                      var allValuesDates = []
+                      for (var i = 0; i < allValues.length; i++) {
+                          if (i % 3 == 0) {
+                            allValuesDates.push(allValues[i])
+                          }
+                      }
+                      function onlyUnique(value, index, self) {
+                        return self.indexOf(value) === index;
+                      }
+                      var uniqueValueDates = allValuesDates.filter( onlyUnique );
+                      var array = []
+                      function getTheAverageJB(uniqueValueDates, theArray) {
+                        req.session.hello = 2+3
+                        for (var i = 0; i < uniqueValueDates.length ; i++) {
+                          req.session.dates = uniqueValueDates;
+                          let sql2 = 'SELECT AVG(level) AS averageLevel FROM JBnumberPointTemp WHERE date = "' + uniqueValueDates[i] +'";'
+                          req.session.length = uniqueValueDates.length;
+                          db.query(sql2, array, (err, result)=> {
+                               array.push(result[0].averageLevel);
+                               req.session.averageLevels = array
+                               if (array.length == req.session.length) {
+                                 // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                                 req.session.array = array
+                                 array.pop(); // to remove null. Array.length -1 = final measurement
+                                 var dates = req.session.dates
+                                 dates.pop();
+                                 for (var z = 0; z < dates.length; z++) {
+                                   var dateString = JSON.stringify(dates[z])
+                                   // let sql3 = `INSERT INTO LP (date) VALUES (`+dateString+`);`
+                                   // db.query (sql3, (err, result)=> {
+                                   // })
+                                   if (z+1 == dates.length) {
+                                     for (var q = 0; q < array.length; q++) {
+                                       var theLevel = array[q];
+                                       var idMatch = q+1;
+                                       console.log(idMatch);
+                                       let sql4 = `UPDATE JB SET tempLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                                       db.query (sql4, (err,result)=> {
+                                         console.log(sql4);
+                                       })
+                                     }
+
+                                   }
+                                 }
+
+                               }
+                          });
+                        }
+                      }
+                      getTheAverageJB(uniqueValueDates, array)
+                      res.render('tempAnalyzedJB')
+                      })
+  app.get('/searchForSiteJB', function(req, res){
+      res.render('searchForSiteJB')
+    })
+  app.post('/dateJB', function(req, res){
+                 let date = req.body.date;
+                 console.log(date);
+                 let sql10 = `SELECT * FROM JB WHERE date ="` + date + `";`
+                 db.query (sql10, (err, result)=>{
+                   console.log(result);
+                   var specificDayNitrate = result[0].nitrateLevel;
+                   var specificDayDate = result[0].date;
+                   var specificDaySaline = result[0].salineLevel;
+                   var specificDayTemp = result[0].tempLevel;
+
+                   // db.query (sql, (err, result)=>{
+                   var day = result[0].id
+                   console.log(day);
+                   var week = day - 7
+                   let sql2 = `SELECT * FROM JB WHERE id > ` + week + ' && id <= '+day+';'
+                     db.query(sql2, (err, result)=>{
+                       var currentWeekData = []
+
+                       for (var i = 0; i < 7; i++) {
+                         currentWeekData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                       }
+                       var nitrateSalineScore = 0
+                       var nitrateSalineScoreArray = []
+                       var tempScore = 0
+                       var tempScoreArray = []
+                       var score
+                       for (var i = 0; i < currentWeekData.length; i++) {
+                         function analyzeWeekData (weekData, i) {
+                           if (weekData[i].nitrateLevel < 6) {
+                               if (weekData[i].salineLevel >= 23) {
+                                 score = .075
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                 score = .125
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                 score = .25
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 2) {
+                                 score = .375
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+                               }
+                             } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                               if (weekData[i].salineLevel >= 23) {
+                                 score = .125
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                 score = .25
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                 score = .75
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 2) {
+                                 score = 1
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+                               }
+                             } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                               if (weekData[i].salineLevel >= 23) {
+                                 score = .25
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                 score = .75
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                 score = 1
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 2) {
+                                 score = 1.25
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+                               }
+                             } else if (weekData[i].nitrateLevel >= 12) {
+                               if (weekData[i].salineLevel >= 23) {
+                                 score = .5
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                 score = .875
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                 score = 1.25
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+
+                               } else if (weekData[i].salineLevel < 2) {
+                                 score = 1.5
+                                 nitrateSalineScore += score
+                                 nitrateSalineScoreArray.push(score)
+                               }
+                             }
+
+                           if (weekData[i].temp <= 28.4) {
+                               score = 0.5
+                               tempScoreArray.push(score)
+                               tempScore += score
+                             } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                               score = .9
+                               tempScoreArray.push(score)
+                               tempScore += score
+                             } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                               score = 1.05
+                               tempScoreArray.push(score)
+                               tempScore += score
+                             }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                               score = 1.25
+                               tempScoreArray.push(score)
+                               tempScore += score
+                             } else if (weekData[i].temp > 35) {
+                               score = -1
+                               tempScoreArray.push(score)
+                               tempScore -= score
+                             }
+
+                         }
+
+
+                         analyzeWeekData(currentWeekData, i)
+                         if (i+1 == currentWeekData.length) {
+                           console.log(nitrateSalineScore);
+                           console.log(nitrateSalineScoreArray);
+                           console.log(tempScore);
+                           console.log(tempScoreArray);
+                           var oneWeekAgo = week - 7
+                           let sql3 = `SELECT * FROM JB WHERE id > ` + oneWeekAgo + ' && id <='+week+';'
+                           db.query(sql3, (err, result)=> {
+                             var oneWeekAgoData = []
+                             for (var i = 0; i < 7; i++) {
+                               oneWeekAgoData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                             }
+                             var OneWeekAgoNitrateSalineScore = 0
+                             var OneWeekAgoNitrateSalineScoreArray = []
+                             var OneWeekAgoTempScore = 0
+                             var OneWeekAgoTempScoreArray = []
+                             var points
+
+
+                             function analyzeWeekTwoData (weekData, i) {
+                               if (weekData[i].nitrateLevel < 6) {
+                                   if (weekData[i].salineLevel >= 23) {
+                                     points = .075
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                     points = .125
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                     points = .25
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 2) {
+                                     points = .375
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+                                   }
+                                 } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                   if (weekData[i].salineLevel >= 23) {
+                                     points = .125
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                     points = .25
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                     points = .75
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 2) {
+                                     points = 1
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+                                   }
+                                 } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                   if (weekData[i].salineLevel >= 23) {
+                                     points = .25
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                     points = .75
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                     points = 1
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 2) {
+                                     points = 1.25
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+                                   }
+                                 } else if (weekData[i].nitrateLevel >= 12) {
+                                   if (weekData[i].salineLevel >= 23) {
+                                     points = .5
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                     points = .875
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                     points = 1.25
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                   } else if (weekData[i].salineLevel < 2) {
+                                     points = 1.5
+                                     OneWeekAgoNitrateSalineScore += points
+                                     OneWeekAgoNitrateSalineScoreArray.push(points)
+                                   }
+                                 }
+                                 //CHECK HERE FOR REFINEMENTS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                               if (weekData[i].temp <= 24.4) {
+                                   points = 0.5
+                                   OneWeekAgoTempScoreArray.push(points)
+                                   OneWeekAgoTempScore += points
+                                 } else if (weekData[i].temp > 24.4 && weekData[i].temp < 28.4) {
+                                   points = .92
+                                   OneWeekAgoTempScoreArray.push(points)
+                                   OneWeekAgoTempScore += points
+                                 } else if (weekData[i].temp >= 28.4 && weekData[i].temp <= 31.4) {
+                                   points = 1.05
+                                   OneWeekAgoTempScoreArray.push(points)
+                                   OneWeekAgoTempScore += points
+                                 }else if (weekData[i].temp >=31.4 && weekData[i].temp <= 35) {
+                                   points = 1.25
+                                   OneWeekAgoTempScoreArray.push(points)
+                                   OneWeekAgoTempScore += points
+                                 } else if (weekData[i].temp > 35) {
+                                   points = -1
+                                   OneWeekAgoTempScoreArray.push(points)
+                                   OneWeekAgoTempScore -= points
+                                 }
+
+                             }
+                             for (var a = 0; a < oneWeekAgoData.length; a++) {
+                               analyzeWeekTwoData(oneWeekAgoData, a)
+                               if (a + 1 == oneWeekAgoData.length) {
+                                 // monthData.push({secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore})
+                                 // monthData.push({secondWeekTempScoreArray:OneWeekAgoTempScoreArray})
+                                 // monthData.push({secondWeekTempScore:OneWeekAgoTempScore})
+                                 var twoWeeksAgo = oneWeekAgo - 7
+                                 let sql4 = `SELECT * FROM JB WHERE id > ` + twoWeeksAgo + ' && id <= '+oneWeekAgo+';'
+                                 // console.log(sql4);
+                                 db.query(sql4, (err, result)=>{
+                                   // console.log(result);
+                                   var twoWeeksAgoData = []
+                                   for (var u = 0; u < 7; u++) {
+                                     twoWeeksAgoData.push({data:result[u].date, nitrateLevel: result[u].nitrateLevel, salineLevel: result[u].salineLevel, temp: result[u].tempLevel})
+                                   }
+
+
+
+                                   var TwoWeeksAgoNitrateSalineScore = 0
+                                   var TwoWeeksAgoNitrateSalineScoreArray = []
+                                   var TwoWeeksAgoTempScore = 0
+                                   var TwoWeeksAgoTempScoreArray = []
+                                   var pts
+                                   function analyzeWeekThreeData (weekData, i) {
+                                     if (weekData[i].nitrateLevel < 6) {
+                                         if (weekData[i].salineLevel >= 23) {
+                                           pts = .075
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                           pts = .125
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                           pts = .25
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 2) {
+                                           pts = .375
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                         }
+                                       } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                         if (weekData[i].salineLevel >= 23) {
+                                           pts = .125
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                           pts = .25
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                           pts = .75
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 2) {
+                                           pts = 1
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                         }
+                                       } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                         if (weekData[i].salineLevel >= 23) {
+                                           pts = .25
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                           pts = .75
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                           pts = 1
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 2) {
+                                           pts = 1.25
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                         }
+                                       } else if (weekData[i].nitrateLevel >= 12) {
+                                         if (weekData[i].salineLevel >= 23) {
+                                           pts = .5
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                           pts = .875
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                           pts = 1.25
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                         } else if (weekData[i].salineLevel < 2) {
+                                           pts = 1.5
+                                           TwoWeeksAgoNitrateSalineScore += pts
+                                           TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                         }
+                                       }
+
+                                     if (weekData[i].temp <= 28.4) {
+                                         pts = 0.5
+                                         TwoWeeksAgoTempScoreArray.push(pts)
+                                         TwoWeeksAgoTempScore += pts
+                                       } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                         pts = .9
+                                         TwoWeeksAgoTempScoreArray.push(pts)
+                                         TwoWeeksAgoTempScore += pts
+                                       } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                         pts = 1.05
+                                         TwoWeeksAgoTempScoreArray.push(pts)
+                                         TwoWeeksAgoTempScore += pts
+                                       }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                         pts = 1.25
+                                         TwoWeeksAgoTempScoreArray.push(pts)
+                                         TwoWeeksAgoTempScore += pts
+                                       } else if (weekData[i].temp > 35) {
+                                         pts = -1
+                                         TwoWeeksAgoTempScoreArray.push(pts)
+                                         TwoWeeksAgoTempScore -= pts
+                                       }
+
+                                   }
+                                   for (var rr = 0; rr < twoWeeksAgoData.length; rr++) {
+                                     analyzeWeekThreeData(twoWeeksAgoData, rr)
+                                     if (rr+ 1 == twoWeeksAgoData.length) {
+                                       var monthData = {
+                                         firstWeekNitrateSalineScoreArray:nitrateSalineScoreArray,
+                                         firstWeekNitrateSalineScore:nitrateSalineScore,
+                                         firstWeekTempScoreArray:tempScoreArray,
+                                         firstWeekTempScore:tempScore,
+                                         secondWeekNitrateSalineScoreArray:OneWeekAgoNitrateSalineScoreArray,
+                                         secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore,
+                                         secondWeekTempScoreArray:OneWeekAgoTempScoreArray,
+                                         secondWeekTempScore:OneWeekAgoTempScore,
+                                         thirdWeekNitrateSalineScoreArray:TwoWeeksAgoNitrateSalineScoreArray,
+                                         thirdWeekNitrateSalineScore:TwoWeeksAgoNitrateSalineScore,
+                                         thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
+                                         thirdWeekTempScore:TwoWeeksAgoTempScore
+                                       }
+                                       function slopeMaker (first, second, third) {
+                                         var addedFirstValues = second - first
+                                         var firstSlope = addedFirstValues / 2
+                                         var addedSecondValues = third - second
+                                         var secondSlope = addedSecondValues / 2
+                                         var finalAddedValues = firstSlope + secondSlope
+                                         var finalSlope = finalAddedValues / 2
+                                         return finalSlope
+                                       }
+
+                                       var nitrateSalineSlope = slopeMaker(monthData.firstWeekNitrateSalineScore, monthData.secondWeekNitrateSalineScore, monthData.thirdWeekNitrateSalineScore)
+                                       console.log("NitrateSalineSlope Is" + nitrateSalineSlope);
+
+                                       var tempSlope = slopeMaker(monthData.firstWeekTempScore, monthData.secondWeekTempScore, monthData.thirdWeekTempScore)
+                                       console.log("TempSlope Is" + tempSlope);
+                                       var aChanceOfAnAlgaeBloom
+
+                                     var chanceOfAnAlgaeBloom = determineChanceOfAlgaeBloom(monthData, nitrateSalineSlope, tempSlope, aChanceOfAnAlgaeBloom)
+
+
+                                   var alert
+                                   var StringChanceOfAnAlgaeBloom
+                                   if (chanceOfAnAlgaeBloom) {
+                                     StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                     alert = "alert-danger"
+                                   } else if (!chanceOfAnAlgaeBloom) {
+                                     StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                     alert = "alert-success"
+                                   }
+                                   var dataForNitrateForSearch = []
+                                   var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                                   var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                                   for (var i = 0; i < 21; i++) {
+                                     dataForNitrateForSearch.push({timeForSearch:allThreeWeeksData[i].data, temperatureForSearch: allThreeWeeksData[i].nitrateLevel})
+                                   }
+
+                                   var dataForSalineForSearch = []
+                                   for (var i = 0; i < 21; i++) {
+                                     dataForSalineForSearch.push({timeForSearch:allThreeWeeksData[i].data, salineForSearch: allThreeWeeksData[i].salineLevel})
+                                   }
+                                 //
+                                   req.session.londonTempDataForSearchJB = {
+                                   // city: 'Florida',
+                                   // unit: 'celsius',
+                                     dataPoints: dataForNitrateForSearch
+                                   }
+                                 //
+                                   req.session.salineForSearchLevelDataForGraphJB = {
+                                   // city: 'Florida',
+                                   // unit: 'celsius',
+                                     dataPoints: dataForSalineForSearch
+                                   }
+                                 //
+                                 //
+                                   var dataFortheTempForSearch = []
+                                   for (var i = 0; i < 21; i++) {
+                                     dataFortheTempForSearch.push({timeForSearch:allThreeWeeksData[i].data, theTempForSearch: allThreeWeeksData[i].temp})
+                                   }
+
+                                   req.session.theTempDataForGraphForSearchJB = {
+                                   // city: 'Florida',
+                                   // unit: 'celsius',
+                                     dataPoints: dataFortheTempForSearch
+                                   }
+
+                                   console.log(req.session.salineForSearchLevelDataForGraphJB);
+
+
+
+                                  // for Nitrate
+                                  req.session.resetCodeForNitrateForSearchJB = ''
+                                 app.get('/getTemperatureForSearchJB'+req.session.resetCodeForNitrateForSearchJB, function(req,res){
+                                   res.send(req.session.londonTempDataForSearchJB);
+                                 });
+                                   app.get('/addTemperatureForSearchJB', function(req,res){
+                                   var tempForSearch = parseInt(req.query.temperatureForSearch);
+                                   var timeForSearch = parseInt(req.query.timeForSearch);
+                                   if(temp && time && !isNaN(tempForSearch) && !isNaN(timeForSearch)){
+                                     var newDataPoint = {
+                                       temperature: tempForSearch,
+                                       time: timeForSearch
+                                     };
+                                     londonTempData.dataPoints.push(newDataPoint);
+                                     pusher.trigger('london-tempForSearch-chart', 'new-temperatureForSearch', {
+                                       dataPoint: newDataPoint
+                                     });
+                                     res.send({success:true});
+                                   }else{
+                                     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperatureForSearch & timeForSearch.'});
+                                   }
+                                 });
+
+                                   //forSaline
+                                   req.session.resetCodeForSalineForSearchJB = ''
+                                   app.get('/getSalineForSearchJB'+req.session.resetCodeForSalineForSearchJB, function(req,res){
+                                     res.send(req.session.salineForSearchLevelDataForGraphJB);
+                                   });
+                                   app.get('/addSalineForSearchJB', function(req,res){
+                                     var salineForSearch = parseInt(req.query.salineForSearch);
+                                     var timeForSearch = parseInt(req.query.timeForSearch);
+                                     if(salineForSearch && timeForSearch && !isNaN(salineForSearch) && !isNaN(timeForSearch)){
+                                       var newDataPoint = {
+                                         saline: salineForSearch,
+                                         time: timeForSearch
+                                       };
+                                       req.session.salineForSearchLevelDataForGraphJB.dataPoints.push(newDataPoint);
+                                       pusher.trigger('salineForSearchLevelDataForGraph-chart', 'new-salineForSearch', {
+                                         dataPoint: newDataPoint
+                                       });
+                                       res.send({success:true});
+                                     }else{
+                                       res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - salineForSearch & timeForSearch.'});
+                                     }
+                                   });
+                                 //
+                                   //the temp
+                                   req.session.resetCodeFortheTempForSearchJB = ''
+                                   app.get('/gettheTempForSearchJB'+req.session.resetCodeFortheTempForSearchJB, function(req,res){
+                                     res.send(req.session.theTempDataForGraphForSearchJB);
+                                   });
+                                   app.get('/addtheTempForSearchJB', function(req,res){
+                                     var theTempForSearch = parseInt(req.query.theTempForSearch);
+                                     var timeForSearch = parseInt(req.query.timeForSearchForSearch);
+                                     if(theTemp && time && !isNaN(theTempForSearch) && !isNaN(timeForSearch)){
+                                       var newDataPoint = {
+                                         theTemp: theTempForSearch,
+                                         time: timeForSearch
+                                       };
+                                       theTempDataForGraph.dataPoints.push(newDataPoint);
+                                       pusher.trigger('theTempForSearchDataForGraph-chart', 'new-theTempForSearch', {
+                                         dataPoint: newDataPoint
+                                       });
+                                       res.send({success:true});
+                                     }else{
+                                       res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTempForSearch & timeForSearch.'});
+                                     }
+                                   });
+                                 console.log(monthData);
+                                 res.render('index4JB', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                                   // console.log(twoWeeksAgoData);
+                                   // console.log(oneWeekAgoData);
+                                   // console.log(currentWeekData);
+
+
+
+                                     } //ends if (rr+ 1 == twoWeeksAgoData.length) {
+                                   } //ends final for loop
+
+               //Hello++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+               // HELLO======================================================================
+                                 })
+                               }
+                             }
+
+
+
+
+                           })
+                         }
+
+                       }
+
+
+
+                     })        //ends db.query(sql2, (err, result)=>{
+
+
+
+                 })
+               });
+  app.get('/resetSearchJB', function(req, res,) {
+                   req.session.resetCodeForSalineForSearchJB = "reset"
+                   req.session.resetCodeForNitrateForSearchJB = "reset"
+                   req.session.resetCodeFortheTempForSearchJB = "reset"
+
+                   app.get('/getSalineForSearchJB'+req.session.resetCodeForSalineForSearchJB, function(req,res){
+                     res.send(req.session.salineForSearchLevelDataForGraphJB);
+                   });
+                  app.get('/getTemperatureForSearchJB'+req.session.resetCodeForNitrateForSearchJB, function(req,res){
+                    res.send(req.session.londonTempDataForSearchJB);
+                  });
+                  app.get('/gettheTempForSearchJB'+req.session.resetCodeFortheTempForSearchFP, function(req,res){
+                    res.send(req.session.londonTempDataForSearchJB);
+                  });
+                   res.redirect('/')
+          })
+  app.get('/JBdata', function (req, res) {
+                        let sql = 'SELECT COUNT(*) FROM JB'
+                        db.query (sql, (err, result)=>{
+                          var day = result[0]["COUNT(*)"]
+                          var week = day - 7
+                          let sql2 = `SELECT * FROM JB WHERE id > ` + week + ';'
+                          db.query(sql2, (err, result)=>{
+                            var currentWeekData = []
+                            for (var i = 0; i < 7; i++) {
+                              currentWeekData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                            }
+                            var nitrateSalineScore = 0
+                            var nitrateSalineScoreArray = []
+                            var tempScore = 0
+                            var tempScoreArray = []
+                            var score
+
+                            for (var i = 0; i < currentWeekData.length; i++) {
+                              function analyzeWeekData (weekData, i) {
+                                if (weekData[i].nitrateLevel < 6) {
+                                    if (weekData[i].salineLevel >= 23) {
+                                      score = .125
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                      score = .25
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                      score = .375
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 2) {
+                                      score = .5
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+                                    }
+                                  } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                    if (weekData[i].salineLevel >= 23) {
+                                      score = .25
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                      score = .375
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                      score = 1
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 2) {
+                                      score = 1.5
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+                                    }
+                                  } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                    if (weekData[i].salineLevel >= 23) {
+                                      score = .5
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                      score = .75
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                      score = 1
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 2) {
+                                      score = 1.5
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+                                    }
+                                  } else if (weekData[i].nitrateLevel >= 12) {
+                                    if (weekData[i].salineLevel >= 23) {
+                                      score = .75
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                      score = 1
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                      score = 1.25
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+
+                                    } else if (weekData[i].salineLevel < 2) {
+                                      score = 2
+                                      nitrateSalineScore += score
+                                      nitrateSalineScoreArray.push(score)
+                                    }
+                                  }
+
+                                if (weekData[i].temp <= 28.4) {
+                                    score = 0.5
+                                    tempScoreArray.push(score)
+                                    tempScore += score
+                                  } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                    score = .9
+                                    tempScoreArray.push(score)
+                                    tempScore += score
+                                  } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                    score = 1.05
+                                    tempScoreArray.push(score)
+                                    tempScore += score
+                                  }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                    score = 1.25
+                                    tempScoreArray.push(score)
+                                    tempScore += score
+                                  } else if (weekData[i].temp > 35) {
+                                    score = -1
+                                    tempScoreArray.push(score)
+                                    tempScore -= score
+                                  }
+
+                              }
+
+
+                              analyzeWeekData(currentWeekData, i) //SYP{ HEE}
+                              if (i+1 == currentWeekData.length) {
+                                var oneWeekAgo = week - 7
+                                let sql3 = `SELECT * FROM JB WHERE id > ` + oneWeekAgo + ' && id <='+week+';'
+                                db.query(sql3, (err, result)=> {
+                                  var oneWeekAgoData = []
+                                  for (var i = 0; i < 7; i++) {
+                                    oneWeekAgoData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                                  }
+                                  var OneWeekAgoNitrateSalineScore = 0
+                                  var OneWeekAgoNitrateSalineScoreArray = []
+                                  var OneWeekAgoTempScore = 0
+                                  var OneWeekAgoTempScoreArray = []
+                                  var points
+                                  function analyzeWeekTwoData (weekData, i) {
+                                    if (weekData[i].nitrateLevel < 6) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          points = .075
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                          points = .125
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                          points = .25
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          points = .375
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+                                        }
+                                      } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          points = .125
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                          points = .25
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                          points = .75
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          points = 1
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+                                        }
+                                      } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          points = .25
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                          points = .75
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                          points = 1
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          points = 1.25
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+                                        }
+                                      } else if (weekData[i].nitrateLevel >= 12) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          points = .5
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                          points = .875
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                          points = 1.25
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          points = 1.5
+                                          OneWeekAgoNitrateSalineScore += points
+                                          OneWeekAgoNitrateSalineScoreArray.push(points)
+                                        }
+                                      }
+
+                                    if (weekData[i].temp <= 28.4) {
+                                        points = 0.5
+                                        OneWeekAgoTempScoreArray.push(points)
+                                        OneWeekAgoTempScore += points
+                                      } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                        points = .9
+                                        OneWeekAgoTempScoreArray.push(points)
+                                        OneWeekAgoTempScore += points
+                                      } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                        points = 1.05
+                                        OneWeekAgoTempScoreArray.push(points)
+                                        OneWeekAgoTempScore += points
+                                      }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                        points = 1.25
+                                        OneWeekAgoTempScoreArray.push(points)
+                                        OneWeekAgoTempScore += points
+                                      } else if (weekData[i].temp > 35) {
+                                        points = -1
+                                        OneWeekAgoTempScoreArray.push(points)
+                                        OneWeekAgoTempScore -= points
+                                      }
+
+                                  }
+
+                                  // console.log(oneWeekAgoData);
+                                  for (var a = 0; a < oneWeekAgoData.length; a++) {
+                                    analyzeWeekTwoData(oneWeekAgoData, a)
+                                    if (a + 1 == oneWeekAgoData.length) {
+                                      // monthData.push({secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore})
+                                      // monthData.push({secondWeekTempScoreArray:OneWeekAgoTempScoreArray})
+                                      // monthData.push({secondWeekTempScore:OneWeekAgoTempScore})
+                                      var twoWeeksAgo = oneWeekAgo - 7
+                                      let sql4 = `SELECT * FROM JB WHERE id > ` + twoWeeksAgo + ' && id <= '+oneWeekAgo+';'
+                                      // console.log(sql4);
+                                      db.query(sql4, (err, result)=>{
+                                        // console.log(result);
+                                        var twoWeeksAgoData = []
+                                        for (var u = 0; u < 7; u++) {
+                                          twoWeeksAgoData.push({data:result[u].date, nitrateLevel: result[u].nitrateLevel, salineLevel: result[u].salineLevel, temp: result[u].tempLevel})
+                                        }
+                                        var TwoWeeksAgoNitrateSalineScore = 0
+                                        var TwoWeeksAgoNitrateSalineScoreArray = []
+                                        var TwoWeeksAgoTempScore = 0
+                                        var TwoWeeksAgoTempScoreArray = []
+                                        var pts
+                                        function analyzeWeekThreeData (weekData, i) {
+                                          if (weekData[i].nitrateLevel < 6) {
+                                              if (weekData[i].salineLevel >= 23) {
+                                                pts = .075
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                pts = .125
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                pts = .25
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 2) {
+                                                pts = .375
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                              }
+                                            } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                              if (weekData[i].salineLevel >= 23) {
+                                                pts = .125
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                pts = .25
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                pts = .75
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 2) {
+                                                pts = 1
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                              }
+                                            } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                              if (weekData[i].salineLevel >= 23) {
+                                                pts = .25
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                pts = .75
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                pts = 1
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 2) {
+                                                pts = 1.25
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                              }
+                                            } else if (weekData[i].nitrateLevel >= 12) {
+                                              if (weekData[i].salineLevel >= 23) {
+                                                pts = .5
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                pts = .875
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                pts = 1.25
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                              } else if (weekData[i].salineLevel < 2) {
+                                                pts = 1.5
+                                                TwoWeeksAgoNitrateSalineScore += pts
+                                                TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                              }
+                                            }
+
+                                          if (weekData[i].temp <= 28.4) {
+                                              pts = 0.5
+                                              TwoWeeksAgoTempScoreArray.push(pts)
+                                              TwoWeeksAgoTempScore += pts
+                                            } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                              pts = .9
+                                              TwoWeeksAgoTempScoreArray.push(pts)
+                                              TwoWeeksAgoTempScore += pts
+                                            } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                              pts = 1.05
+                                              TwoWeeksAgoTempScoreArray.push(pts)
+                                              TwoWeeksAgoTempScore += pts
+                                            }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                              pts = 1.25
+                                              TwoWeeksAgoTempScoreArray.push(pts)
+                                              TwoWeeksAgoTempScore += pts
+                                            } else if (weekData[i].temp > 35) {
+                                              pts = -1
+                                              TwoWeeksAgoTempScoreArray.push(pts)
+                                              TwoWeeksAgoTempScore -= pts
+                                            }
+
+                                        }
+
+                                        for (var rr = 0; rr < twoWeeksAgoData.length; rr++) {
+                                          analyzeWeekThreeData(twoWeeksAgoData, rr)
+                                          if (rr+ 1 == twoWeeksAgoData.length) {
+                                            var monthData = {
+                                              firstWeekNitrateSalineScoreArray:nitrateSalineScoreArray,
+                                              firstWeekNitrateSalineScore:nitrateSalineScore,
+                                              firstWeekTempScoreArray:tempScoreArray,
+                                              firstWeekTempScore:tempScore,
+                                              secondWeekNitrateSalineScoreArray:OneWeekAgoNitrateSalineScoreArray,
+                                              secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore,
+                                              secondWeekTempScoreArray:OneWeekAgoTempScoreArray,
+                                              secondWeekTempScore:OneWeekAgoTempScore,
+                                              thirdWeekNitrateSalineScoreArray:TwoWeeksAgoNitrateSalineScoreArray,
+                                              thirdWeekNitrateSalineScore:TwoWeeksAgoNitrateSalineScore,
+                                              thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
+                                              thirdWeekTempScore:TwoWeeksAgoTempScore
+                                            }
+                                            function slopeMaker (first, second, third) {
+                                              var addedFirstValues = second - first
+                                              var firstSlope = addedFirstValues / 2
+                                              var addedSecondValues = third - second
+                                              var secondSlope = addedSecondValues / 2
+                                              var finalAddedValues = firstSlope + secondSlope
+                                              var finalSlope = finalAddedValues / 2
+                                              return finalSlope
+                                            }
+
+                                            var nitrateSalineSlope = slopeMaker(monthData.firstWeekNitrateSalineScore, monthData.secondWeekNitrateSalineScore, monthData.thirdWeekNitrateSalineScore)
+                                            console.log(nitrateSalineSlope);
+
+                                            var tempSlope = slopeMaker(monthData.firstWeekTempScore, monthData.secondWeekTempScore, monthData.thirdWeekTempScore)
+                                            console.log(tempSlope);
+                                            var chanceOfAnAlgaeBloom
+
+
+                                            var aChanceOfAnAlgaeBloom
+
+                                          var chanceOfAnAlgaeBloom = determineChanceOfAlgaeBloom(monthData, nitrateSalineSlope, tempSlope, aChanceOfAnAlgaeBloom)
+
+
+                                        var StringChanceOfAnAlgaeBloom
+                                        var alert
+                                        if (chanceOfAnAlgaeBloom) {
+                                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                          alert = "alert-danger"
+                                        } else if (!chanceOfAnAlgaeBloom) {
+                                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                          alert = "alert-success"
+                                        }
+                                        var dataForNitrate = []
+                                        var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                                        var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                                        for (var i = 0; i < 21; i++) {
+                                          dataForNitrate.push({time:allThreeWeeksData[i].data, temperature: allThreeWeeksData[i].nitrateLevel})
+                                        }
+
+                                        var dataForSaline = []
+                                        for (var i = 0; i < 21; i++) {
+                                          dataForSaline.push({time:allThreeWeeksData[i].data, saline: allThreeWeeksData[i].salineLevel})
+                                        }
+
+                                        var londonTempData = {
+                                        // city: 'Florida',
+                                        // unit: 'celsius',
+                                          dataPoints: dataForNitrate
+                                        }
+
+                                        var salineLevelDataForGraph = {
+                                        // city: 'Florida',
+                                        // unit: 'celsius',
+                                          dataPoints: dataForSaline
+                                        }
+
+
+                                        var dataFortheTemp = []
+                                        for (var i = 0; i < 21; i++) {
+                                          dataFortheTemp.push({time:allThreeWeeksData[i].data, theTemp: allThreeWeeksData[i].temp})
+                                        }
+
+                                        var theTempDataForGraph = {
+                                        // city: 'Florida',
+                                        // unit: 'celsius',
+                                          dataPoints: dataFortheTemp
+                                        }
+
+
+
+                                        //for Nitrate
+                                        app.get('/getTemperatureJB', function(req,res){ //styppsxd
+                                        res.send(londonTempData);
+                                      });
+                                        app.get('/addTemperatureJB', function(req,res){
+                                        var temp = parseInt(req.query.temperature);
+                                        var time = parseInt(req.query.time);
+                                        if(temp && time && !isNaN(temp) && !isNaN(time)){
+                                          var newDataPoint = {
+                                            temperature: temp,
+                                            time: time
+                                          };
+                                          londonTempData.dataPoints.push(newDataPoint);
+                                          pusher.trigger('london-temp-chart', 'new-temperature', {
+                                            dataPoint: newDataPoint
+                                          });
+                                          res.send({success:true});
+                                        }else{
+                                          res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
+                                        }
+                                      });
+
+                                        //forSaline
+                                        app.get('/getSalineJB', function(req,res){
+                                          res.send(salineLevelDataForGraph);
+                                        });
+                                        app.get('/addSalineJB', function(req,res){
+                                          var saline = parseInt(req.query.saline);
+                                          var time = parseInt(req.query.time);
+                                          if(saline && time && !isNaN(saline) && !isNaN(time)){
+                                            var newDataPoint = {
+                                              saline: saline,
+                                              time: time
+                                            };
+                                            salineLevelDataForGraph.dataPoints.push(newDataPoint);
+                                            pusher.trigger('salineLevelDataForGraph-chart', 'new-saline', {
+                                              dataPoint: newDataPoint
+                                            });
+                                            res.send({success:true});
+                                          }else{
+                                            res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - saline & time.'});
+                                          }
+                                        });
+
+                                        //forSaline
+                                        app.get('/gettheTempJB', function(req,res){
+                                          res.send(theTempDataForGraph);
+                                        });
+                                        app.get('/addtheTempJB', function(req,res){
+                                          var theTemp = parseInt(req.query.theTemp);
+                                          var time = parseInt(req.query.time);
+                                          if(theTemp && time && !isNaN(theTemp) && !isNaN(time)){
+                                            var newDataPoint = {
+                                              theTemp: theTemp,
+                                              time: time
+                                            };
+                                            theTempDataForGraph.dataPoints.push(newDataPoint);
+                                            pusher.trigger('theTempDataForGraph-chart', 'new-theTemp', {
+                                              dataPoint: newDataPoint
+                                            });
+                                            res.send({success:true});
+                                          }else{
+                                            res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTemp & time.'});
+                                          }
+                                        });
+
+                                        let sql10 = `SELECT * FROM JB WHERE id ="` + day + `";`
+                                        console.log(sql10);
+                                        db.query(sql10, (err, result)=>{
+                                          var conditions = result[0]
+                                          res.render('JBdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                                        });                      // console.log(twoWeeksAgoData);
+                                        // console.log(oneWeekAgoData);
+                                        // console.log(currentWeekData);
+
+
+
+                                          } //ends if (rr+ 1 == twoWeeksAgoData.length) {
+                                        } //ends final for loop
+                                      }) //ends a query
+                                    } // ends if (a + 1 == oneWeekAgoData.length) {
+                                  } // ends  for (var a = 0; a < oneWeekAgoData.length; a++) {
+                                }) // ends db.query(sql3, (err, result)=> {
+                              } // ends if (i+1 == currentWeekData.length) {
+                            } // ends for (var i = 0; i < currentWeekData.length; i++) {
+                          }) // ends db.query(sql2, (err, result)=>{
+                        }) // ends   db.query (sql, (err, result)=>{
+                      }); // ends app.get('/lpdata', function (req, res) {
+
+
+//SF2
+
+  app.get('/createSF2', function(req,res) {
+      let createSF2 = `CREATE TABLE SF2 (id int AUTO_INCREMENT, date VARCHAR(255), nitrateLevel FLOAT, salineLevel FLOAT, tempLevel FLOAT, PRIMARY KEY (id));`
+      db.query(createSF2, (err, result)=>{
+        console.log(result);
+      })
+      //
+      let sql5 = `CREATE TABLE SF2numberPoint (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql5, (err,result)=>{
+        console.log(result);
+      })
+      //
+      let sql6 = `CREATE TABLE SF2numberPointSaline (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql6, (err,result)=>{
+        console.log(result);
+      })
+      //
+      let sql8 = `CREATE TABLE SF2numberPointTemp (id int AUTO_INCREMENT, date VARCHAR (255), level VARCHAR (255), PRIMARY KEY (id));`
+      db.query(sql8, (err,result)=>{
+        console.log(result);
+      })
+      res.render('home')
+
+    })
+  app.get('/deleteSF2', function(req,res){
+      let SF2sql = `DROP TABLE SF2;`
+      db.query(SF2sql, (err,result)=> {
+      })
+      let SF2numberPointSQL = `DROP TABLE SF2numberPoint;`
+      db.query(SF2numberPointSQL, (err,result)=>{
+      })
+      let SF2salineSQL = `DROP TABLE SF2numberPointSaline;`
+      db.query(SF2salineSQL, (err,result)=>{
+      })
+      let SF2tempSQL = `DROP Table SF2numberPointTemp;`
+      db.query(SF2tempSQL, (err, result)=>{
+      })
+      res.render('home')
+    });
+  app.get('/SF2', function(req, res) {
+
+
+     var SF2Nitrate = XLSX.readFile('SLE-SF2-Nitrate.xlsx');
+     const sheet_name_list = SF2Nitrate.sheetNames;
+     var hello = SF2Nitrate.Sheets.Sheet1
+     var allValues = []
+     for(var sequence in hello) {
+       allValues.push(SF2Nitrate.Sheets.Sheet1[sequence].w)
+     }
+     console.log(allValues.length);
+     var numberOfEntries = 0
+     var totalForDay = 0.0
+     var allValuesJSON = JSON.stringify(allValues);
+     allValues.shift()
+
+
+     console.log("Hello");
+     req.session.okay = "hello"
+     // ***PUT ALL VALUES INTO DB************************************************************************************************
+     for (var i = 0; i < allValues.length; i++) {
+       // console.log("All Values == "+ allValues.length); IS WOrkING
+       if (i % 3 == 0) {
+         var theVariable = JSON.stringify(allValues[i])
+         let sql = `INSERT INTO SF2numberPoint (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+         db.query(sql, (err, result)=> {
+         })
+       }
+
+     }
+     var allValuesDates = []
+     for (var i = 0; i < allValues.length; i++) {
+         if (i % 3 == 0) {
+           allValuesDates.push(allValues[i])
+         }
+     }
+     console.log(allValuesDates);
+     //
+     //
+     uniqueValueDates = allValuesDates.filter( function( item, index, inputArray ) {
+            return inputArray.indexOf(item) == index;
+     });
+
+     console.log(uniqueValueDates);
+
+
+     // console.log(uniqueValueDates);
+     var array = []
+     function getTheAverageSF2(uniqueValueDates, theArray) {
+       req.session.hello = 2+3
+       for (var i = 0; i < uniqueValueDates.length ; i++) {
+         req.session.dates = uniqueValueDates;
+         let sql2 = 'SELECT AVG(level) AS averageLevel FROM SF2numberPoint WHERE date = "' + uniqueValueDates[i] +'";'
+         req.session.length = uniqueValueDates.length;
+         db.query(sql2, array, (err, result)=> {
+              array.push(result[0].averageLevel);
+              req.session.averageLevels = array
+              if (array.length == req.session.length) {
+                // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                req.session.array = array
+                array.pop(); // to remove null. Array.length -1 = final measurement
+                var dates = req.session.dates
+                dates.pop();
+                for (var z = 0; z < dates.length; z++) {
+                  var dateString = JSON.stringify(dates[z])
+                  let sql3 = `INSERT INTO SF2 (date) VALUES (`+dateString+`);`
+                  db.query (sql3, (err, result)=> {
+                  })
+                  if (z+1 == dates.length) {
+                    for (var q = 0; q < array.length; q++) {
+                      // console.log("q = "+ q);
+                      var theLevel = array[q];
+                      var idMatch = q+1;
+                      // console.log(idMatch);
+                      let sql4 = `UPDATE SF2 SET nitrateLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                      db.query (sql4, (err,result)=> {
+                        console.log(sql4);
+                      })
+                    }
+
+                  }
+                }
+
+              }
+         });
+       }
+     }
+     getTheAverageSF2(uniqueValueDates, array)
+     res.render('nitrateAnalyzedSF2')
+     })
+  app.get('/salineSF2', function(req, res) {
+             var SF2Saline = XLSX.readFile('SLE-SF2-Saline.xlsx');
+             const sheet_name_list = SF2Saline.sheetNames;
+
+
+             var hello = SF2Saline.Sheets.Sheet1
+             var allValues = []
+             for(var sequence in hello) {
+               allValues.push(SF2Saline.Sheets.Sheet1[sequence].w)
+
+             }
+             var numberOfEntries = 0
+             var totalForDay = 0.0
+             var allValuesJSON = JSON.stringify(allValues);
+             allValues.shift()
+
+
+             console.log("Hello");
+             req.session.okay = "hello"
+             // ***PUT ALL VALUES INTO DB************************************************************************************************
+             for (var i = 0; i < allValues.length; i++) {
+               if (i % 3 == 0) {
+                 var theVariable = JSON.stringify(allValues[i])
+                 let sql = `INSERT INTO SF2numberPointSaline (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+                 db.query(sql, (err, result)=> {
+                 })
+               }
+
+             }
+             var allValuesDates = []
+             for (var i = 0; i < allValues.length; i++) {
+                 if (i % 3 == 0) {
+                   allValuesDates.push(allValues[i])
+                 }
+             }
+             function onlyUnique(value, index, self) {
+               return self.indexOf(value) === index;
+             }
+             var uniqueValueDates = allValuesDates.filter( onlyUnique );
+             var array = []
+             function getTheAverageSF2(uniqueValueDates, theArray) {
+               req.session.hello = 2+3
+               for (var i = 0; i < uniqueValueDates.length ; i++) {
+                 req.session.dates = uniqueValueDates;
+                 let sql2 = 'SELECT AVG(level) AS averageLevel FROM SF2numberPointSaline WHERE date = "' + uniqueValueDates[i] +'";'
+                 req.session.length = uniqueValueDates.length;
+                 db.query(sql2, array, (err, result)=> {
+                      array.push(result[0].averageLevel);
+                      req.session.averageLevels = array
+                      if (array.length == req.session.length) {
+                        // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                        req.session.array = array
+                        array.pop(); // to remove null. Array.length -1 = final measurement
+                        var dates = req.session.dates
+                        dates.pop();
+                        for (var z = 0; z < dates.length; z++) {
+                          var dateString = JSON.stringify(dates[z])
+                          // let sql3 = `INSERT INTO LP (date) VALUES (`+dateString+`);`
+                          // db.query (sql3, (err, result)=> {
+                          // })
+                          if (z+1 == dates.length) {
+                            for (var q = 0; q < array.length; q++) {
+                              var theLevel = array[q];
+                              var idMatch = q+1;
+                              console.log(idMatch);
+                              let sql4 = `UPDATE SF2 SET salineLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                              db.query (sql4, (err,result)=> {
+                                console.log(sql4);
+                              })
+                            }
+
+                          }
+                        }
+
+                      }
+                 });
+               }
+             }
+             getTheAverageSF2(uniqueValueDates, array)
+             res.render('salineAnalyzedSF2')
+             })
+  app.get('/SF2Search', function(req, res) {
+                                 var SF2Temp = XLSX.readFile('SLE-SF2-Temp.xlsx');
+                                 const sheet_name_list = SF2Temp.sheetNames;
+
+
+                                 var hello = SF2Temp.Sheets.Sheet1
+                                 var allValues = []
+                                 for(var sequence in hello) {
+                                   allValues.push(SF2Temp.Sheets.Sheet1[sequence].w)
+
+                                 }
+                                 var numberOfEntries = 0
+                                 var totalForDay = 0.0
+                                 var allValuesJSON = JSON.stringify(allValues);
+                                 allValues.shift()
+
+
+                                 console.log("Hello");
+                                 req.session.okay = "hello"
+                                 // ***PUT ALL VALUES INTO DB************************************************************************************************
+                                 for (var i = 0; i < allValues.length; i++) {
+                                   if (i % 3 == 0) {
+                                     var theVariable = JSON.stringify(allValues[i])
+                                     let sql = `INSERT INTO SF2numberPointTemp (date, level) VALUES (`+ theVariable + `, `+ allValues[i+2]+`);`
+                                     db.query(sql, (err, result)=> {
+                                     })
+                                   }
+
+                                 }
+                                 var allValuesDates = []
+                                 for (var i = 0; i < allValues.length; i++) {
+                                     if (i % 3 == 0) {
+                                       allValuesDates.push(allValues[i])
+                                     }
+                                 }
+                                 function onlyUnique(value, index, self) {
+                                   return self.indexOf(value) === index;
+                                 }
+                                 var uniqueValueDates = allValuesDates.filter( onlyUnique );
+                                 var array = []
+                                 function getTheAverageSF2(uniqueValueDates, theArray) {
+                                   req.session.hello = 2+3
+                                   for (var i = 0; i < uniqueValueDates.length ; i++) {
+                                     req.session.dates = uniqueValueDates;
+                                     let sql2 = 'SELECT AVG(level) AS averageLevel FROM SF2numberPointTemp WHERE date = "' + uniqueValueDates[i] +'";'
+                                     req.session.length = uniqueValueDates.length;
+                                     db.query(sql2, array, (err, result)=> {
+                                          array.push(result[0].averageLevel);
+                                          req.session.averageLevels = array
+                                          if (array.length == req.session.length) {
+                                            // array.length is one more than ID of final number. Last number is null. array.length - 2 = final measurement
+                                            req.session.array = array
+                                            array.pop(); // to remove null. Array.length -1 = final measurement
+                                            var dates = req.session.dates
+                                            dates.pop();
+                                            for (var z = 0; z < dates.length; z++) {
+                                              var dateString = JSON.stringify(dates[z])
+                                              // let sql3 = `INSERT INTO LP (date) VALUES (`+dateString+`);`
+                                              // db.query (sql3, (err, result)=> {
+                                              // })
+                                              if (z+1 == dates.length) {
+                                                for (var q = 0; q < array.length; q++) {
+                                                  var theLevel = array[q];
+                                                  var idMatch = q+1;
+                                                  console.log(idMatch);
+                                                  let sql4 = `UPDATE SF2 SET tempLevel = `+theLevel+` WHERE id = `+idMatch+`;`;
+                                                  db.query (sql4, (err,result)=> {
+                                                    console.log(sql4);
+                                                  })
+                                                }
+
+                                              }
+                                            }
+
+                                          }
+                                     });
+                                   }
+                                 }
+                                 getTheAverageSF2(uniqueValueDates, array)
+                                 res.render('tempAnalyzedSF2')
+                                 })
+  app.get('/searchForSiteSF2', function(req, res){
+                 res.render('searchForSiteSF2')
+               })
+  app.post('/dateSF2', function(req, res){
+                let date = req.body.date;
+                console.log(date);
+                let sql10 = `SELECT * FROM SF2 WHERE date ="` + date + `";`
+                db.query (sql10, (err, result)=>{
+                  console.log(result);
+                  var specificDayNitrate = result[0].nitrateLevel;
+                  var specificDayDate = result[0].date;
+                  var specificDaySaline = result[0].salineLevel;
+                  var specificDayTemp = result[0].tempLevel;
+
+                  // db.query (sql, (err, result)=>{
+                  var day = result[0].id
+                  console.log(day);
+                  var week = day - 7
+                  let sql2 = `SELECT * FROM SF2 WHERE id > ` + week + ' && id <= '+day+';'
+                    db.query(sql2, (err, result)=>{
+                      var currentWeekData = []
+
+                      for (var i = 0; i < 7; i++) {
+                        currentWeekData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                      }
+                      var nitrateSalineScore = 0
+                      var nitrateSalineScoreArray = []
+                      var tempScore = 0
+                      var tempScoreArray = []
+                      var score
+                      for (var i = 0; i < currentWeekData.length; i++) {
+                        function analyzeWeekData (weekData, i) {
+                          if (weekData[i].nitrateLevel < 6) {
+                              if (weekData[i].salineLevel >= 23) {
+                                score = .075
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                score = .125
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                score = .25
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 2) {
+                                score = .375
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+                              }
+                            } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                              if (weekData[i].salineLevel >= 23) {
+                                score = .125
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                score = .25
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                score = .75
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 2) {
+                                score = 1
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+                              }
+                            } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                              if (weekData[i].salineLevel >= 23) {
+                                score = .25
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                score = .75
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                score = 1
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 2) {
+                                score = 1.25
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+                              }
+                            } else if (weekData[i].nitrateLevel >= 12) {
+                              if (weekData[i].salineLevel >= 23) {
+                                score = .5
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                score = .875
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                score = 1.25
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+
+                              } else if (weekData[i].salineLevel < 2) {
+                                score = 1.5
+                                nitrateSalineScore += score
+                                nitrateSalineScoreArray.push(score)
+                              }
+                            }
+
+                          if (weekData[i].temp <= 28.4) {
+                              score = 0.5
+                              tempScoreArray.push(score)
+                              tempScore += score
+                            } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                              score = .9
+                              tempScoreArray.push(score)
+                              tempScore += score
+                            } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                              score = 1.05
+                              tempScoreArray.push(score)
+                              tempScore += score
+                            }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                              score = 1.25
+                              tempScoreArray.push(score)
+                              tempScore += score
+                            } else if (weekData[i].temp > 35) {
+                              score = -1
+                              tempScoreArray.push(score)
+                              tempScore -= score
+                            }
+
+                        }
+
+
+                        analyzeWeekData(currentWeekData, i)
+                        if (i+1 == currentWeekData.length) {
+                          console.log(nitrateSalineScore);
+                          console.log(nitrateSalineScoreArray);
+                          console.log(tempScore);
+                          console.log(tempScoreArray);
+                          var oneWeekAgo = week - 7
+                          let sql3 = `SELECT * FROM SF2 WHERE id > ` + oneWeekAgo + ' && id <='+week+';'
+                          db.query(sql3, (err, result)=> {
+                            var oneWeekAgoData = []
+                            for (var i = 0; i < 7; i++) {
+                              oneWeekAgoData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                            }
+                            var OneWeekAgoNitrateSalineScore = 0
+                            var OneWeekAgoNitrateSalineScoreArray = []
+                            var OneWeekAgoTempScore = 0
+                            var OneWeekAgoTempScoreArray = []
+                            var points
+
+
+                            function analyzeWeekTwoData (weekData, i) {
+                              if (weekData[i].nitrateLevel < 6) {
+                                  if (weekData[i].salineLevel >= 23) {
+                                    points = .075
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                    points = .125
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                    points = .25
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 2) {
+                                    points = .375
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+                                  }
+                                } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                  if (weekData[i].salineLevel >= 23) {
+                                    points = .125
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                    points = .25
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                    points = .75
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 2) {
+                                    points = 1
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+                                  }
+                                } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                  if (weekData[i].salineLevel >= 23) {
+                                    points = .25
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                    points = .75
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                    points = 1
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 2) {
+                                    points = 1.25
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+                                  }
+                                } else if (weekData[i].nitrateLevel >= 12) {
+                                  if (weekData[i].salineLevel >= 23) {
+                                    points = .5
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                    points = .875
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                    points = 1.25
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                  } else if (weekData[i].salineLevel < 2) {
+                                    points = 1.5
+                                    OneWeekAgoNitrateSalineScore += points
+                                    OneWeekAgoNitrateSalineScoreArray.push(points)
+                                  }
+                                }
+                                //CHECK HERE FOR REFINEMENTS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                              if (weekData[i].temp <= 24.4) {
+                                  points = 0.5
+                                  OneWeekAgoTempScoreArray.push(points)
+                                  OneWeekAgoTempScore += points
+                                } else if (weekData[i].temp > 24.4 && weekData[i].temp < 28.4) {
+                                  points = .92
+                                  OneWeekAgoTempScoreArray.push(points)
+                                  OneWeekAgoTempScore += points
+                                } else if (weekData[i].temp >= 28.4 && weekData[i].temp <= 31.4) {
+                                  points = 1.05
+                                  OneWeekAgoTempScoreArray.push(points)
+                                  OneWeekAgoTempScore += points
+                                }else if (weekData[i].temp >=31.4 && weekData[i].temp <= 35) {
+                                  points = 1.25
+                                  OneWeekAgoTempScoreArray.push(points)
+                                  OneWeekAgoTempScore += points
+                                } else if (weekData[i].temp > 35) {
+                                  points = -1
+                                  OneWeekAgoTempScoreArray.push(points)
+                                  OneWeekAgoTempScore -= points
+                                }
+
+                            }
+                            for (var a = 0; a < oneWeekAgoData.length; a++) {
+                              analyzeWeekTwoData(oneWeekAgoData, a)
+                              if (a + 1 == oneWeekAgoData.length) {
+                                // monthData.push({secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore})
+                                // monthData.push({secondWeekTempScoreArray:OneWeekAgoTempScoreArray})
+                                // monthData.push({secondWeekTempScore:OneWeekAgoTempScore})
+                                var twoWeeksAgo = oneWeekAgo - 7
+                                let sql4 = `SELECT * FROM SF2 WHERE id > ` + twoWeeksAgo + ' && id <= '+oneWeekAgo+';'
+                                // console.log(sql4);
+                                db.query(sql4, (err, result)=>{
+                                  // console.log(result);
+                                  var twoWeeksAgoData = []
+                                  for (var u = 0; u < 7; u++) {
+                                    twoWeeksAgoData.push({data:result[u].date, nitrateLevel: result[u].nitrateLevel, salineLevel: result[u].salineLevel, temp: result[u].tempLevel})
+                                  }
+
+
+
+                                  var TwoWeeksAgoNitrateSalineScore = 0
+                                  var TwoWeeksAgoNitrateSalineScoreArray = []
+                                  var TwoWeeksAgoTempScore = 0
+                                  var TwoWeeksAgoTempScoreArray = []
+                                  var pts
+                                  function analyzeWeekThreeData (weekData, i) {
+                                    if (weekData[i].nitrateLevel < 6) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          pts = .075
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                          pts = .125
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                          pts = .25
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          pts = .375
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                        }
+                                      } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          pts = .125
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                          pts = .25
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                          pts = .75
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          pts = 1
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                        }
+                                      } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          pts = .25
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                          pts = .75
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                          pts = 1
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          pts = 1.25
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                        }
+                                      } else if (weekData[i].nitrateLevel >= 12) {
+                                        if (weekData[i].salineLevel >= 23) {
+                                          pts = .5
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                          pts = .875
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                          pts = 1.25
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                        } else if (weekData[i].salineLevel < 2) {
+                                          pts = 1.5
+                                          TwoWeeksAgoNitrateSalineScore += pts
+                                          TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                        }
+                                      }
+
+                                    if (weekData[i].temp <= 28.4) {
+                                        pts = 0.5
+                                        TwoWeeksAgoTempScoreArray.push(pts)
+                                        TwoWeeksAgoTempScore += pts
+                                      } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                        pts = .9
+                                        TwoWeeksAgoTempScoreArray.push(pts)
+                                        TwoWeeksAgoTempScore += pts
+                                      } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                        pts = 1.05
+                                        TwoWeeksAgoTempScoreArray.push(pts)
+                                        TwoWeeksAgoTempScore += pts
+                                      }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                        pts = 1.25
+                                        TwoWeeksAgoTempScoreArray.push(pts)
+                                        TwoWeeksAgoTempScore += pts
+                                      } else if (weekData[i].temp > 35) {
+                                        pts = -1
+                                        TwoWeeksAgoTempScoreArray.push(pts)
+                                        TwoWeeksAgoTempScore -= pts
+                                      }
+
+                                  }
+                                  for (var rr = 0; rr < twoWeeksAgoData.length; rr++) {
+                                    analyzeWeekThreeData(twoWeeksAgoData, rr)
+                                    if (rr+ 1 == twoWeeksAgoData.length) {
+                                      var monthData = {
+                                        firstWeekNitrateSalineScoreArray:nitrateSalineScoreArray,
+                                        firstWeekNitrateSalineScore:nitrateSalineScore,
+                                        firstWeekTempScoreArray:tempScoreArray,
+                                        firstWeekTempScore:tempScore,
+                                        secondWeekNitrateSalineScoreArray:OneWeekAgoNitrateSalineScoreArray,
+                                        secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore,
+                                        secondWeekTempScoreArray:OneWeekAgoTempScoreArray,
+                                        secondWeekTempScore:OneWeekAgoTempScore,
+                                        thirdWeekNitrateSalineScoreArray:TwoWeeksAgoNitrateSalineScoreArray,
+                                        thirdWeekNitrateSalineScore:TwoWeeksAgoNitrateSalineScore,
+                                        thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
+                                        thirdWeekTempScore:TwoWeeksAgoTempScore
+                                      }
+                                      function slopeMaker (first, second, third) {
+                                        var addedFirstValues = second - first
+                                        var firstSlope = addedFirstValues / 2
+                                        var addedSecondValues = third - second
+                                        var secondSlope = addedSecondValues / 2
+                                        var finalAddedValues = firstSlope + secondSlope
+                                        var finalSlope = finalAddedValues / 2
+                                        return finalSlope
+                                      }
+
+                                      var nitrateSalineSlope = slopeMaker(monthData.firstWeekNitrateSalineScore, monthData.secondWeekNitrateSalineScore, monthData.thirdWeekNitrateSalineScore)
+                                      console.log("NitrateSalineSlope Is" + nitrateSalineSlope);
+
+                                      var tempSlope = slopeMaker(monthData.firstWeekTempScore, monthData.secondWeekTempScore, monthData.thirdWeekTempScore)
+                                      console.log("TempSlope Is" + tempSlope);
+                                      var aChanceOfAnAlgaeBloom
+
+                                    var chanceOfAnAlgaeBloom = determineChanceOfAlgaeBloom(monthData, nitrateSalineSlope, tempSlope, aChanceOfAnAlgaeBloom)
+
+
+                                  var alert
+                                  var StringChanceOfAnAlgaeBloom
+                                  if (chanceOfAnAlgaeBloom) {
+                                    StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                    alert = "alert-danger"
+                                  } else if (!chanceOfAnAlgaeBloom) {
+                                    StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                    alert = "alert-success"
+                                  }
+                                  var dataForNitrateForSearch = []
+                                  var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                                  var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                                  for (var i = 0; i < 21; i++) {
+                                    dataForNitrateForSearch.push({timeForSearch:allThreeWeeksData[i].data, temperatureForSearch: allThreeWeeksData[i].nitrateLevel})
+                                  }
+
+                                  var dataForSalineForSearch = []
+                                  for (var i = 0; i < 21; i++) {
+                                    dataForSalineForSearch.push({timeForSearch:allThreeWeeksData[i].data, salineForSearch: allThreeWeeksData[i].salineLevel})
+                                  }
+                                //
+                                  req.session.londonTempDataForSearchSF2 = {
+                                  // city: 'Florida',
+                                  // unit: 'celsius',
+                                    dataPoints: dataForNitrateForSearch
+                                  }
+                                //
+                                  req.session.salineForSearchLevelDataForGraphSF2 = {
+                                  // city: 'Florida',
+                                  // unit: 'celsius',
+                                    dataPoints: dataForSalineForSearch
+                                  }
+                                //
+                                //
+                                  var dataFortheTempForSearch = []
+                                  for (var i = 0; i < 21; i++) {
+                                    dataFortheTempForSearch.push({timeForSearch:allThreeWeeksData[i].data, theTempForSearch: allThreeWeeksData[i].temp})
+                                  }
+
+                                  req.session.theTempDataForGraphForSearchSF2 = {
+                                  // city: 'Florida',
+                                  // unit: 'celsius',
+                                    dataPoints: dataFortheTempForSearch
+                                  }
+
+                                  console.log(req.session.salineForSearchLevelDataForGraphSF2);
+
+
+
+                                 // for Nitrate
+                                 req.session.resetCodeForNitrateForSearchSF2 = ''
+                                app.get('/getTemperatureForSearchSF2'+req.session.resetCodeForNitrateForSearchSF2, function(req,res){
+                                  res.send(req.session.londonTempDataForSearchSF2);
+                                });
+                                  app.get('/addTemperatureForSearchSF2', function(req,res){
+                                  var tempForSearch = parseInt(req.query.temperatureForSearch);
+                                  var timeForSearch = parseInt(req.query.timeForSearch);
+                                  if(temp && time && !isNaN(tempForSearch) && !isNaN(timeForSearch)){
+                                    var newDataPoint = {
+                                      temperature: tempForSearch,
+                                      time: timeForSearch
+                                    };
+                                    londonTempData.dataPoints.push(newDataPoint);
+                                    pusher.trigger('london-tempForSearch-chart', 'new-temperatureForSearch', {
+                                      dataPoint: newDataPoint
+                                    });
+                                    res.send({success:true});
+                                  }else{
+                                    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperatureForSearch & timeForSearch.'});
+                                  }
+                                });
+
+                                  //forSaline
+                                  req.session.resetCodeForSalineForSearchSF2 = ''
+                                  app.get('/getSalineForSearchSF2'+req.session.resetCodeForSalineForSearchSF2, function(req,res){
+                                    res.send(req.session.salineForSearchLevelDataForGraphSF2);
+                                  });
+                                  app.get('/addSalineForSearchSF2', function(req,res){
+                                    var salineForSearch = parseInt(req.query.salineForSearch);
+                                    var timeForSearch = parseInt(req.query.timeForSearch);
+                                    if(salineForSearch && timeForSearch && !isNaN(salineForSearch) && !isNaN(timeForSearch)){
+                                      var newDataPoint = {
+                                        saline: salineForSearch,
+                                        time: timeForSearch
+                                      };
+                                      req.session.salineForSearchLevelDataForGraphSF2.dataPoints.push(newDataPoint);
+                                      pusher.trigger('salineForSearchLevelDataForGraph-chart', 'new-salineForSearch', {
+                                        dataPoint: newDataPoint
+                                      });
+                                      res.send({success:true});
+                                    }else{
+                                      res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - salineForSearch & timeForSearch.'});
+                                    }
+                                  });
+                                //
+                                  //the temp
+                                  req.session.resetCodeFortheTempForSearchSF2 = ''
+                                  app.get('/gettheTempForSearchSF2'+req.session.resetCodeFortheTempForSearchSF2, function(req,res){
+                                    res.send(req.session.theTempDataForGraphForSearchSF2);
+                                  });
+                                  app.get('/addtheTempForSearchSF2', function(req,res){
+                                    var theTempForSearch = parseInt(req.query.theTempForSearch);
+                                    var timeForSearch = parseInt(req.query.timeForSearchForSearch);
+                                    if(theTemp && time && !isNaN(theTempForSearch) && !isNaN(timeForSearch)){
+                                      var newDataPoint = {
+                                        theTemp: theTempForSearch,
+                                        time: timeForSearch
+                                      };
+                                      theTempDataForGraph.dataPoints.push(newDataPoint);
+                                      pusher.trigger('theTempForSearchDataForGraph-chart', 'new-theTempForSearch', {
+                                        dataPoint: newDataPoint
+                                      });
+                                      res.send({success:true});
+                                    }else{
+                                      res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTempForSearch & timeForSearch.'});
+                                    }
+                                  });
+                                console.log(monthData);
+                                res.render('index4SF2', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                                  // console.log(twoWeeksAgoData);
+                                  // console.log(oneWeekAgoData);
+                                  // console.log(currentWeekData);
+
+
+
+                                    } //ends if (rr+ 1 == twoWeeksAgoData.length) {
+                                  } //ends final for loop
+
+              //Hello++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+              // HELLO======================================================================
+                                })
+                              }
+                            }
+
+
+
+
+                          })
+                        }
+
+                      }
+
+
+
+                    })        //ends db.query(sql2, (err, result)=>{
+
+
+
+                })
+              });
+  app.get('/resetSearchSF2', function(req, res,) {
+                  req.session.resetCodeForSalineForSearchSF2 = "reset"
+                  req.session.resetCodeForNitrateForSearchSF2 = "reset"
+                  req.session.resetCodeFortheTempForSearchSF2 = "reset"
+
+                  app.get('/getSalineForSearchSF2'+req.session.resetCodeForSalineForSearchSF2, function(req,res){
+                    res.send(req.session.salineForSearchLevelDataForGraphSF2);
+                  });
+                 app.get('/getTemperatureForSearchSF2'+req.session.resetCodeForNitrateForSearchSF2, function(req,res){
+                   res.send(req.session.londonTempDataForSearchSF2);
+                 });
+                 app.get('/gettheTempForSearchSF2'+req.session.resetCodeFortheTempForSearchFP, function(req,res){
+                   res.send(req.session.londonTempDataForSearchSF2);
+                 });
+                  res.redirect('/')
+         })
+  app.get('/SF2data', function (req, res) {
+                               let sql = 'SELECT COUNT(*) FROM SF2'
+                               db.query (sql, (err, result)=>{
+                                 var day = result[0]["COUNT(*)"]
+                                 var week = day - 7
+                                 let sql2 = `SELECT * FROM SF2 WHERE id > ` + week + ';'
+                                 db.query(sql2, (err, result)=>{
+                                   var currentWeekData = []
+                                   for (var i = 0; i < 7; i++) {
+                                     currentWeekData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                                   }
+                                   var nitrateSalineScore = 0
+                                   var nitrateSalineScoreArray = []
+                                   var tempScore = 0
+                                   var tempScoreArray = []
+                                   var score
+
+                                   for (var i = 0; i < currentWeekData.length; i++) {
+                                     function analyzeWeekData (weekData, i) {
+                                       if (weekData[i].nitrateLevel < 6) {
+                                           if (weekData[i].salineLevel >= 23) {
+                                             score = .125
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                             score = .25
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                             score = .375
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 2) {
+                                             score = .5
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+                                           }
+                                         } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                           if (weekData[i].salineLevel >= 23) {
+                                             score = .25
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                             score = .375
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                             score = 1
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 2) {
+                                             score = 1.5
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+                                           }
+                                         } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                           if (weekData[i].salineLevel >= 23) {
+                                             score = .5
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                             score = .75
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                             score = 1
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 2) {
+                                             score = 1.5
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+                                           }
+                                         } else if (weekData[i].nitrateLevel >= 12) {
+                                           if (weekData[i].salineLevel >= 23) {
+                                             score = .75
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                             score = 1
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                             score = 1.25
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+
+                                           } else if (weekData[i].salineLevel < 2) {
+                                             score = 2
+                                             nitrateSalineScore += score
+                                             nitrateSalineScoreArray.push(score)
+                                           }
+                                         }
+
+                                       if (weekData[i].temp <= 28.4) {
+                                           score = 0.5
+                                           tempScoreArray.push(score)
+                                           tempScore += score
+                                         } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                           score = .9
+                                           tempScoreArray.push(score)
+                                           tempScore += score
+                                         } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                           score = 1.05
+                                           tempScoreArray.push(score)
+                                           tempScore += score
+                                         }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                           score = 1.25
+                                           tempScoreArray.push(score)
+                                           tempScore += score
+                                         } else if (weekData[i].temp > 35) {
+                                           score = -1
+                                           tempScoreArray.push(score)
+                                           tempScore -= score
+                                         }
+
+                                     }
+
+
+                                     analyzeWeekData(currentWeekData, i) //SYP{ HEE}
+                                     if (i+1 == currentWeekData.length) {
+                                       var oneWeekAgo = week - 7
+                                       let sql3 = `SELECT * FROM SF2 WHERE id > ` + oneWeekAgo + ' && id <='+week+';'
+                                       db.query(sql3, (err, result)=> {
+                                         var oneWeekAgoData = []
+                                         for (var i = 0; i < 7; i++) {
+                                           oneWeekAgoData.push({data:result[i].date, nitrateLevel: result[i].nitrateLevel, salineLevel: result[i].salineLevel, temp: result[i].tempLevel})
+                                         }
+                                         var OneWeekAgoNitrateSalineScore = 0
+                                         var OneWeekAgoNitrateSalineScoreArray = []
+                                         var OneWeekAgoTempScore = 0
+                                         var OneWeekAgoTempScoreArray = []
+                                         var points
+                                         function analyzeWeekTwoData (weekData, i) {
+                                           if (weekData[i].nitrateLevel < 6) {
+                                               if (weekData[i].salineLevel >= 23) {
+                                                 points = .075
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                 points = .125
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                 points = .25
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 2) {
+                                                 points = .375
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+                                               }
+                                             } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                               if (weekData[i].salineLevel >= 23) {
+                                                 points = .125
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                 points = .25
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                 points = .75
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 2) {
+                                                 points = 1
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+                                               }
+                                             } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                               if (weekData[i].salineLevel >= 23) {
+                                                 points = .25
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                 points = .75
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                 points = 1
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 2) {
+                                                 points = 1.25
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+                                               }
+                                             } else if (weekData[i].nitrateLevel >= 12) {
+                                               if (weekData[i].salineLevel >= 23) {
+                                                 points = .5
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                 points = .875
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                 points = 1.25
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+
+                                               } else if (weekData[i].salineLevel < 2) {
+                                                 points = 1.5
+                                                 OneWeekAgoNitrateSalineScore += points
+                                                 OneWeekAgoNitrateSalineScoreArray.push(points)
+                                               }
+                                             }
+
+                                           if (weekData[i].temp <= 28.4) {
+                                               points = 0.5
+                                               OneWeekAgoTempScoreArray.push(points)
+                                               OneWeekAgoTempScore += points
+                                             } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                               points = .9
+                                               OneWeekAgoTempScoreArray.push(points)
+                                               OneWeekAgoTempScore += points
+                                             } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                               points = 1.05
+                                               OneWeekAgoTempScoreArray.push(points)
+                                               OneWeekAgoTempScore += points
+                                             }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                               points = 1.25
+                                               OneWeekAgoTempScoreArray.push(points)
+                                               OneWeekAgoTempScore += points
+                                             } else if (weekData[i].temp > 35) {
+                                               points = -1
+                                               OneWeekAgoTempScoreArray.push(points)
+                                               OneWeekAgoTempScore -= points
+                                             }
+
+                                         }
+
+                                         // console.log(oneWeekAgoData);
+                                         for (var a = 0; a < oneWeekAgoData.length; a++) {
+                                           analyzeWeekTwoData(oneWeekAgoData, a)
+                                           if (a + 1 == oneWeekAgoData.length) {
+                                             // monthData.push({secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore})
+                                             // monthData.push({secondWeekTempScoreArray:OneWeekAgoTempScoreArray})
+                                             // monthData.push({secondWeekTempScore:OneWeekAgoTempScore})
+                                             var twoWeeksAgo = oneWeekAgo - 7
+                                             let sql4 = `SELECT * FROM SF2 WHERE id > ` + twoWeeksAgo + ' && id <= '+oneWeekAgo+';'
+                                             // console.log(sql4);
+                                             db.query(sql4, (err, result)=>{
+                                               // console.log(result);
+                                               var twoWeeksAgoData = []
+                                               for (var u = 0; u < 7; u++) {
+                                                 twoWeeksAgoData.push({data:result[u].date, nitrateLevel: result[u].nitrateLevel, salineLevel: result[u].salineLevel, temp: result[u].tempLevel})
+                                               }
+                                               var TwoWeeksAgoNitrateSalineScore = 0
+                                               var TwoWeeksAgoNitrateSalineScoreArray = []
+                                               var TwoWeeksAgoTempScore = 0
+                                               var TwoWeeksAgoTempScoreArray = []
+                                               var pts
+                                               function analyzeWeekThreeData (weekData, i) {
+                                                 if (weekData[i].nitrateLevel < 6) {
+                                                     if (weekData[i].salineLevel >= 23) {
+                                                       pts = .075
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                       pts = .125
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                       pts = .25
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 2) {
+                                                       pts = .375
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                                     }
+                                                   } else if (weekData[i].nitrateLevel <= 9 && weekData[i].nitrateLevel >= 6) {
+                                                     if (weekData[i].salineLevel >= 23) {
+                                                       pts = .125
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel > 15) {
+                                                       pts = .25
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel <= 15 && weekData[i].salineLevel >= 2) {
+                                                       pts = .75
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 2) {
+                                                       pts = 1
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                                     }
+                                                   } else if (weekData[i].nitrateLevel < 12 && weekData[i].nitrateLevel > 9) {
+                                                     if (weekData[i].salineLevel >= 23) {
+                                                       pts = .25
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                       pts = .75
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                       pts = 1
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 2) {
+                                                       pts = 1.25
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                                     }
+                                                   } else if (weekData[i].nitrateLevel >= 12) {
+                                                     if (weekData[i].salineLevel >= 23) {
+                                                       pts = .5
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 23 && weekData[i].salineLevel >= 15) {
+                                                       pts = .875
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 15 && weekData[i].salineLevel >= 2) {
+                                                       pts = 1.25
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+
+                                                     } else if (weekData[i].salineLevel < 2) {
+                                                       pts = 1.5
+                                                       TwoWeeksAgoNitrateSalineScore += pts
+                                                       TwoWeeksAgoNitrateSalineScoreArray.push(pts)
+                                                     }
+                                                   }
+
+                                                 if (weekData[i].temp <= 28.4) {
+                                                     pts = 0.5
+                                                     TwoWeeksAgoTempScoreArray.push(pts)
+                                                     TwoWeeksAgoTempScore += pts
+                                                   } else if (weekData[i].temp > 28.4 && weekData[i].temp < 31.4) {
+                                                     pts = .9
+                                                     TwoWeeksAgoTempScoreArray.push(pts)
+                                                     TwoWeeksAgoTempScore += pts
+                                                   } else if (weekData[i].temp >= 31.4 && weekData[i].temp <= 33.4) {
+                                                     pts = 1.05
+                                                     TwoWeeksAgoTempScoreArray.push(pts)
+                                                     TwoWeeksAgoTempScore += pts
+                                                   }else if (weekData[i].temp >=33.4 && weekData[i].temp <= 35) {
+                                                     pts = 1.25
+                                                     TwoWeeksAgoTempScoreArray.push(pts)
+                                                     TwoWeeksAgoTempScore += pts
+                                                   } else if (weekData[i].temp > 35) {
+                                                     pts = -1
+                                                     TwoWeeksAgoTempScoreArray.push(pts)
+                                                     TwoWeeksAgoTempScore -= pts
+                                                   }
+
+                                               }
+
+                                               for (var rr = 0; rr < twoWeeksAgoData.length; rr++) {
+                                                 analyzeWeekThreeData(twoWeeksAgoData, rr)
+                                                 if (rr+ 1 == twoWeeksAgoData.length) {
+                                                   var monthData = {
+                                                     firstWeekNitrateSalineScoreArray:nitrateSalineScoreArray,
+                                                     firstWeekNitrateSalineScore:nitrateSalineScore,
+                                                     firstWeekTempScoreArray:tempScoreArray,
+                                                     firstWeekTempScore:tempScore,
+                                                     secondWeekNitrateSalineScoreArray:OneWeekAgoNitrateSalineScoreArray,
+                                                     secondWeekNitrateSalineScore:OneWeekAgoNitrateSalineScore,
+                                                     secondWeekTempScoreArray:OneWeekAgoTempScoreArray,
+                                                     secondWeekTempScore:OneWeekAgoTempScore,
+                                                     thirdWeekNitrateSalineScoreArray:TwoWeeksAgoNitrateSalineScoreArray,
+                                                     thirdWeekNitrateSalineScore:TwoWeeksAgoNitrateSalineScore,
+                                                     thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
+                                                     thirdWeekTempScore:TwoWeeksAgoTempScore
+                                                   }
+                                                   function slopeMaker (first, second, third) {
+                                                     var addedFirstValues = second - first
+                                                     var firstSlope = addedFirstValues / 2
+                                                     var addedSecondValues = third - second
+                                                     var secondSlope = addedSecondValues / 2
+                                                     var finalAddedValues = firstSlope + secondSlope
+                                                     var finalSlope = finalAddedValues / 2
+                                                     return finalSlope
+                                                   }
+
+                                                   var nitrateSalineSlope = slopeMaker(monthData.firstWeekNitrateSalineScore, monthData.secondWeekNitrateSalineScore, monthData.thirdWeekNitrateSalineScore)
+                                                   console.log(nitrateSalineSlope);
+
+                                                   var tempSlope = slopeMaker(monthData.firstWeekTempScore, monthData.secondWeekTempScore, monthData.thirdWeekTempScore)
+                                                   console.log(tempSlope);
+                                                   var chanceOfAnAlgaeBloom
+
+
+                                                   var aChanceOfAnAlgaeBloom
+
+                                                 var chanceOfAnAlgaeBloom = determineChanceOfAlgaeBloom(monthData, nitrateSalineSlope, tempSlope, aChanceOfAnAlgaeBloom)
+
+
+                                               var StringChanceOfAnAlgaeBloom
+                                               var alert
+                                               if (chanceOfAnAlgaeBloom) {
+                                                 StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                                 alert = "alert-danger"
+                                               } else if (!chanceOfAnAlgaeBloom) {
+                                                 StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                                 alert = "alert-success"
+                                               }
+                                               var dataForNitrate = []
+                                               var twoWeeksAgoAndOneWeekAgoData = twoWeeksAgoData.concat(oneWeekAgoData)
+                                               var allThreeWeeksData = twoWeeksAgoAndOneWeekAgoData.concat(currentWeekData)
+
+                                               for (var i = 0; i < 21; i++) {
+                                                 dataForNitrate.push({time:allThreeWeeksData[i].data, temperature: allThreeWeeksData[i].nitrateLevel})
+                                               }
+
+                                               var dataForSaline = []
+                                               for (var i = 0; i < 21; i++) {
+                                                 dataForSaline.push({time:allThreeWeeksData[i].data, saline: allThreeWeeksData[i].salineLevel})
+                                               }
+
+                                               var londonTempData = {
+                                               // city: 'Florida',
+                                               // unit: 'celsius',
+                                                 dataPoints: dataForNitrate
+                                               }
+
+                                               var salineLevelDataForGraph = {
+                                               // city: 'Florida',
+                                               // unit: 'celsius',
+                                                 dataPoints: dataForSaline
+                                               }
+
+
+                                               var dataFortheTemp = []
+                                               for (var i = 0; i < 21; i++) {
+                                                 dataFortheTemp.push({time:allThreeWeeksData[i].data, theTemp: allThreeWeeksData[i].temp})
+                                               }
+
+                                               var theTempDataForGraph = {
+                                               // city: 'Florida',
+                                               // unit: 'celsius',
+                                                 dataPoints: dataFortheTemp
+                                               }
+
+
+
+                                               //for Nitrate
+                                               app.get('/getTemperatureSF2', function(req,res){ //styppsxd
+                                               res.send(londonTempData);
+                                             });
+                                               app.get('/addTemperatureSF2', function(req,res){
+                                               var temp = parseInt(req.query.temperature);
+                                               var time = parseInt(req.query.time);
+                                               if(temp && time && !isNaN(temp) && !isNaN(time)){
+                                                 var newDataPoint = {
+                                                   temperature: temp,
+                                                   time: time
+                                                 };
+                                                 londonTempData.dataPoints.push(newDataPoint);
+                                                 pusher.trigger('london-temp-chart', 'new-temperature', {
+                                                   dataPoint: newDataPoint
+                                                 });
+                                                 res.send({success:true});
+                                               }else{
+                                                 res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
+                                               }
+                                             });
+
+                                               //forSaline
+                                               app.get('/getSalineSF2', function(req,res){
+                                                 res.send(salineLevelDataForGraph);
+                                               });
+                                               app.get('/addSalineSF2', function(req,res){
+                                                 var saline = parseInt(req.query.saline);
+                                                 var time = parseInt(req.query.time);
+                                                 if(saline && time && !isNaN(saline) && !isNaN(time)){
+                                                   var newDataPoint = {
+                                                     saline: saline,
+                                                     time: time
+                                                   };
+                                                   salineLevelDataForGraph.dataPoints.push(newDataPoint);
+                                                   pusher.trigger('salineLevelDataForGraph-chart', 'new-saline', {
+                                                     dataPoint: newDataPoint
+                                                   });
+                                                   res.send({success:true});
+                                                 }else{
+                                                   res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - saline & time.'});
+                                                 }
+                                               });
+
+                                               //forSaline
+                                               app.get('/gettheTempSF2', function(req,res){
+                                                 res.send(theTempDataForGraph);
+                                               });
+                                               app.get('/addtheTempSF2', function(req,res){
+                                                 var theTemp = parseInt(req.query.theTemp);
+                                                 var time = parseInt(req.query.time);
+                                                 if(theTemp && time && !isNaN(theTemp) && !isNaN(time)){
+                                                   var newDataPoint = {
+                                                     theTemp: theTemp,
+                                                     time: time
+                                                   };
+                                                   theTempDataForGraph.dataPoints.push(newDataPoint);
+                                                   pusher.trigger('theTempDataForGraph-chart', 'new-theTemp', {
+                                                     dataPoint: newDataPoint
+                                                   });
+                                                   res.send({success:true});
+                                                 }else{
+                                                   res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - theTemp & time.'});
+                                                 }
+                                               });
+
+                                               let sql10 = `SELECT * FROM SF2 WHERE id ="` + day + `";`
+                                               console.log(sql10);
+                                               db.query(sql10, (err, result)=>{
+                                                 var conditions = result[0]
+                                                 res.render('SF2data', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                                               });                      // console.log(twoWeeksAgoData);
+                                               // console.log(oneWeekAgoData);
+                                               // console.log(currentWeekData);
+
+
+
+                                                 } //ends if (rr+ 1 == twoWeeksAgoData.length) {
+                                               } //ends final for loop
+                                             }) //ends a query
+                                           } // ends if (a + 1 == oneWeekAgoData.length) {
+                                         } // ends  for (var a = 0; a < oneWeekAgoData.length; a++) {
+                                       }) // ends db.query(sql3, (err, result)=> {
+                                     } // ends if (i+1 == currentWeekData.length) {
+                                   } // ends for (var i = 0; i < currentWeekData.length; i++) {
+                                 }) // ends db.query(sql2, (err, result)=>{
+                               }) // ends   db.query (sql, (err, result)=>{
+                             }); // ends app.get('/lpdata', function (req, res) {
+
+// END Indiv Sites
 
 
 
@@ -11238,15 +14741,25 @@ module.exports = function(app, db) {
 
 
 
+// rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl
+
+ app.get('/overlays', function (req, res) {
+
+
+   var color = "green"
+   var site = determineColor('LP')
+   console.log(site);
+
+      function mine (p2, p3) {
+        return(p2 + p3)
+      }
+
+   res.render('overlays', {color: color})
+
+ })
 
 
 
-
-
-
-
-
-// END
 
 //source Code in test.js
 function determineChanceOfAlgaeBloom(theMonthData, theNitrateSalineSlope, theTempSlope, theChanceOfAnAlgaeBloom) {
@@ -12121,6 +15634,7 @@ function determineChanceOfAlgaeBloom(theMonthData, theNitrateSalineSlope, theTem
 
   return theChanceOfAnAlgaeBloom
 }
+
 
 
 

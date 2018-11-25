@@ -78,4 +78,13 @@ if (widthOfScreen <= 1200) {
   });
 }
 
+
+
+$('.glyphicon-dashboard').click(function(){
+  window.location.replace("/overlays");
+
+})
+
+
+
 //

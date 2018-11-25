@@ -1,0 +1,245 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
+    <link rel="stylesheet" href="/assets/topBanner.css">
+
+    <link rel="stylesheet" href="/assets/home.css">
+
+    <style>
+        #map {
+            width: 100%;
+            height: 90vh;
+        }
+
+
+        a:link, a:visited {
+            color: #2aaef5;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .landmark {
+            width: 250px;
+            padding: 7px 0 0 0;
+            background: rgba(247, 247, 247, 0.9);
+            border-radius: 5px;
+            box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.29);
+            font-family: Helvetica, Arial, sans-serif;
+            -webkit-transform-origin: 0 10px;
+            transform-origin: 0 10px;
+        }
+
+        .landmark h1 {
+            margin-top: 0;
+            padding: 5px 15px;
+            background: #2aaef5;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .landmark section {
+            padding: 0 15px 5px;
+        }
+
+        .landmark h1 {
+          font-size: 2.5vh;
+        }
+
+        .landmark section p {
+            margin: 5px 0;
+        }
+
+        .landmark:after {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: -13px;
+            width: 0;
+            height: 0;
+            margin-bottom: -13px;
+            border-right: 13px solid #2aaef5;
+            border-top: 13px solid rgba(0, 0, 0, 0);
+            border-bottom: 13px solid rgba(0, 0, 0, 0);
+        }
+
+        @-webkit-keyframes scale-and-fadein {
+            0% {
+                -webkit-transform: scale(0.2);
+                opacity: 0;
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scale-and-fadein {
+            0% {
+                transform: scale(0.2);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+    </style>
+
+  </head>
+
+
+  <section class="homeBanner" style="position:fixed; z-index: 1000">
+
+    <div id="homeTextAlign">
+
+      <a class=" homeaTag" href="/">Home</a>      <a class=" homeaTag" href="/">Search Day In Past</a>
+
+    </div>
+  </section>
+
+
+
+  <body>
+    <div id="map" style="padding-top:8vh;"></div>
+
+    <script>
+
+
+
+
+    mapkit.init({
+        authorizationCallback: function(done) {
+            done('eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjhQTTJVTjc2V0MifQ.eyJpc3MiOiJCOUo1V0tSNlhBIiwiaWF0IjoxNTQyNzQ5OTc4LCJleHAiOjYxNTQyNzQ5OTc4fQ.6LXmaFeExklrLPCm-Q4j7jwUVs3peVp_X9bT0QnPQs4DiHY0q_3WaigziU43LoUyfvd6ZnS4cX_ikQfotg7vNQ');
+        }
+    });
+    var sanFranciscoLandmarks = [
+        { coordinate: new mapkit.Coordinate(27.53500000, -80.34217888888889), title: "IRL-LP",url: "/lpdata", website: "/search", newData: '/lp', create: "/createLP", delete: "/deleteLP"},
+        { coordinate: new mapkit.Coordinate(27.475569444444442, -80.3266), title: "IRL-FP", url: "/fpdata",  website: "/searchForSiteFP", newData: "/fp", create: "/createFP", delete:"/deleteFP"},
+        { coordinate: new mapkit.Coordinate(27.18815, -80.261425), title: "SFE-SF", url: "/sfdata",  website: "/searchForSiteSF", newData: "/sf", create: "/createSF", delete:"/deleteSF"},
+        { coordinate: new mapkit.Coordinate(27.839125, -80.47081944444444), title: "IRL-SB", url: "/sbdata",  website: "/searchForSiteSB", newData: "/sb", create: "/createSB", delete:"/deleteSB"},
+        { coordinate: new mapkit.Coordinate(27.21002222222222, -80.269175), title: "SLE-NF", url: "/nfdata",  website: "/searchForSiteNF", newData: "/nf", create: "/createNF", delete:"/deleteNF"},
+        { coordinate: new mapkit.Coordinate(27.164975, -80.17184722222223), title: "IRL-SLE", url: "/sledata",  website: "/searchForSiteSLE", newData: "/sle", create: "/createSLE", delete:"/deleteSLE"},
+        { coordinate: new mapkit.Coordinate(27.590141666666664, -80.35523888888888), title: "IRL-VB", url: "/vbdata",  website: "/searchForSiteVB", newData: "/vb", create: "/createVB", delete:"/deleteVB"},
+        { coordinate: new mapkit.Coordinate(27.208949999999998, -80.24796944444445), title: "SLE-ME", url: "/medata",  website: "/searchForSiteME ", newData: "/me", create: "/createME", delete:"/deleteME"},
+        { coordinate: new mapkit.Coordinate(27.224413888888886, -80.20233888888889), title: "IRL-JB", url: "/jbdata",  website: "/searchForSiteJB ", newData: "/jb", create: "/createJB", delete:"/deleteJB"},
+        { coordinate: new mapkit.Coordinate(27.224413888888886, -80.20233888888889), title: "IRL-JB", url: "/jbdata",  website: "/searchForSiteJB ", newData: "/jb", create: "/createJB", delete:"/deleteJB"},
+        { coordinate: new mapkit.Coordinate(27.114194444444447, -80.28286111111112), title: "SLE-SF2", url: "/sf2data",  website: "/searchForSiteSF2 ", newData: "/sf2", create: "/createSF2", delete:"/deleteSF2"},
+
+    ];
+
+    // Landmark annotation callout delegate
+    var CALLOUT_OFFSET = new DOMPoint(-148, -162);
+    var landmarkAnnotationCallout = {
+        calloutElementForAnnotation: function(annotation) {
+            return calloutForLandmarkAnnotation(annotation);
+        },
+
+        calloutAnchorOffsetForAnnotation: function(annotation, element) {
+            return CALLOUT_OFFSET;
+        },
+
+        calloutAppearanceAnimationForAnnotation: function(annotation) {
+            return "scale-and-fadein .4s 0 1 normal cubic-bezier(0.4, 0, 0, 1.5)";
+        }
+    };
+
+    // Landmarks annotations
+    var annotations = sanFranciscoLandmarks.map(function(landmark) {
+        var annotation = new mapkit.MarkerAnnotation(landmark.coordinate, {
+            callout: landmarkAnnotationCallout,
+            color: "rgba(0,0,0,0.1)",
+        });
+        annotation.landmark = landmark;
+        return annotation;
+    });
+
+    var map = new mapkit.Map("map");
+    map.mapType = "hybrid"
+
+    map.showItems(annotations);
+
+    // Landmark annotation custom callout
+    function calloutForLandmarkAnnotation(annotation) {
+        var div = document.createElement("div");
+        div.className = "landmark";
+
+        var title = div.appendChild(document.createElement("h1"));
+        title.textContent = annotation.landmark.title;
+
+        var section = div.appendChild(document.createElement("section"));
+
+
+        var phone = section.appendChild(document.createElement("p"));
+        phone.className = "See Data";
+        phone.textContent = annotation.landmark.phone;
+
+        var link = section.appendChild(document.createElement("p"));
+        link.className = "homepage";
+
+        var a = link.appendChild(document.createElement("a"));
+        a.href = annotation.landmark.url;
+        a.textContent = "See Data";
+
+        var linkA = a.appendChild(document.createElement("p"));
+        link.className = "homepage";
+
+        var a2 = linkA.appendChild(document.createElement("a"));
+        a2.href = annotation.landmark.website;
+        a2.textContent = "Search";
+
+        var linkA2 = a2.appendChild(document.createElement("p"));
+        link.className = "homepage";
+
+        var a3 = linkA2.appendChild(document.createElement("a"));
+        a3.href = annotation.landmark.newData;
+        a3.textContent = "Analyze New Data";
+
+        var linkA3 = a3.appendChild(document.createElement("p"));
+        link.className = "homepage";
+
+        var a4 = linkA3.appendChild(document.createElement("a"));
+        a4.href = annotation.landmark.create;
+        a4.textContent = "Create Databases";
+
+        var linkA4 = a4.appendChild(document.createElement("p"));
+        link.className = "homepage";
+
+        var a5 = linkA4.appendChild(document.createElement("a"));
+        a5.href = annotation.landmark.delete;
+        a5.textContent = "Delete Databases";
+
+
+        return div;
+    }
+
+
+    var LPToFP = [ [27.534961111111112, -80.34393888888889],  [27.534030555555557, -80.3294611111111], [27.478105555555555, -80.3154111111111], [27.472616666666664, -80.32313611111111], [27.471055555555555, -80.33005277777778], [27.49836666666667, -80.33826388888889], [27.529766666666667, -80.34627499999999]] ;
+
+      // Map the raw coordinates to Coordinates:
+      LPToFP = LPToFP.map(function(point) {
+          return new mapkit.Coordinate(point[0], point[1]);
+      });
+      var LPToFPstyle = new mapkit.Style({
+          strokeColor: '<%=color%>',
+          strokeOpacity: .9,
+          lineWidth: 2,
+          fillColor:"#65ff00",
+          fillOpacity: .6,
+          lineJoin: "round",
+          lineDash: [2, 2, 6, 2, 6, 2]
+      });
+
+      var LPToFPrectangle = new mapkit.PolygonOverlay([LPToFP], { style: LPToFPstyle });
+      map.addOverlay(LPToFPrectangle);
+
+      // function createOverLay (coordinate )
+
+
+    </script>
+  </body>
+</html>

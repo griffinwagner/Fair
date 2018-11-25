@@ -185,5 +185,56 @@ body {
 }
 
 .mapHeightiPad {
-  height:83.5vh
+  height:89vh
+}
+
+
+
+.homeBanner {
+  background-color: black;
+  padding: 2.5vh;
+  color:white;
+  position:fixed;
+  width:80vw;
+  margin-left:10vw;
+  margin-right:10vw;
+}
+
+.homeaTag {
+  color:white;
+  padding:2vw;
+  font-size: 2vh;
+}
+
+.homeaTag:hover {
+  color:red
+}
+
+#homeTextAlign {
+  text-align: center
+}
+
+.overLays {
+  background-color: black;
+  color:white;
+  position:fixed;
+  width:10vw;
+  padding:2vh;
+  margin-right:90vw;
+  text-align:center;
+}
+
+.glyphicon-dashboard, .glyphicon-search {
+  font-size:4vh;
+  color:white;
+}
+
+.search {
+  background-color: black;
+  color:white;
+  position:fixed;
+  width:10vw;
+  padding:2vh;
+  margin-left:90vw;
+  text-align:center;
 }
