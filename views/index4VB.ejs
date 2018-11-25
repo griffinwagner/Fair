@@ -107,13 +107,13 @@
 
       <section class="topBanner">
         <div id="textAlign">
-          <a class="aTag" href="/resetSearch">ResetSearch</a>
+          <a class="aTag" href="/resetSearchSF">ResetSearch</a>
         </div>
       </section>
 
       <section class="container sidenav">
         <div class="container">
-          <u> <h3>IRL-FP</h3> </u>
+          <u> <h3>IRL-VB</h3> </u>
           <h4>NitrateSalineScore: <br> <%=monthData.thirdWeekNitrateSalineScore%> → <%=monthData.secondWeekNitrateSalineScore%> →  <%=monthData.firstWeekNitrateSalineScore%></h4>
           <i><h4>Optimal: 6.85</h4></i> <br>
 
@@ -138,7 +138,7 @@
         var MarkerAnnotation = mapkit.MarkerAnnotation,
               clickAnnotation;
           var vero = new mapkit.Coordinate(27.6386, -80.3973),
-              work = new mapkit.Coordinate(27.475569444444442, -80.3266);
+              work = new mapkit.Coordinate(27.590141666666664, -80.35523888888888);
 
 
           mapkit.init({
@@ -166,7 +166,7 @@
           var workAnnotation = new MarkerAnnotation(work);
           workAnnotation.color = "#969696";
           workAnnotation.title = "Site";
-          workAnnotation.subtitle = "IRL-FP";
+          workAnnotation.subtitle = "IRL-VB";
           workAnnotation.selected = "true";
           workAnnotation.glyphText = "♻️";
 
@@ -276,6 +276,6 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
         <script src="https://js.pusher.com/4.0/pusher.min.js"></script>
-        <script type="text/javascript" src="/assets/app2FP.js"></script>
+        <script type="text/javascript" src="/assets/app2VB.js"></script>
     </body>
 </html>
