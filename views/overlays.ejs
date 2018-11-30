@@ -219,6 +219,11 @@
 
 
     var LPToFP = [ [27.534961111111112, -80.34393888888889],  [27.534030555555557, -80.3294611111111], [27.478105555555555, -80.3154111111111], [27.472616666666664, -80.32313611111111], [27.471055555555555, -80.33005277777778], [27.49836666666667, -80.33826388888889], [27.529766666666667, -80.34627499999999]] ;
+    var VBToLP = [ [27.589747222222222, -80.34528333333333], [27.589747222222222, -80.3635861111111], [27.53911111111111, -80.35010277777778], [27.534961111111112, -80.34393888888889],  [27.534030555555557, -80.3294611111111], [27.568716666666667, -80.33851944444444], [27.57465277777778, -80.33757222222222]] ;
+    var SBToVBChunk1 = [ [27.589747222222222, -80.34528333333333], [27.589747222222222, -80.3635861111111], [27.594324999999998, -80.36371666666666], [27.604625000000002, -80.36639722222222],[27.607511111111112, -80.36590277777778], /* highest point */ [27.609380555555557, -80.35171666666666], [27.604816666666668,-80.34711944444444]] ;
+    var SBToVBChunk2 = [ [27.607511111111112, -80.36590277777778], /* highest point */ [27.609380555555557, -80.35171666666666], [27.615347222222223, -80.35359722222222],[27.617775, -80.35345833333332],[27.63163888888889,-80.36373333333333], [27.63198611111111, -80.37434444444443], [27.619947222222223, -80.37347222222222]] ;
+    var SBToVBChunk3 = [[27.63163888888889,-80.36373333333333], [27.63198611111111, -80.37434444444443], [27.646069444444443, -80.37573888888888], /* highest*/ [27.651991666666664, -80.37527777777777], [27.652794444444442, -80.37113055555555], [27.64559722222222, -80.36892222222221], [27.64086111111111, -80.3654611111111], ]
+    var SBToVBChunk4 = [ [27.657438888888887, -80.37709444444444],[27.651991666666664, -80.37527777777777],  [27.652794444444442, -80.37113055555555],[27.667302777777778, -80.37033888888888], /* begin high R to L*/[27.67407777777778, -80.36717222222221], [27.67426111111111, -80.38567777777779], /*end high*/ ]
 
       // Map the raw coordinates to Coordinates:
       LPToFP = LPToFP.map(function(point) {
@@ -227,15 +232,73 @@
       var LPToFPstyle = new mapkit.Style({
           strokeColor: '<%=color%>',
           strokeOpacity: .9,
-          lineWidth: 2,
+          lineWidth: 0,
           fillColor:"#65ff00",
           fillOpacity: .6,
           lineJoin: "round",
           lineDash: [2, 2, 6, 2, 6, 2]
       });
 
+      function drawOverlay(site, siteStyle, array) {
+        site = site.map(function(point) {
+            return new mapkit.Coordinate(point[0], point[1]);
+        });
+        array.push(site)
+        var siteStyle = new mapkit.Style({
+            strokeColor: '<%=color%>',
+            strokeOpacity: .6,
+            lineWidth: 0,
+            fillColor:'green',
+            fillOpacity: .6,
+            lineJoin: "round",
+            lineDash: [2, 2, 6, 2, 6, 2]
+        });
+        array.push(siteStyle)
+        return(array)
+      }
+      var VBToLParray = []
+      var VBToLPstyle
+      var finalVBToLParray = drawOverlay(VBToLP, VBToLPstyle, VBToLParray);
+
+      var SBToVBarray = []
+      var SBToVBstyle
+      var finalSBToVBarray = drawOverlay(SBToVBChunk1, SBToVBstyle, SBToVBarray);
+
+      var SBToVBarrayChunk2 = []
+      var SBToVBstyleChunk2
+      var finalSBToVBChunk2array = drawOverlay(SBToVBChunk2, SBToVBstyleChunk2, SBToVBarrayChunk2);
+
+      var SBToVBarrayChunk3 = []
+      var SBToVBstyleChunk3
+      var finalSBToVBChunk3array = drawOverlay(SBToVBChunk3, SBToVBstyleChunk3, SBToVBarrayChunk3);
+
+      var SBToVBarrayChunk4 = []
+      var SBToVBstyleChunk4
+      var finalSBToVBChunk4array = drawOverlay(SBToVBChunk4, SBToVBstyleChunk4, SBToVBarrayChunk4);
+
+
       var LPToFPrectangle = new mapkit.PolygonOverlay([LPToFP], { style: LPToFPstyle });
+      var VBToLPrectangle = new mapkit.PolygonOverlay([finalVBToLParray[0]], { style: finalVBToLParray[1] });
+      var SBToVBChunk1rectangle = new mapkit.PolygonOverlay([finalSBToVBarray[0]], { style: finalSBToVBarray[1] });
+      var SBToVBChunk2rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk2array[0]], { style: finalSBToVBChunk2array[1] });
+      var SBToVBChunk3rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk3array[0]], { style: finalSBToVBChunk3array[1] });
+      var SBToVBChunk4rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk4array[0]], { style: finalSBToVBChunk4array[1] });
+
+
+
+
       map.addOverlay(LPToFPrectangle);
+      map.addOverlay(VBToLPrectangle);
+      map.addOverlay(SBToVBChunk1rectangle);
+      map.addOverlay(SBToVBChunk2rectangle);
+      map.addOverlay(SBToVBChunk3rectangle);
+      map.addOverlay(SBToVBChunk4rectangle);
+
+
+
+
+
+
 
       // function createOverLay (coordinate )
 

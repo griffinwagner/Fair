@@ -5,6 +5,7 @@ var session    = require('express-session');
 const bodyParser = require('body-parser')
 const todoController = require('./controllers/todoController');
 const myDatabase = require('./db');
+const edit = require('./controllers/edit');
 
 
 app.use(session({secret: "Shh, its a secret!"}))
