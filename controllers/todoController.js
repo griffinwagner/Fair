@@ -15224,15 +15224,45 @@ app.get('/overlays', function (req, res) {
 
   SLEcolor()
   setTimeout( function(){
-    console.log(req.session.alertSLE);
+    req.session.data = []
+    function getData(site) {
+      let sql20 = `SELECT COUNT(*) FROM `+site+`;`
+      db.query(sql20, (err, result)=> {
+        var day = result[0]["COUNT(*)"]
+        let sql21 = `SELECT * FROM `+ site + ` WHERE id = `+ day + ';'
+        db.query(sql21, (err, result)=>{
+          req.session.data.push(result[0])
+        })
+      })
+    }
+    getData("SB")
+    getData("VB")
+    getData('LP')
+    getData("FP")
+    getData("JB")
+    getData("SLE")
+    getData("NF")
+    getData("ME")
+    getData("SF")
+    getData("SF2")
+
+
+
+
+
+
+    setTimeout(function(){
+      var infoArray = {SBinfo: req.session.data[0], VBinfo: req.session.data[1], LPinfo: req.session.data[2], FPinfo:req.session.data[3], JBinfo:req.session.data[4], SLEinfo:req.session.data[5], NFinfo:req.session.data[6], MEinfo:req.session.data[7]}
+      infoArray.SFinfo = req.session.data[8]
+      infoArray.SF2info = req.session.data[9]
+      res.render('overlays', {infoArray: infoArray} )
+
+
+
+    }, 500);
   }, 1000 );
 
 
-    function mine (p2, p3) {
-      return(p2 + p3)
-    }
-
-  res.render('overlays', {color: color})
 
  })
 

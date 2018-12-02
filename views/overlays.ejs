@@ -5,14 +5,31 @@
     <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
     <link rel="stylesheet" href="/assets/topBanner.css">
 
-    <link rel="stylesheet" href="/assets/home.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+        <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="/assets/home.css">
+    <link rel="stylesheet" href="/assets/overlay.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <title></title>
     <style>
-        #map {
-            width: 100%;
-            height: 90vh;
+
+
+        body {
+          background: black;
         }
 
+        #map {
+          height:92vh;
+        }
 
         a:link, a:visited {
             color: #2aaef5;
@@ -101,13 +118,264 @@
 
     </div>
   </section>
+  <section style="padding-top:8vh;">
+          <div class="jumbotron labelInfo infoLabelClass">
 
+            <div class="container">
+
+              <span class="clickHere">
+                <span class="glyphicon glyphicon-chevron-left "></span>
+
+              </span>
+              <span class="whenSmallInfo">
+                <h2 class="irrelevantText">Ranges</h2>
+                <p class="irrelevantText"> Select Sites And Ranges to See Conditions. Expand To See How It Works</p>
+                <h3>Possible Algae Bloom Sites:</h3>
+                <h4>None</h4>
+                <h3>Current Conditions:</h3>
+                <div class="panel-group" id="accordion">
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><div style="text-align:center;">  IRL-SB</div>   </a>
+                      </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                      <div class="panel-body">
+
+                        <section>
+                           Nitrate Level : <%=infoArray.SBinfo.nitrateLevel%> <br>
+                           Saline Level : <%=infoArray.SBinfo.salineLevel%><br>
+                           Temperature : <%=infoArray.SBinfo.tempLevel%><br>
+
+
+                        </section>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><div style="text-align:center;">  IRL-VB</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.VBinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.VBinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.VBinfo.tempLevel%><br>
+
+
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3"><div style="text-align:center;">  IRL-LP</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.LPinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.LPinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.LPinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse4"><div style="text-align:center;">  IRL-FP</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse4" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.FPinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.FPinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.FPinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse5"><div style="text-align:center;">  IRL-JB</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse5" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.JBinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.JBinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.JBinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse6"><div style="text-align:center;">  IRL-SLE</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse6" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.SLEinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.SLEinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.SLEinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse7"><div style="text-align:center;">  SLE-NF</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse7" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.NFinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.NFinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.NFinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse8"><div style="text-align:center;">  SLE-ME</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse8" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.MEinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.MEinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.MEinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse9"><div style="text-align:center;">  SLE-SF</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse9" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.SFinfo.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.SFinfo.salineLevel%><br>
+                          Temperature : <%=infoArray.SFinfo.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse10"><div style="text-align:center;">  SLE-SF2</div></a>
+                      </h4>
+                    </div>
+                    <div id="collapse10" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <section>
+                          Nitrate Level : <%=infoArray.SF2info.nitrateLevel%> <br>
+                          Saline Level : <%=infoArray.SF2info.salineLevel%><br>
+                          Temperature : <%=infoArray.SF2info.tempLevel%><br>
+
+
+                        </section>
+                    </div>
+                    </div>
+                  </div>
+
+
+
+                </div>
+
+
+
+
+              </span>
+            </div>
+
+            <section class="container expandedLabelInfo">
+              <div class="goBack">
+                <span id="hello" class="glyphicon glyphicon-chevron-right "></span>
+              </div>
+
+              <h2>Sites <small>Data</small> </h2>
+
+
+
+
+              <br>
+              <h2>LOBO Network<small>  How It Works</small> </h2>
+
+              <div class="media">
+                <div class="media-left media-top">
+
+                    <img class="media-object lobo1" src="/pics/lobo1.jpg" alt="...">
+
+                </div>
+                <div class="media-body">
+                  <p> Produced by SeaBird Scientific, the Land/Ocean Biogeochemical Observatory (LOBO) device and deployed by Harbor Branch Oceanographic Institute, the LOBO network analyzes a variety of variables at 10 different sites. Variables measured by LOBOs include: nitrate, salinity, temperature, chlorophyll, conductivity, turbidity, depth, phosphate concentration, and many other variables. LOBOs are floating platforms in the Indian River Lagoon and connecting bodies of water that record water measurements at the beginning of every hour </p>
+                    <p>According to the Harbor Branch website, "The LOBO comes complete with floating platform, power and wireless telemetry system, integrated sensor suite, automated processing software and web based data visualization and display software". The LOBOs are predominantly noted for being used in the Indian River Lagoon but the LOBO network also has units in the St. Lucie Estuary where the algae blooms have been catastrophic due to large adjacent populations. </p>
+                    <p>The LOBO contains physical sensors (i.e. salinity), chemical sensors (i.e.chromophoric dissolved organic matter or nitrate), and biological sensors (i.e. chlorophyll). The combination of sensors allow for the LOBOs to be versatile in varying conditions in the Indian River Lagoon and St. Lucie Estuary </p>
+                </div>
+              </div>
+
+              <br> <br> <br>
+            </section>
+          </div>
+        </section>
 
 
   <body>
-    <div id="map" style="padding-top:8vh;"></div>
-
-    <script>
+    <div id="map" class="map mapWidth80"></div>
+    <div class="overMap">
+       <p class="overMapText">Green: No Algae Bloom; Yellow: Uncertain Bloom; Red: Possible Bloom </p><span class="glyphicon glyphicon-question-sign"></span>
+    </div>
+   <script>
 
 
 
@@ -126,7 +394,6 @@
         { coordinate: new mapkit.Coordinate(27.164975, -80.17184722222223), title: "IRL-SLE", url: "/sledata",  website: "/searchForSiteSLE", newData: "/sle", create: "/createSLE", delete:"/deleteSLE"},
         { coordinate: new mapkit.Coordinate(27.590141666666664, -80.35523888888888), title: "IRL-VB", url: "/vbdata",  website: "/searchForSiteVB", newData: "/vb", create: "/createVB", delete:"/deleteVB"},
         { coordinate: new mapkit.Coordinate(27.208949999999998, -80.24796944444445), title: "SLE-ME", url: "/medata",  website: "/searchForSiteME ", newData: "/me", create: "/createME", delete:"/deleteME"},
-        { coordinate: new mapkit.Coordinate(27.224413888888886, -80.20233888888889), title: "IRL-JB", url: "/jbdata",  website: "/searchForSiteJB ", newData: "/jb", create: "/createJB", delete:"/deleteJB"},
         { coordinate: new mapkit.Coordinate(27.224413888888886, -80.20233888888889), title: "IRL-JB", url: "/jbdata",  website: "/searchForSiteJB ", newData: "/jb", create: "/createJB", delete:"/deleteJB"},
         { coordinate: new mapkit.Coordinate(27.114194444444447, -80.28286111111112), title: "SLE-SF2", url: "/sf2data",  website: "/searchForSiteSF2 ", newData: "/sf2", create: "/createSF2", delete:"/deleteSF2"},
 
@@ -224,38 +491,45 @@
     var SBToVBChunk2 = [ [27.607511111111112, -80.36590277777778], /* highest point */ [27.609380555555557, -80.35171666666666], [27.615347222222223, -80.35359722222222],[27.617775, -80.35345833333332],[27.63163888888889,-80.36373333333333], [27.63198611111111, -80.37434444444443], [27.619947222222223, -80.37347222222222]] ;
     var SBToVBChunk3 = [[27.63163888888889,-80.36373333333333], [27.63198611111111, -80.37434444444443], [27.646069444444443, -80.37573888888888], /* highest*/ [27.651991666666664, -80.37527777777777], [27.652794444444442, -80.37113055555555], [27.64559722222222, -80.36892222222221], [27.64086111111111, -80.3654611111111], ]
     var SBToVBChunk4 = [ [27.657438888888887, -80.37709444444444],[27.651991666666664, -80.37527777777777],  [27.652794444444442, -80.37113055555555],[27.667302777777778, -80.37033888888888], /* begin high R to L*/[27.67407777777778, -80.36717222222221], [27.67426111111111, -80.38567777777779], /*end high*/ ]
-
-      // Map the raw coordinates to Coordinates:
-      LPToFP = LPToFP.map(function(point) {
-          return new mapkit.Coordinate(point[0], point[1]);
-      });
-      var LPToFPstyle = new mapkit.Style({
-          strokeColor: '<%=color%>',
-          strokeOpacity: .9,
-          lineWidth: 0,
-          fillColor:"#65ff00",
-          fillOpacity: .6,
-          lineJoin: "round",
-          lineDash: [2, 2, 6, 2, 6, 2]
-      });
-
+    var SBToVBChunk5 = [ [27.67407777777778, -80.36717222222221], [27.67426111111111, -80.38567777777779], [27.697533333333332, -80.3952888888889],/*high L*/ [27.725952777777778, -80.41255833333334], /*high R*/ [27.72433333333333,-80.39834166666667], [27.678330555555558, -80.38182499999999], [27.679566666666666, -80.37155] ]
+    var SBToVBChunk6 = [ [27.725952777777778, -80.41255833333334], [27.72433333333333,-80.39834166666667], [27.747569444444444, -80.41421111111111], [27.7537, -80.4116638888889], [27.753197222222223, -80.41731666666666],/*r*/[27.757136111111112, -80.41998055555555], /*l*/[27.752636111111112, -80.427525] ]
+    //rL
+    var SBToVBChunk7 = [ [27.757136111111112, -80.41998055555555], [27.752636111111112, -80.427525],  [27.839038888888886, -80.47739444444444], [27.84454722222222, -80.44378888888889], [27.82368888888889, -80.43234166666667], [27.803783333333335, -80.44655555555556], [27.794883333333335, -80.42430833333334]  ]
+    var FPToJBChunk1 = [ [27.471055555555555, -80.33005277777778], [27.472616666666664, -80.32313611111111],   [27.475158333333333, -80.31356111111111],[27.459677777777777, -80.31749166666667], [27.457105555555554, -80.32121944444444], [27.463255555555556, -80.32169722222221], [27.466375, -80.32315833333332]]
+    //RL
+    var FPToJBChunk2 = [[27.459677777777777, -80.31749166666667],[27.457105555555554, -80.32121944444444],[27.454833333333333, -80.32273055555555],[27.445216666666667, -80.3209611111111], [27.444266666666667, -80.2966111111111],[27.44863888888889, -80.29351944444444],[27.4481083333, -80.2910694444],[27.457611, -80.2916]]
+    var FPToJBChunk3 = [[27.445216666666667, -80.3209611111111], [27.444266666666667, -80.2966111111111], [27.43507222222222, -80.29743333333333], [27.432, -80.296517], [27.428156, -80.2911722], [27.425, -80.31394444444445]]
+    var FPToJBChunk4 = [[27.428156, -80.2911722],[27.425, -80.31394444444445],[27.395622, -80.3012361],[27.400855555555555, -80.27478055555555], [27.41751388888889, -80.2799722223],[27.4252, -80.28264444444444],[27.4272833, -80.2806389],[27.42999166, -80.28451666666666]]
+    var FPToJBChunk5 = [ [27.395622, -80.3012361], [27.4008555, -80.274780555], [27.398794444444444, -80.26741676], [27.39558611, -80.264102778], [27.378683, -80.26171667], [27.37614446, -80.2590222223], [27.368533333333335, -80.28860277777778]]
+    var FPToJBChunk6 = [ [27.37614446, -80.2590222223], [27.368533333333335, -80.28860277777778], [27.351861111111113, -80.27998611111111], [27.356333333333335, -80.26022222222223]]
+    var FPToJBChunk7 = [ [27.3518611, -80.279986111], [27.356333333333335, -80.26022222222223], [27.337302777777776, -80.24841944444445], [27.338763888888888, -80.23752777777779], [27.328575, -80.2361638888889], [27.321619444444444, -80.26508888888888]]
+    var FPToJBChunk8 = [ [27.328575, -80.2361638888889], [27.321619444444444, -80.26508888888888], [27.271102777777777, -80.23905833333333],[27.278352777777776, -80.21533055555555], [27.291316666666667, -80.22903611111111], [27.308330555555557, -80.22373055555556]]
+    var FPToJBChunk9 = [[27.271102777777777, -80.23905833333333],[27.278352777777776, -80.21533055555555], [27.222724999999997, -80.18642777777778], [27.222724999999997, -80.20969444444445]]
+    var JBToSLE = [ [27.222724999999997, -80.18642777777778], [27.222724999999997, -80.20969444444445], [27.21792222222222, -80.20853611111112], [27.188033333333333, -80.19035000000001], [27.194430555555556, -80.1643138888889], [27.209863888888886, -80.18566111111112] ]
+    var JBToSLEChunk2 = [[27.1880333, -80.19035],[27.1944305556, -80.1643138888889],[27.18646389, -80.1617083333],[27.181108333, -80.17059167],[27.17586111111111,-80.17080277777778],[27.16688611111111, -80.16613055555555],[27.164616666, -80.1918334],[27.176183333333334, -80.185952778]]
       function drawOverlay(site, siteStyle, array) {
         site = site.map(function(point) {
             return new mapkit.Coordinate(point[0], point[1]);
         });
         array.push(site)
         var siteStyle = new mapkit.Style({
-            strokeColor: '<%=color%>',
-            strokeOpacity: .6,
-            lineWidth: 0,
-            fillColor:'green',
-            fillOpacity: .6,
-            lineJoin: "round",
-            lineDash: [2, 2, 6, 2, 6, 2]
+          strokeColor: 'purple',
+          strokeOpacity: .7,
+          lineWidth: 0,
+          fillColor:'#08ff00',
+          fillOpacity: .6,
+          lineJoin: "round",
+          lineDash: [2, 2, 6, 2, 6, 2]
         });
         array.push(siteStyle)
         return(array)
       }
+
+      var LPToFParray = []
+      var LPToFPstyle
+      var finalLPToFParray = drawOverlay(LPToFP, LPToFPstyle, LPToFParray);
+
+
       var VBToLParray = []
       var VBToLPstyle
       var finalVBToLParray = drawOverlay(VBToLP, VBToLPstyle, VBToLParray);
@@ -276,13 +550,84 @@
       var SBToVBstyleChunk4
       var finalSBToVBChunk4array = drawOverlay(SBToVBChunk4, SBToVBstyleChunk4, SBToVBarrayChunk4);
 
+      var SBToVBarrayChunk5 = []
+      var SBToVBstyleChunk5
+      var finalSBToVBChunk5array = drawOverlay(SBToVBChunk5, SBToVBstyleChunk5, SBToVBarrayChunk5);
 
-      var LPToFPrectangle = new mapkit.PolygonOverlay([LPToFP], { style: LPToFPstyle });
+      var SBToVBarrayChunk6 = []
+      var SBToVBstyleChunk6
+      var finalSBToVBChunk6array = drawOverlay(SBToVBChunk6, SBToVBstyleChunk6, SBToVBarrayChunk6);
+
+      var SBToVBarrayChunk7 = []
+      var SBToVBstyleChunk7
+      var finalSBToVBChunk7array = drawOverlay(SBToVBChunk7, SBToVBstyleChunk7, SBToVBarrayChunk7);
+
+      var FPToJBarrayChunk1 = []
+      var FPToJBstyleChunk1
+      var finalFPToJBChunk1array = drawOverlay(FPToJBChunk1, FPToJBstyleChunk1, FPToJBarrayChunk1);
+
+      var FPToJBarrayChunk2 = []
+      var FPToJBstyleChunk2
+      var finalFPToJBChunk2array = drawOverlay(FPToJBChunk2, FPToJBstyleChunk2, FPToJBarrayChunk2);
+
+      var FPToJBarrayChunk3 = []
+      var FPToJBstyleChunk3
+      var finalFPToJBChunk3array = drawOverlay(FPToJBChunk3, FPToJBstyleChunk3, FPToJBarrayChunk3);
+
+      var FPToJBarrayChunk4 = []
+      var FPToJBstyleChunk4
+      var finalFPToJBChunk4array = drawOverlay(FPToJBChunk4, FPToJBstyleChunk4, FPToJBarrayChunk4);
+
+      var FPToJBarrayChunk5 = []
+      var FPToJBstyleChunk5
+      var finalFPToJBChunk5array = drawOverlay(FPToJBChunk5, FPToJBstyleChunk5, FPToJBarrayChunk5);
+
+      var FPToJBarrayChunk6 = []
+      var FPToJBstyleChunk6
+      var finalFPToJBChunk6array = drawOverlay(FPToJBChunk6, FPToJBstyleChunk6, FPToJBarrayChunk6);
+
+      var FPToJBarrayChunk7 = []
+      var FPToJBstyleChunk7
+      var finalFPToJBChunk7array = drawOverlay(FPToJBChunk7, FPToJBstyleChunk7, FPToJBarrayChunk7);
+
+      var FPToJBarrayChunk8 = []
+      var FPToJBstyleChunk8
+      var finalFPToJBChunk8array = drawOverlay(FPToJBChunk8, FPToJBstyleChunk8, FPToJBarrayChunk8);
+
+      var FPToJBarrayChunk9 = []
+      var FPToJBstyleChunk9
+      var finalFPToJBChunk9array = drawOverlay(FPToJBChunk9, FPToJBstyleChunk9, FPToJBarrayChunk9);
+
+      var JBToSLEarray = []
+      var JBToSLEstyle
+      var finalJBToSLEarray = drawOverlay(JBToSLE, JBToSLEstyle, JBToSLEarray);
+
+      var JBToSLEarrayChunk2 = []
+      var JBToSLEstyleChunk2
+      var finalJBToSLEarrayChunk2 = drawOverlay(JBToSLEChunk2, JBToSLEstyleChunk2, JBToSLEarrayChunk2);
+
+      var LPToFPrectangle = new mapkit.PolygonOverlay([finalLPToFParray[0]], { style: finalLPToFParray[1] });
       var VBToLPrectangle = new mapkit.PolygonOverlay([finalVBToLParray[0]], { style: finalVBToLParray[1] });
       var SBToVBChunk1rectangle = new mapkit.PolygonOverlay([finalSBToVBarray[0]], { style: finalSBToVBarray[1] });
       var SBToVBChunk2rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk2array[0]], { style: finalSBToVBChunk2array[1] });
       var SBToVBChunk3rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk3array[0]], { style: finalSBToVBChunk3array[1] });
       var SBToVBChunk4rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk4array[0]], { style: finalSBToVBChunk4array[1] });
+      var SBToVBChunk5rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk5array[0]], { style: finalSBToVBChunk5array[1] });
+      var SBToVBChunk6rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk6array[0]], { style: finalSBToVBChunk6array[1] });
+      var SBToVBChunk7rectangle = new mapkit.PolygonOverlay([finalSBToVBChunk7array[0]], { style: finalSBToVBChunk7array[1] });
+      var FPToJBChunk1rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk1array[0]], { style: finalFPToJBChunk1array[1] });
+      var FPToJBChunk2rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk2array[0]], { style: finalFPToJBChunk2array[1] });
+      var FPToJBChunk3rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk3array[0]], { style: finalFPToJBChunk3array[1] });
+      var FPToJBChunk4rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk4array[0]], { style: finalFPToJBChunk4array[1] });
+      var FPToJBChunk5rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk5array[0]], { style: finalFPToJBChunk5array[1] });
+      var FPToJBChunk6rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk6array[0]], { style: finalFPToJBChunk6array[1] });
+      var FPToJBChunk7rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk7array[0]], { style: finalFPToJBChunk7array[1] });
+      var FPToJBChunk8rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk8array[0]], { style: finalFPToJBChunk8array[1] });
+      var FPToJBChunk9rectangle = new mapkit.PolygonOverlay([finalFPToJBChunk9array[0]], { style: finalFPToJBChunk9array[1] });
+      var JBToSLErectangle = new mapkit.PolygonOverlay([finalJBToSLEarray[0]], { style: finalJBToSLEarray[1] });
+      var JBToSLEChunk2rectangle = new mapkit.PolygonOverlay([finalJBToSLEarrayChunk2[0]], { style: finalJBToSLEarrayChunk2[1] });
+
+
 
 
 
@@ -293,6 +638,28 @@
       map.addOverlay(SBToVBChunk2rectangle);
       map.addOverlay(SBToVBChunk3rectangle);
       map.addOverlay(SBToVBChunk4rectangle);
+      map.addOverlay(SBToVBChunk5rectangle);
+      map.addOverlay(SBToVBChunk6rectangle);
+      map.addOverlay(SBToVBChunk7rectangle);
+      map.addOverlay(FPToJBChunk1rectangle);
+      map.addOverlay(FPToJBChunk2rectangle);
+      map.addOverlay(FPToJBChunk3rectangle);
+      map.addOverlay(FPToJBChunk4rectangle);
+      map.addOverlay(FPToJBChunk5rectangle);
+      map.addOverlay(FPToJBChunk6rectangle);
+      map.addOverlay(FPToJBChunk7rectangle);
+      map.addOverlay(FPToJBChunk8rectangle);
+      map.addOverlay(FPToJBChunk9rectangle);
+      map.addOverlay(JBToSLErectangle);
+      map.addOverlay(JBToSLEChunk2rectangle);
+
+
+
+
+
+
+
+
 
 
 
@@ -304,5 +671,12 @@
 
 
     </script>
+
+
+    <script type="text/javascript" src = "/assets/moreInfoOverlays.js">
+
+    </script>
+
+
   </body>
 </html>

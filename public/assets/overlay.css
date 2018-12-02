@@ -1,0 +1,19 @@
+.overMap {
+  width:40vw;
+  margin-left: 20vw;
+  position: absolute;
+  top: 95%;
+  text-align: center;
+  height:3vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 25px;
+}
+
+.overMapText {
+  font-size: 2vh;
+  padding-right:.5vw;
+}
+
+.glyphicon-question-sign, p {
+  display: inline-block;
+}

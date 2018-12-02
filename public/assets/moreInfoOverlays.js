@@ -1,3 +1,4 @@
+
 var widthOfScreen = $(document).width()
 if (widthOfScreen <=1200) {
   $('.whenSmallInfo').hide();
@@ -54,12 +55,13 @@ if (widthOfScreen <= 1200) {
     $('.whenSmallInfo').hide()
     $('.glyphicon-chevron-right').show()
     $('.glyphicon-chevron-left').hide()
+
     $('.infoLabelClass').removeClass('labelInfo')
     $('.infoLabelClass').addClass('labelInfoExpanded')
     $('#map').removeClass('mapWidth80')
     $('#map').addClass('mapShrunk')
     $('.expandedLabelInfo').show()
-
+    $('.overMap').hide()
   });
 
   $('.goBack').click(function(){
@@ -71,6 +73,8 @@ if (widthOfScreen <= 1200) {
     $('.glyphicon-chevron-right').hide();
     $('.glyphicon-chevron-left').show();
     $('.expandedLabelInfo').hide();
+    $('.overMap').show()
+
     $('.map').delay(3000).removeClassClass('mapWidth80Animation');
     $('.map').delay(3000).addClass('mapWidth80');
     $('.infoLabelClass').delay(3000).addClass('labelInfo');
@@ -84,7 +88,3 @@ $('.glyphicon-dashboard').click(function(){
   window.location.replace("/overlays");
 
 })
-
-
-
-//
