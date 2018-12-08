@@ -85,6 +85,10 @@ $('.glyphicon-dashboard').click(function(){
 
 })
 
+$('.glyphicon-search').click(function () {
+  window.location.replace("/metaSearch");
+})
+
 
 
 //

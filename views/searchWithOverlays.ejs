@@ -114,7 +114,7 @@
 
     <div id="homeTextAlign">
 
-      <a class=" homeaTag" href="/">Home</a>      <a class=" homeaTag" href="/metaSearch">Search Another Day</a>
+      <a class=" homeaTag" href="/">Home</a>      <a class=" homeaTag" href="/metaSearch">Search Day In Past</a>
 
     </div>
   </section>
@@ -128,19 +128,22 @@
 
               </span>
               <span class="whenSmallInfo">
-                <h2 class="irrelevantText">Ranges</h2>
+                <h2 class="irrelevantText">Ranges <small><%=date%></small> </h2>
                 <p class="irrelevantText"> Select Sites And Ranges to See Conditions. Expand To See How It Works</p>
                 <h3>Possible Algae Bloom Sites:</h3>
                 <% if (possibleBlooms.length == 0){%>
                   <p>None</p>
                 <%} else {%>
                   <%for (var i = 0; i < possibleBlooms.length; i++) {%>
-                    <a href="<%=possibleBlooms[i]%>data"><p> <%=possibleBlooms[i]%></p></a>
+
+                    <form  action="/date<%=possibleBlooms[i]%>" method="post">
+                      <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                      <button class="weirdButton" type="submit" name="button"><%=possibleBlooms[i]%></button>
+                    </form>
+
                   <%}%>
                 <%}%>
-
-
-                <h3>Current Conditions:</h3>
+                <h3>Conditions On <%=date%>:</h3>
                 <div class="panel-group" id="accordion">
 
                   <div class="panel panel-default">
@@ -156,7 +159,10 @@
                            Nitrate Level : <%=infoArray.SBinfo.nitrateLevel%> <br>
                            Saline Level : <%=infoArray.SBinfo.salineLevel%><br>
                            Temperature : <%=infoArray.SBinfo.tempLevel%><br>
-                           More Data: <a href="/sbdata">Click Here</a>
+                           <form  action="/dateSB" method="post">
+                             <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                             <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                           </form>
 
 
                         </section>
@@ -177,7 +183,11 @@
                           Nitrate Level : <%=infoArray.VBinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.VBinfo.salineLevel%><br>
                           Temperature : <%=infoArray.VBinfo.tempLevel%><br>
-                          More Data: <a href="/vbdata">Click Here</a>
+                          <form  action="/dateVB" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
+
 
 
                         </section>
@@ -198,7 +208,11 @@
                           Nitrate Level : <%=infoArray.LPinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.LPinfo.salineLevel%><br>
                           Temperature : <%=infoArray.LPinfo.tempLevel%><br>
-                          More Data: <a href="/lpdata">Click Here</a>
+
+                          <form  action="/date" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
 
                         </section>
@@ -218,8 +232,10 @@
                           Nitrate Level : <%=infoArray.FPinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.FPinfo.salineLevel%><br>
                           Temperature : <%=infoArray.FPinfo.tempLevel%><br>
-                          More Data: <a href="/fpdata">Click Here</a>
-
+                          <form  action="/dateFP" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -238,8 +254,10 @@
                           Nitrate Level : <%=infoArray.JBinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.JBinfo.salineLevel%><br>
                           Temperature : <%=infoArray.JBinfo.tempLevel%><br>
-                          More Data: <a href="/jbdata">Click Here</a>
-
+                          <form  action="/dateJB" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -258,8 +276,10 @@
                           Nitrate Level : <%=infoArray.SLEinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.SLEinfo.salineLevel%><br>
                           Temperature : <%=infoArray.SLEinfo.tempLevel%><br>
-                          More Data: <a href="/sledata">Click Here</a>
-
+                          <form  action="/dateSLE" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -278,8 +298,10 @@
                           Nitrate Level : <%=infoArray.NFinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.NFinfo.salineLevel%><br>
                           Temperature : <%=infoArray.NFinfo.tempLevel%><br>
-                          More Data: <a href="/nfdata">Click Here</a>
-
+                          <form  action="/dateNF" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -298,8 +320,10 @@
                           Nitrate Level : <%=infoArray.MEinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.MEinfo.salineLevel%><br>
                           Temperature : <%=infoArray.MEinfo.tempLevel%><br>
-                          More Data: <a href="/medata">Click Here</a>
-
+                          <form  action="/dateME" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -318,8 +342,10 @@
                           Nitrate Level : <%=infoArray.SFinfo.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.SFinfo.salineLevel%><br>
                           Temperature : <%=infoArray.SFinfo.tempLevel%><br>
-                          More Data: <a href="/sfdata">Click Here</a>
-
+                          <form  action="/dateSF" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>
@@ -338,8 +364,10 @@
                           Nitrate Level : <%=infoArray.SF2info.nitrateLevel%> <br>
                           Saline Level : <%=infoArray.SF2info.salineLevel%><br>
                           Temperature : <%=infoArray.SF2info.tempLevel%><br>
-                          More Data: <a href="/sf2data">Click Here</a>
-
+                          <form  action="/dateSF2" method="post">
+                            <textarea class='invisibleForm' name="date" rows="8" cols="80"><%=date%></textarea>
+                            <button class="weirdButton" type="submit" name="button">Click Here For More Info</button>
+                          </form>
 
                         </section>
                     </div>

@@ -195,9 +195,9 @@ body {
   padding: 2.5vh;
   color:white;
   position:fixed;
-  width:80vw;
-  margin-left:10vw;
-  margin-right:10vw;
+  width:60vw;
+  margin-left:20vw;
+  margin-right:20vw;
 }
 
 .homeaTag {
@@ -224,7 +224,7 @@ body {
   text-align:center;
 }
 
-.glyphicon-dashboard, .glyphicon-search {
+.glyphicon-dashboard, .glyphicon-search, .glyphicon-folder-open, .glyphicon-circle-arrow-down {
   font-size:4vh;
   color:white;
 }
@@ -236,5 +236,25 @@ body {
   width:10vw;
   padding:2vh;
   margin-left:90vw;
+  text-align:center;
+}
+
+.files {
+  background-color: black;
+  color:white;
+  position:fixed;
+  width:10vw;
+  padding:2vh;
+  margin-left:80vw;
+  text-align:center;
+}
+
+.download {
+  background-color: black;
+  color:white;
+  position:fixed;
+  width:10vw;
+  padding:2vh;
+  margin-left:10vw;
   text-align:center;
 }

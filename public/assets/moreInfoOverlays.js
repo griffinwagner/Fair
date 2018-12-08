@@ -82,6 +82,15 @@ if (widthOfScreen <= 1200) {
   });
 }
 
+$('.removeKey').click(function() {
+  $('.overMap').hide(600)
+})
+
+$('.removeOther').click(function () {
+  $('.overMap2').hide(600)
+})
+
+$('.colors').hide()
 
 
 $('.glyphicon-dashboard').click(function(){

@@ -1,19 +1,51 @@
 .overMap {
-  width:40vw;
-  margin-left: 20vw;
+  width:20vw;
+  margin-left: 2vw;
   position: absolute;
-  top: 95%;
+  top: 10%;
   text-align: center;
-  height:3vh;
+  height:10vh;
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 25px;
 }
 
 .overMapText {
   font-size: 2vh;
-  padding-right:.5vw;
+  padding:.5vw;
 }
 
-.glyphicon-question-sign, p {
-  display: inline-block;
+.glyphicon-question-sign {
+  position: absolute;
+  top: 10%;
+  text-align: center;
+
+}
+
+.glyphicon-remove {
+  float:right;
+  margin-top:1vh;
+  margin-right:1vw;
+}
+
+.overMap2 {
+  width:25vw;
+  margin-left: 2vw;
+  position: absolute;
+  top: 25%;
+  text-align: center;
+  height:4.5vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 25px;
+}
+
+.invisibleForm {
+  display: none;
+}
+
+.weirdButton {
+  margin:0;
+  border:0;
+  padding:0;
+  background: none;
+  text-decoration: none;
 }
