@@ -13,6 +13,9 @@ var pusher = new Pusher({
   encrypted: true
 });
 
+const jsonfile = require('jsonfile');
+const file = './controllers/info.json'
+
 
 
 
@@ -15086,9 +15089,11 @@ module.exports = function(app, db) {
 
 
   function modifiedReasonForBloomOverlays(site, date, req) {
+    console.log(date);
    var threeWeek = date - 21;
    let sql = `SELECT * FROM ` +site+` where id <= `+date+ ` AND id >= `+threeWeek+`;`
    db.query(sql, (err, result)=>{
+
      var firstWeekNitrateLevels = []
      var secondWeekNitrateLevels = []
      var firstWeekSalineLevels = []
@@ -15155,6 +15160,82 @@ module.exports = function(app, db) {
   }
 
 
+  function modifiedReasonForBloomOverlaysSearch(site, date, req) {
+   var threeWeek = date - 21;
+   let sql = `SELECT * FROM ` +site+` where id <= `+date+ ` && id >= `+threeWeek+`;`
+   console.log(sql);
+
+   db.query(sql, (err, result)=>{
+     console.log(result);
+
+     var firstWeekNitrateLevels = []
+     var secondWeekNitrateLevels = []
+     var firstWeekSalineLevels = []
+     var secondWeekSalineLevels = []
+     for (var i = 21; i > 14; i--) {
+       firstWeekNitrateLevels.push(result[i].nitrateLevel)
+       secondWeekNitrateLevels.push(result[i-7].nitrateLevel)
+       firstWeekSalineLevels.push(result[i].salineLevel)
+       secondWeekSalineLevels.push(result[i-7].nitrateLevel)
+     }
+
+
+
+     var firstWeekNitrateLevelsTotal = 0;
+     for(var i = 0; i < firstWeekNitrateLevels.length; i++) {
+         firstWeekNitrateLevelsTotal += firstWeekNitrateLevels[i];
+     }
+     var firstWeekNitrateLevelsAvg = firstWeekNitrateLevelsTotal / firstWeekNitrateLevels.length;
+
+
+     var secondWeekNitrateLevelsTotal = 0;
+     for(var i = 0; i < secondWeekNitrateLevels.length; i++) {
+         secondWeekNitrateLevelsTotal += secondWeekNitrateLevels[i];
+     }
+     var secondWeekNitrateLevelsAvg = secondWeekNitrateLevelsTotal / secondWeekNitrateLevels.length;
+
+     var firstWeekSalineLevelsTotal = 0;
+     for(var i = 0; i < firstWeekSalineLevels.length; i++) {
+         firstWeekSalineLevelsTotal += firstWeekSalineLevels[i];
+     }
+     var firstWeekSalineLevelsAvg = firstWeekSalineLevelsTotal / firstWeekSalineLevels.length;
+
+     var secondWeekSalineLevelsTotal = 0;
+     for(var i = 0; i < secondWeekSalineLevels.length; i++) {
+         secondWeekSalineLevelsTotal += secondWeekSalineLevels[i];
+     }
+     var secondWeekSalineLevelsAvg = secondWeekSalineLevelsTotal / secondWeekSalineLevels.length;
+
+
+     var reasonForAlgaeBloom = ""
+     var protectionMethod = ""
+     if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg >= 1.2) {
+       reasonForAlgaeBloom = "Fertilizer Run-Off And Population Density"
+       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary"
+     } else if (firstWeekNitrateLevelsAvg < 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+       reasonForAlgaeBloom = "Fresh Water (Presumably From Lake Okeechobee)"
+       protectionMethod = "Salination of Water And No Discharges From Lake Okeechobee"
+     }else if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+       reasonForAlgaeBloom = 'Fertilizer Run-Off / Population Density AND Fresh Water (Presumably From Lake Okeechobee)'
+       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary AND Salination of Water And No Discharges From Lake Okeechobee"
+     } else {
+       reasonForAlgaeBloom = "Unknown"
+       protectionMethod = "Limit Nitrate and Fresh Water In Lagoon/Estuary"
+     }
+
+     var reasonAndMethod = {reasonForAlgaeBloom:reasonForAlgaeBloom, protectionMethod:protectionMethod}
+     req.session.reasonAndMethodOverlaysSearch.push(reasonAndMethod)
+
+
+
+   })
+
+
+  }
+
+
+
+
 
 
 
@@ -15181,6 +15262,7 @@ module.exports = function(app, db) {
 // rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl
 
 app.get('/overlays', function (req, res) {
+
 
 
 
@@ -15817,9 +15899,11 @@ app.get('/overlays', function (req, res) {
 
         console.log(colorArray);
         req.session.reasonAndMethodOverlays = []
+        req.session.siteList = []
         function finalModifiedReasonForBloomOverlays(site, day, req) {
+          req.session.siteList.push(site)
           if (req.session.possibleAlgaeBlooms.indexOf(site) > -1 ) {
-            modifiedReasonForBloomOverlays("site", day, req)
+            modifiedReasonForBloomOverlays(site, day, req)
           } else {
             req.session.reasonAndMethodOverlays.push({reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"})
 
@@ -15842,15 +15926,31 @@ app.get('/overlays', function (req, res) {
 
         setTimeout(function () {
           console.log("===============");
-          console.log(req.session.reasonAndMethodOverlays);
+          console.log(req.session.siteList);
 
-          res.render('overlays', {infoArray: infoArray, colorArray:colorArray, possibleBlooms:req.session.possibleAlgaeBlooms} )
+
+
+          res.render('overlays', {infoArray: infoArray, colorArray:colorArray, possibleBlooms:req.session.possibleAlgaeBlooms, reasonAndMethod:req.session.reasonAndMethodOverlays, siteList: req.session.siteList} )
+
+          var numberOfSitesWithBlooms = req.session.possibleAlgaeBlooms.length
+
+          // for (var i = 0; i < numberOfSitesWithBlooms.length; i++) {
+          //
+          //   const obj = { i: req.session.possibleAlgaeBlooms[i]}
+          //
+          //   jsonfile.writeFile(file, obj, function (err) {
+          //     if (err) console.error(err)
+          //   })
+          // }
+
+
+
         },600)
 
 
 
       }, 500);
-    }, 1000 );
+    }, 500 );
 
 
 
@@ -15865,6 +15965,7 @@ app.post('/searchWithOverlays', function(req, res) {
   req.session.colorForSearch = []
   function findColorSearch(site){
     let date = req.body.date;
+
     let sql10 = `SELECT * FROM `+site+` WHERE date ="` + date + `";`
     db.query (sql10, (err, result)=>{
       var specificDayNitrate = result[0].nitrateLevel;
@@ -15874,6 +15975,9 @@ app.post('/searchWithOverlays', function(req, res) {
 
       // db.query (sql, (err, result)=>{
       var day = result[0].id
+      req.session.overlayDaySearch = day
+
+
       var week = day - 7
       let sql2 = `SELECT * FROM `+site+` WHERE id > ` + week + ' && id <= '+day+';'
         db.query(sql2, (err, result)=>{
@@ -16382,139 +16486,170 @@ app.post('/searchWithOverlays', function(req, res) {
 
     setTimeout(function () {
 
-      var infoArray = {SBinfo: req.session.dataForSearch[0], VBinfo: req.session.dataForSearch[1], LPinfo: req.session.dataForSearch[2], FPinfo:req.session.dataForSearch[3], JBinfo:req.session.dataForSearch[4], SLEinfo:req.session.dataForSearch[5], NFinfo:req.session.dataForSearch[6], MEinfo:req.session.dataForSearch[7]}
-      infoArray.SFinfo = req.session.dataForSearch[8]
-      infoArray.SF2info = req.session.dataForSearch[9]
-      var colors = {SBcolor:req.session.colorForSearch[0], VBcolor:req.session.colorForSearch[1], LPcolor: req.session.colorForSearch[2], FPcolor:req.session.colorForSearch[3], JBcolor:req.session.colorForSearch[4], SLEcolor:req.session.colorForSearch[5], NFcolor:req.session.colorForSearch[6], MEcolor:req.session.colorForSearch[7]}
-      colors.SFcolor = req.session.colorForSearch[8]
-      colors.SF2color = req.session.colorForSearch[9]
-      var colorArray = []
+         var infoArray = {SBinfo: req.session.dataForSearch[0], VBinfo: req.session.dataForSearch[1], LPinfo: req.session.dataForSearch[2], FPinfo:req.session.dataForSearch[3], JBinfo:req.session.dataForSearch[4], SLEinfo:req.session.dataForSearch[5], NFinfo:req.session.dataForSearch[6], MEinfo:req.session.dataForSearch[7]}
+          infoArray.SFinfo = req.session.dataForSearch[8]
+          infoArray.SF2info = req.session.dataForSearch[9]
+          var colors = {SBcolor:req.session.colorForSearch[0], VBcolor:req.session.colorForSearch[1], LPcolor: req.session.colorForSearch[2], FPcolor:req.session.colorForSearch[3], JBcolor:req.session.colorForSearch[4], SLEcolor:req.session.colorForSearch[5], NFcolor:req.session.colorForSearch[6], MEcolor:req.session.colorForSearch[7]}
+          colors.SFcolor = req.session.colorForSearch[8]
+          colors.SF2color = req.session.colorForSearch[9]
+          var colorArray = []
 
-      var SBToVBChunk1, SBToVBChunk2color, SBToVBChunk3color, SBToVBChunk4color, SBToVBChunk5color, SBToVBChunk6color, SBToVBChunk7color
-      if (colors.SBcolor == "green" && colors.VBcolor == "green") {
-        SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "#08ff00"
-        colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
-      } else if (colors.SBcolor == "red" && colors.VBcolor == "red") {
-        SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "red"
-        colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1color, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          var SBToVBChunk1, SBToVBChunk2color, SBToVBChunk3color, SBToVBChunk4color, SBToVBChunk5color, SBToVBChunk6color, SBToVBChunk7color
+          if (colors.SBcolor == "green" && colors.VBcolor == "green") {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "#08ff00"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          } else if (colors.SBcolor == "red" && colors.VBcolor == "red") {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "red"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1color, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
 
-      } else {
-        SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "purple"
-        colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          } else {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "purple"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
 
-      }
+          }
 
-      var VBToLPcolor
-      if (colors.VBcolor == "green" && colors.LPcolor == "green") {
-        VBToLPcolor = '#08ff00'
-        colorArray.push({VBToLP: {VBToLPcolor}})
-      } else if (colors.VBcolor == "red" && colors.LPcolor == "red") {
-        VBToLPcolor = "red"
-        colorArray.push({VBToLP: {VBToLPcolor}})
-      } else {
-        VBToLPcolor = "purple"
-        colorArray.push({VBToLP: {VBToLPcolor}})
-      }
+          var VBToLPcolor
+          if (colors.VBcolor == "green" && colors.LPcolor == "green") {
+            VBToLPcolor = '#08ff00'
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          } else if (colors.VBcolor == "red" && colors.LPcolor == "red") {
+            VBToLPcolor = "red"
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          } else {
+            VBToLPcolor = "purple"
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          }
 
-      var LPToFPcolor
-      if (colors.LPcolor == "green" && colors.FPcolor == "green") {
-        LPToFPcolor = '#08ff00'
-        colorArray.push({LPToFP: {LPToFPcolor}})
-      } else if (colors.LPcolor == "red" && colors.FPcolor == "red") {
-          LPToFPcolor = "red"
-          colorArray.push({LPToFP: {LPToFPcolor}})
-      } else {
-          LPToFPcolor = "purple"
-          colorArray.push({LPToFP: {LPToFPcolor}})
-      }
+          var LPToFPcolor
+          if (colors.LPcolor == "green" && colors.FPcolor == "green") {
+            LPToFPcolor = '#08ff00'
+            colorArray.push({LPToFP: {LPToFPcolor}})
+          } else if (colors.LPcolor == "red" && colors.FPcolor == "red") {
+              LPToFPcolor = "red"
+              colorArray.push({LPToFP: {LPToFPcolor}})
+          } else {
+              LPToFPcolor = "purple"
+              colorArray.push({LPToFP: {LPToFPcolor}})
+          }
 
-      var FPToJBcolor
-      if (colors.JBcolor == "green" && colors.FPcolor == "green") {
-        FPToJBcolor = '#08ff00'
-        colorArray.push({FPToJB: {FPToJBcolor}})
-      } else if (colors.JBcolor == "red" && colors.FPcolor == "red") {
-          FPToJBcolor = "red"
-          colorArray.push({FPToJB: {FPToJBcolor}})
-      } else {
-          FPToJBcolor = "purple"
-          colorArray.push({FPToJB: {FPToJBcolor}})
-      }
+          var FPToJBcolor
+          if (colors.JBcolor == "green" && colors.FPcolor == "green") {
+            FPToJBcolor = '#08ff00'
+            colorArray.push({FPToJB: {FPToJBcolor}})
+          } else if (colors.JBcolor == "red" && colors.FPcolor == "red") {
+              FPToJBcolor = "red"
+              colorArray.push({FPToJB: {FPToJBcolor}})
+          } else {
+              FPToJBcolor = "purple"
+              colorArray.push({FPToJB: {FPToJBcolor}})
+          }
 
-      var JBToSLEcolor
-      if (colors.JBcolor == "green" && colors.SLEcolor == "green") {
-        JBToSLEcolor = '#08ff00'
-        colorArray.push({JBToSLE: {JBToSLEcolor}})
-      } else if (colors.JBcolor == "red" && colors.SLEcolor == "red") {
-          JBToSLEcolor = "red"
-          colorArray.push({JBToSLE: {JBToSLEcolor}})
-      } else {
-          JBToSLEcolor = "purple"
-          colorArray.push({JBToSLE: {JBToSLEcolor}})
-      }
+          var JBToSLEcolor
+          if (colors.JBcolor == "green" && colors.SLEcolor == "green") {
+            JBToSLEcolor = '#08ff00'
+            colorArray.push({JBToSLE: {JBToSLEcolor}})
+          } else if (colors.JBcolor == "red" && colors.SLEcolor == "red") {
+              JBToSLEcolor = "red"
+              colorArray.push({JBToSLE: {JBToSLEcolor}})
+          } else {
+              JBToSLEcolor = "purple"
+              colorArray.push({JBToSLE: {JBToSLEcolor}})
+          }
 
-      var leftOfMEcolor
-      if (colors.MEcolor == "green") {
-        leftOfMEcolor = '#08ff00'
-        colorArray.push({leftOfME: {leftOfMEcolor}})
-      } else {
-        leftOfMEcolor = 'red'
-        colorArray.push({leftOfME: {leftOfMEcolor}})
-      }
+          var leftOfMEcolor
+          if (colors.MEcolor == "green") {
+            leftOfMEcolor = '#08ff00'
+            colorArray.push({leftOfME: {leftOfMEcolor}})
+          } else {
+            leftOfMEcolor = 'red'
+            colorArray.push({leftOfME: {leftOfMEcolor}})
+          }
 
-      var topOfNFcolor
-      if (colors.NFcolor == "green") {
-        topOfNFcolor = '#08ff00'
-        colorArray.push({topOfNF: {topOfNFcolor}})
-      } else {
-        topOfNFcolor = 'red'
-        colorArray.push({topOfNF: {topOfNFcolor}})
-      }
+          var topOfNFcolor
+          if (colors.NFcolor == "green") {
+            topOfNFcolor = '#08ff00'
+            colorArray.push({topOfNF: {topOfNFcolor}})
+          } else {
+            topOfNFcolor = 'red'
+            colorArray.push({topOfNF: {topOfNFcolor}})
+          }
 
-      var aroundSFcolor
-      if (colors.SFcolor == "green") {
-        aroundSFcolor = '#08ff00'
-        colorArray.push({aroundSF: {aroundSFcolor}})
-      } else {
-        aroundSFcolor = 'red'
-        colorArray.push({aroundSF: {aroundSFcolor}})
-      }
-
-
-      var SFToNFcolor
-      if (colors.SFcolor == "green" && colors.NFcolor == "green") {
-        SFToNFcolor = '#08ff00'
-        colorArray.push({SFToNF: {SFToNFcolor}})
-      } else if (colors.SFcolor == "red" && colors.NFcolor == "red") {
-          SFToNFcolor = "red"
-          colorArray.push({SFToNF: {SFToNFcolor}})
-      } else {
-          SFToNFcolor = "purple"
-          colorArray.push({SFToNF: {SFToNFcolor}})
-      }
-
-      var METoBordercolor
-      if (colors.MEcolor == "green") {
-        METoBordercolor = '#08ff00'
-        colorArray.push({METoBorder: {METoBordercolor}})
-      } else {
-        METoBordercolor = 'red'
-        colorArray.push({METoBorder: {METoBordercolor}})
-      }
-
-      var aroundSF2color
-      if (colors.SF2color == "green") {
-        aroundSF2color = '#08ff00'
-        colorArray.push({aroundSF2: {aroundSF2color}})
-      } else {
-        aroundSF2color = 'red'
-        colorArray.push({aroundSF2: {aroundSF2color}})
-      }
+          var aroundSFcolor
+          if (colors.SFcolor == "green") {
+            aroundSFcolor = '#08ff00'
+            colorArray.push({aroundSF: {aroundSFcolor}})
+          } else {
+            aroundSFcolor = 'red'
+            colorArray.push({aroundSF: {aroundSFcolor}})
+          }
 
 
-      console.log("===============");
-      console.log(req.session.possibleAlgaeBloomsForSearch);
+          var SFToNFcolor
+          if (colors.SFcolor == "green" && colors.NFcolor == "green") {
+            SFToNFcolor = '#08ff00'
+            colorArray.push({SFToNF: {SFToNFcolor}})
+          } else if (colors.SFcolor == "red" && colors.NFcolor == "red") {
+              SFToNFcolor = "red"
+              colorArray.push({SFToNF: {SFToNFcolor}})
+          } else {
+              SFToNFcolor = "purple"
+              colorArray.push({SFToNF: {SFToNFcolor}})
+          }
 
-      res.render('searchWithOverlays', {infoArray: infoArray, colorArray:colorArray, date: req.body.date, possibleBlooms: req.session.possibleAlgaeBloomsForSearch} )
+          var METoBordercolor
+          if (colors.MEcolor == "green") {
+            METoBordercolor = '#08ff00'
+            colorArray.push({METoBorder: {METoBordercolor}})
+          } else {
+            METoBordercolor = 'red'
+            colorArray.push({METoBorder: {METoBordercolor}})
+          }
+
+          var aroundSF2color
+          if (colors.SF2color == "green") {
+            aroundSF2color = '#08ff00'
+            colorArray.push({aroundSF2: {aroundSF2color}})
+          } else {
+            aroundSF2color = 'red'
+            colorArray.push({aroundSF2: {aroundSF2color}})
+          }
+
+
+
+          req.session.reasonAndMethodOverlaysSearch = []
+          req.session.siteListSearch = []
+          function finalModifiedReasonForBloomOverlaysSearch(site, day, req) {
+            req.session.siteListSearch.push(site)
+            if (req.session.possibleAlgaeBloomsForSearch.indexOf(site) > -1 ) {
+              modifiedReasonForBloomOverlaysSearch(site, day, req)
+            } else {
+              req.session.reasonAndMethodOverlaysSearch.push({reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"})
+
+            }
+          }
+
+
+
+          finalModifiedReasonForBloomOverlaysSearch('SB', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('VB', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('LP', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('FP', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('JB', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('SLE', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('NF', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('ME', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('SF', req.session.overlayDaySearch, req)
+          finalModifiedReasonForBloomOverlaysSearch('SF2', req.session.overlayDaySearch, req)
+
+
+      setTimeout(function () {
+        console.log("===============");
+        console.log(req.session.reasonAndMethodOverlaysSearch);
+        res.render('searchWithOverlays', {infoArray: infoArray, colorArray:colorArray, date: req.body.date, possibleBlooms: req.session.possibleAlgaeBloomsForSearch, reasonAndMethod:req.session.reasonAndMethodOverlaysSearch, siteList: req.session.siteListSearch} )
+      },600)
+
+
+
 
 
     }, 500)

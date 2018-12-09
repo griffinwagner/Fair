@@ -400,15 +400,39 @@
 
   <body>
     <div id="map" class="map mapWidth80"></div>
-    <div class="overMap">
-      <span class="glyphicon glyphicon-remove removeKey"></span>
-       <p class="overMapText">   Green: No Algae Bloom; <br>Yellow: Uncertain Bloom;<br> Red: Possible Bloom       <span class="glyphicon glyphicon-question-sign"></span> </p>
 
-    </div>
 
     <div class="overMap2">
       <span class="glyphicon glyphicon-remove removeOther"></span>
-       <p class="overMapText"> Remember To Check Site SF2</p>
+
+      <div class="shiftedRight">
+        <h3> <u> Bloom Information</u> </h3>
+        <% if (possibleBlooms.length == 0){%>
+          <p>No Chance Of Algae Bloom <p>
+        <%} else {%>
+          <%for (var i = 0; i < possibleBlooms.length; i++) {%>
+            <b><%= possibleBlooms[i]%></b>:
+            <% var index = siteList.indexOf(possibleBlooms[i])%>
+            <%=reasonAndMethod[index].reasonForAlgaeBloom%> <br>
+            <% if(i + 1 != possibleBlooms.length) {%>
+              <br>
+            <%}%>
+          <%}%>
+        <%}%>
+
+        <h3> <u> Prevention Method</u> </h3>
+        <% if (possibleBlooms.length == 0){%>
+          <p>For General Estuary Health, Reduce Fertilizer Use</p>
+        <%} else {%>
+          <%for (var i = 0; i < possibleBlooms.length; i++) {%>
+            <b><%= possibleBlooms[i]%></b>:
+            <% var index = siteList.indexOf(possibleBlooms[i])%>
+            <%=reasonAndMethod[index].protectionMethod%> <br> <br>
+          <%}%>
+        <%}%>
+
+
+      </div>
 
     </div>
 
