@@ -866,7 +866,20 @@ module.exports = function(app, db) {
                     console.log(sql10);
                     db.query(sql10, (err, result)=>{
                       var conditions = result[0]
-                      res.render('lpdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                      if (chanceOfAnAlgaeBloom) {
+                        reasonForBloom("LP", day, req)
+                      } else {
+                        req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                      }
+
+                      setTimeout( function() {
+                        var reasonAndMethod = req.session.reasonAndMethod
+                        console.log(reasonAndMethod);
+                        res.render('lpdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                      }, 1200)
+
+
 
                     });
 
@@ -1445,7 +1458,20 @@ module.exports = function(app, db) {
                         }
                       });
                     console.log(monthData);
-                    res.render('index4', {alert: alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                    if (chanceOfAnAlgaeBloom) {
+                      reasonForBloom("LP", day, req)
+                    } else {
+                      req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                    }
+
+                    setTimeout( function() {
+                      var reasonAndMethod = req.session.reasonAndMethod
+                      console.log(reasonAndMethod);
+                      res.render('index4', {reasonAndMethod:reasonAndMethod, alert: alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                    }, 1200)
+
+
 
                       // console.log(twoWeeksAgoData);
                       // console.log(oneWeekAgoData);
@@ -2320,7 +2346,21 @@ module.exports = function(app, db) {
                           }
                         });
                       console.log(monthData);
-                      res.render('index4FP', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                      if (chanceOfAnAlgaeBloom) {
+                        reasonForBloom("FP", day, req)
+                      } else {
+                        req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                      }
+
+                      setTimeout( function() {
+                        var reasonAndMethod = req.session.reasonAndMethod
+                        console.log(reasonAndMethod);
+                        res.render('index4FP', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                      }, 1200)
+
+
+
 
                         // console.log(twoWeeksAgoData);
                         // console.log(oneWeekAgoData);
@@ -2913,7 +2953,20 @@ module.exports = function(app, db) {
                       console.log(sql10);
                       db.query(sql10, (err, result)=>{
                         var conditions = result[0]
-                        res.render('fpdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                        if (chanceOfAnAlgaeBloom) {
+                          reasonForBloom("FP", day, req)
+                        } else {
+                          req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                        }
+
+                        setTimeout( function() {
+                          var reasonAndMethod = req.session.reasonAndMethod
+                          console.log(reasonAndMethod);
+                          res.render('fpdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                        }, 1200)
+
+
 
                       });                      // console.log(twoWeeksAgoData);
                       // console.log(oneWeekAgoData);
@@ -3830,7 +3883,20 @@ module.exports = function(app, db) {
                              }
                            });
                          console.log(monthData);
-                         res.render('index4SF', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                         if (chanceOfAnAlgaeBloom) {
+                           reasonForBloom("SF", day, req)
+                         } else {
+                           req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                         }
+
+                         setTimeout( function() {
+                           var reasonAndMethod = req.session.reasonAndMethod
+                           console.log(reasonAndMethod);
+                           res.render('index4SF', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                         }, 1200)
+
+
 
                            // console.log(twoWeeksAgoData);
                            // console.log(oneWeekAgoData);
@@ -4425,7 +4491,21 @@ module.exports = function(app, db) {
                       console.log(sql10);
                       db.query(sql10, (err, result)=>{
                         var conditions = result[0]
-                        res.render('sfdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+
+                         if (chanceOfAnAlgaeBloom) {
+                           reasonForBloom("SF", day, req)
+                         } else {
+                           req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                         }
+
+                         setTimeout( function() {
+                           var reasonAndMethod = req.session.reasonAndMethod
+                           console.log(reasonAndMethod);
+                           res.render('sfdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                         }, 1200)
+
+
 
                       });                      // console.log(twoWeeksAgoData);
                       // console.log(oneWeekAgoData);
@@ -5299,7 +5379,20 @@ module.exports = function(app, db) {
                              }
                            });
                          console.log(monthData);
-                         res.render('index4SB', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                         if (chanceOfAnAlgaeBloom) {
+                           reasonForBloom("SB", day, req)
+                         } else {
+                           req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                         }
+
+                         setTimeout( function() {
+                           var reasonAndMethod = req.session.reasonAndMethod
+                           console.log(reasonAndMethod);
+                           res.render('index4SB', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                         }, 1200)
+
+
 
                            // console.log(twoWeeksAgoData);
                            // console.log(oneWeekAgoData);
@@ -5894,7 +5987,20 @@ module.exports = function(app, db) {
                            console.log(sql10);
                            db.query(sql10, (err, result)=>{
                              var conditions = result[0]
-                             res.render('SBdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                             if (chanceOfAnAlgaeBloom) {
+                               reasonForBloom("SB", day, req)
+                             } else {
+                               req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                             }
+
+                             setTimeout( function() {
+                               var reasonAndMethod = req.session.reasonAndMethod
+                               console.log(reasonAndMethod);
+                               res.render('SBdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                             }, 1200)
+
+
 
                            });                      // console.log(twoWeeksAgoData);
                            // console.log(oneWeekAgoData);
@@ -6766,7 +6872,22 @@ module.exports = function(app, db) {
                                 }
                               });
                             console.log(monthData);
-                            res.render('index4NF', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+
+                            if (chanceOfAnAlgaeBloom) {
+                              reasonForBloom("NF", day, req)
+                            } else {
+                              req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                            }
+
+                            setTimeout( function() {
+                              var reasonAndMethod = req.session.reasonAndMethod
+                              console.log(reasonAndMethod);
+                              res.render('index4NF', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                            }, 1200)
+
+
+
 
                               // console.log(twoWeeksAgoData);
                               // console.log(oneWeekAgoData);
@@ -7361,7 +7482,22 @@ module.exports = function(app, db) {
                          console.log(sql10);
                          db.query(sql10, (err, result)=>{
                            var conditions = result[0]
-                           res.render('NFdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+
+
+                           if (chanceOfAnAlgaeBloom) {
+                             reasonForBloom("NF", day, req)
+                           } else {
+                             req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                           }
+
+                           setTimeout( function() {
+                             var reasonAndMethod = req.session.reasonAndMethod
+                             console.log(reasonAndMethod);
+                             res.render('NFdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                           }, 1200)
+
+
 
                          });                      // console.log(twoWeeksAgoData);
                          // console.log(oneWeekAgoData);
@@ -8239,7 +8375,20 @@ module.exports = function(app, db) {
                                  }
                                });
                              console.log(monthData);
-                             res.render('index4SLE', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                             if (chanceOfAnAlgaeBloom) {
+                               reasonForBloom("SLE", day, req)
+                             } else {
+                               req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                             }
+
+                             setTimeout( function() {
+                               var reasonAndMethod = req.session.reasonAndMethod
+                               console.log(reasonAndMethod);
+                               res.render('index4SLE', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                             }, 1200)
+
+
 
                                // console.log(twoWeeksAgoData);
                                // console.log(oneWeekAgoData);
@@ -8834,7 +8983,20 @@ module.exports = function(app, db) {
                           console.log(sql10);
                           db.query(sql10, (err, result)=>{
                             var conditions = result[0]
-                            res.render('SLEdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                            if (chanceOfAnAlgaeBloom) {
+                              reasonForBloom("SLE", day, req)
+                            } else {
+                              req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                            }
+
+                            setTimeout( function() {
+                              var reasonAndMethod = req.session.reasonAndMethod
+                              console.log(reasonAndMethod);
+                              res.render('SLEdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                            }, 1200)
+
+
 
                           });                      // console.log(twoWeeksAgoData);
                           // console.log(oneWeekAgoData);
@@ -9710,7 +9872,20 @@ module.exports = function(app, db) {
                                    }
                                  });
                                console.log(monthData);
-                               res.render('index4VB', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                               if (chanceOfAnAlgaeBloom) {
+                                 reasonForBloom("VB", day, req)
+                               } else {
+                                 req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                               }
+
+                               setTimeout( function() {
+                                 var reasonAndMethod = req.session.reasonAndMethod
+                                 console.log(reasonAndMethod);
+                                 res.render('index4VB', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                               }, 1200)
+
+
 
                                  // console.log(twoWeeksAgoData);
                                  // console.log(oneWeekAgoData);
@@ -10305,7 +10480,20 @@ module.exports = function(app, db) {
                                 console.log(sql10);
                                 db.query(sql10, (err, result)=>{
                                   var conditions = result[0]
-                                  res.render('VBdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+                                  if (chanceOfAnAlgaeBloom) {
+                                    reasonForBloom("VB", day, req)
+                                  } else {
+                                    req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                  }
+
+                                  setTimeout( function() {
+                                    var reasonAndMethod = req.session.reasonAndMethod
+                                    console.log(reasonAndMethod);
+                                    res.render('VBdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                                  }, 1200)
+
+
 
                                 });                      // console.log(twoWeeksAgoData);
                                 // console.log(oneWeekAgoData);
@@ -11180,7 +11368,20 @@ module.exports = function(app, db) {
                                    }
                                  });
                                console.log(monthData);
-                               res.render('index4ME', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                               if (chanceOfAnAlgaeBloom) {
+                                 reasonForBloom("ME", day, req)
+                               } else {
+                                 req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                               }
+
+                               setTimeout( function() {
+                                 var reasonAndMethod = req.session.reasonAndMethod
+                                 console.log(reasonAndMethod);
+                                 res.render('index4ME', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                               }, 1200)
+
+
 
                                  // console.log(twoWeeksAgoData);
                                  // console.log(oneWeekAgoData);
@@ -11775,7 +11976,24 @@ module.exports = function(app, db) {
                                 console.log(sql10);
                                 db.query(sql10, (err, result)=>{
                                   var conditions = result[0]
-                                  res.render('MEdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+
+
+                                  if (chanceOfAnAlgaeBloom) {
+                                    reasonForBloom("ME", day, req)
+                                  } else {
+                                    req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                  }
+
+
+
+                                  setTimeout( function() {
+                                    var reasonAndMethod = req.session.reasonAndMethod
+                                    console.log(reasonAndMethod);
+                                    res.render('MEdata', {reasonAndMethod: reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                                  }, 1200)
+
+
 
                                 });                      // console.log(twoWeeksAgoData);
                                 // console.log(oneWeekAgoData);
@@ -12648,7 +12866,23 @@ module.exports = function(app, db) {
                                      }
                                    });
                                  console.log(monthData);
-                                 res.render('index4JB', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+
+                                 if (chanceOfAnAlgaeBloom) {
+
+                                   reasonForBloom("JB", day, req)
+                                 } else {
+                                   req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                 }
+
+
+
+                                 setTimeout( function() {
+                                   var reasonAndMethod = req.session.reasonAndMethod
+                                   console.log(reasonAndMethod);
+                                   res.render('index4JB', {reasonAndMethod:reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                                 }, 1200)
+
+
 
                                    // console.log(twoWeeksAgoData);
                                    // console.log(oneWeekAgoData);
@@ -13243,7 +13477,28 @@ module.exports = function(app, db) {
                                         console.log(sql10);
                                         db.query(sql10, (err, result)=>{
                                           var conditions = result[0]
-                                          res.render('JBdata', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+
+
+
+                                          if (chanceOfAnAlgaeBloom) {
+
+                                            reasonForBloom("JB", day, req)
+                                          } else {
+                                            req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                          }
+
+
+
+
+
+
+
+
+                                          setTimeout(function () {
+                                            var reasonAndMethod = req.session.reasonAndMethod
+                                            console.log(reasonAndMethod);
+                                            res.render('JBdata', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                                          }, 1200)
 
                                         });                      // console.log(twoWeeksAgoData);
                                         // console.log(oneWeekAgoData);
@@ -14119,10 +14374,19 @@ module.exports = function(app, db) {
                                     }
                                   });
                                 console.log(monthData);
-                                reasonForBloom('SF2', specificID)
+
+                                if (chanceOfAnAlgaeBloom) {
+
+                                  reasonForBloom("SF2", day, req)
+                                } else {
+                                  req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                }
+
                                 setTimeout(function () {
-                                  res.render('index4SF2', {alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
-                                }, 300)
+                                  var reasonAndMethod = req.session.reasonAndMethod;
+                                  console.log(reasonAndMethod);
+                                  res.render('index4SF2', {reasonAndMethod: reasonAndMethod, alert:alert, nitrate:specificDayNitrate, monthData:monthData,  StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom, saline:specificDaySaline, temp:specificDayTemp, date:specificDayDate})
+                                }, 1200)
                                   // console.log(twoWeeksAgoData);
                                   // console.log(oneWeekAgoData);
                                   // console.log(currentWeekData);
@@ -14716,10 +14980,21 @@ module.exports = function(app, db) {
                                                console.log(sql10);
                                                db.query(sql10, (err, result)=>{
                                                  var conditions = result[0]
-                                                 reasonForBloom("SF2", day)
+
+                                                 if (chanceOfAnAlgaeBloom) {
+
+                                                   reasonForBloom("SF2", day, req)
+                                                 } else {
+                                                   req.session.reasonAndMethod = {reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"}
+                                                 }
+
+
+
                                                  setTimeout( function() {
-                                                   res.render('SF2data', {conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
-                                                 }, 300)
+                                                   var reasonAndMethod = req.session.reasonAndMethod
+                                                   console.log(reasonAndMethod);
+                                                   res.render('SF2data', {reasonAndMethod:reasonAndMethod, conditions:conditions, alert:alert, monthData:monthData, StringChanceOfAnAlgaeBloom:StringChanceOfAnAlgaeBloom})
+                                                 }, 1200)
                                                });                      // console.log(twoWeeksAgoData);
                                                // console.log(oneWeekAgoData);
                                                // console.log(currentWeekData);
@@ -14740,14 +15015,144 @@ module.exports = function(app, db) {
 
 // END Indiv Sites
 
-function reasonForBloom(site, date) {
-  let sql = `SELECT * FROM ` +site+` where id = `+date+ `;`
+ function reasonForBloom(site, date, req) {
+  var threeWeek = date - 21;
+  let sql = `SELECT * FROM ` +site+` where id <= `+date+ ` AND id >= `+threeWeek+`;`
   db.query(sql, (err, result)=>{
-    console.log(result);
+    var firstWeekNitrateLevels = []
+    var secondWeekNitrateLevels = []
+    var firstWeekSalineLevels = []
+    var secondWeekSalineLevels = []
+    for (var i = 21; i > 14; i--) {
+      firstWeekNitrateLevels.push(result[i].nitrateLevel)
+      secondWeekNitrateLevels.push(result[i-7].nitrateLevel)
+      firstWeekSalineLevels.push(result[i].salineLevel)
+      secondWeekSalineLevels.push(result[i-7].nitrateLevel)
+    }
+
+
+
+    var firstWeekNitrateLevelsTotal = 0;
+    for(var i = 0; i < firstWeekNitrateLevels.length; i++) {
+        firstWeekNitrateLevelsTotal += firstWeekNitrateLevels[i];
+    }
+    var firstWeekNitrateLevelsAvg = firstWeekNitrateLevelsTotal / firstWeekNitrateLevels.length;
+
+
+    var secondWeekNitrateLevelsTotal = 0;
+    for(var i = 0; i < secondWeekNitrateLevels.length; i++) {
+        secondWeekNitrateLevelsTotal += secondWeekNitrateLevels[i];
+    }
+    var secondWeekNitrateLevelsAvg = secondWeekNitrateLevelsTotal / secondWeekNitrateLevels.length;
+
+    var firstWeekSalineLevelsTotal = 0;
+    for(var i = 0; i < firstWeekSalineLevels.length; i++) {
+        firstWeekSalineLevelsTotal += firstWeekSalineLevels[i];
+    }
+    var firstWeekSalineLevelsAvg = firstWeekSalineLevelsTotal / firstWeekSalineLevels.length;
+
+    var secondWeekSalineLevelsTotal = 0;
+    for(var i = 0; i < secondWeekSalineLevels.length; i++) {
+        secondWeekSalineLevelsTotal += secondWeekSalineLevels[i];
+    }
+    var secondWeekSalineLevelsAvg = secondWeekSalineLevelsTotal / secondWeekSalineLevels.length;
+
+
+    var reasonForAlgaeBloom = ""
+    var protectionMethod = ""
+    if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg >= 1.2) {
+      reasonForAlgaeBloom = "Fertilizer Run-Off And Population Density"
+      protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary"
+    } else if (firstWeekNitrateLevelsAvg < 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+      reasonForAlgaeBloom = "Fresh Water (Presumably From Lake Okeechobee)"
+      protectionMethod = "Salination of Water And No Discharges From Lake Okeechobee"
+    }else if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+      reasonForAlgaeBloom = 'Fertilizer Run-Off / Population Density AND Fresh Water (Presumably From Lake Okeechobee)'
+      protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary AND Salination of Water And No Discharges From Lake Okeechobee"
+    } else {
+      reasonForAlgaeBloom = "Unknown"
+      protectionMethod = "Limit Nitrate and Fresh Water In Lagoon/Estuary"
+    }
+
+    var reasonAndMethod = {reasonForAlgaeBloom:reasonForAlgaeBloom, protectionMethod:protectionMethod}
+    req.session.reasonAndMethod = reasonAndMethod
+
+
+
   })
-}
 
 
+ }
+
+
+  function modifiedReasonForBloomOverlays(site, date, req) {
+   var threeWeek = date - 21;
+   let sql = `SELECT * FROM ` +site+` where id <= `+date+ ` AND id >= `+threeWeek+`;`
+   db.query(sql, (err, result)=>{
+     var firstWeekNitrateLevels = []
+     var secondWeekNitrateLevels = []
+     var firstWeekSalineLevels = []
+     var secondWeekSalineLevels = []
+     for (var i = 21; i > 14; i--) {
+       firstWeekNitrateLevels.push(result[i].nitrateLevel)
+       secondWeekNitrateLevels.push(result[i-7].nitrateLevel)
+       firstWeekSalineLevels.push(result[i].salineLevel)
+       secondWeekSalineLevels.push(result[i-7].nitrateLevel)
+     }
+
+
+
+     var firstWeekNitrateLevelsTotal = 0;
+     for(var i = 0; i < firstWeekNitrateLevels.length; i++) {
+         firstWeekNitrateLevelsTotal += firstWeekNitrateLevels[i];
+     }
+     var firstWeekNitrateLevelsAvg = firstWeekNitrateLevelsTotal / firstWeekNitrateLevels.length;
+
+
+     var secondWeekNitrateLevelsTotal = 0;
+     for(var i = 0; i < secondWeekNitrateLevels.length; i++) {
+         secondWeekNitrateLevelsTotal += secondWeekNitrateLevels[i];
+     }
+     var secondWeekNitrateLevelsAvg = secondWeekNitrateLevelsTotal / secondWeekNitrateLevels.length;
+
+     var firstWeekSalineLevelsTotal = 0;
+     for(var i = 0; i < firstWeekSalineLevels.length; i++) {
+         firstWeekSalineLevelsTotal += firstWeekSalineLevels[i];
+     }
+     var firstWeekSalineLevelsAvg = firstWeekSalineLevelsTotal / firstWeekSalineLevels.length;
+
+     var secondWeekSalineLevelsTotal = 0;
+     for(var i = 0; i < secondWeekSalineLevels.length; i++) {
+         secondWeekSalineLevelsTotal += secondWeekSalineLevels[i];
+     }
+     var secondWeekSalineLevelsAvg = secondWeekSalineLevelsTotal / secondWeekSalineLevels.length;
+
+
+     var reasonForAlgaeBloom = ""
+     var protectionMethod = ""
+     if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg >= 1.2) {
+       reasonForAlgaeBloom = "Fertilizer Run-Off And Population Density"
+       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary"
+     } else if (firstWeekNitrateLevelsAvg < 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+       reasonForAlgaeBloom = "Fresh Water (Presumably From Lake Okeechobee)"
+       protectionMethod = "Salination of Water And No Discharges From Lake Okeechobee"
+     }else if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg < 1.2) {
+       reasonForAlgaeBloom = 'Fertilizer Run-Off / Population Density AND Fresh Water (Presumably From Lake Okeechobee)'
+       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary AND Salination of Water And No Discharges From Lake Okeechobee"
+     } else {
+       reasonForAlgaeBloom = "Unknown"
+       protectionMethod = "Limit Nitrate and Fresh Water In Lagoon/Estuary"
+     }
+
+     var reasonAndMethod = {reasonForAlgaeBloom:reasonForAlgaeBloom, protectionMethod:protectionMethod}
+     req.session.reasonAndMethodOverlays.push(reasonAndMethod)
+
+
+
+   })
+
+
+  }
 
 
 
@@ -14785,6 +15190,7 @@ app.get('/overlays', function (req, res) {
       let sql = 'SELECT COUNT(*) FROM '+site+';'
       db.query (sql, (err, result)=>{
         var day = result[0]["COUNT(*)"]
+        req.session.overlayDay = day
         var week = day - 7
         let sql2 = `SELECT * FROM `+site+` WHERE id > ` + week + ';'
         db.query(sql2, (err, result)=>{
@@ -15280,138 +15686,166 @@ app.get('/overlays', function (req, res) {
 
       setTimeout(function(){
         var infoArray = {SBinfo: req.session.data[0], VBinfo: req.session.data[1], LPinfo: req.session.data[2], FPinfo:req.session.data[3], JBinfo:req.session.data[4], SLEinfo:req.session.data[5], NFinfo:req.session.data[6], MEinfo:req.session.data[7]}
-        infoArray.SFinfo = req.session.data[8]
-        infoArray.SF2info = req.session.data[9]
-        var colors = {SBcolor:req.session.color[0], VBcolor:req.session.color[1], LPcolor: req.session.color[2], FPcolor:req.session.color[3], JBcolor:req.session.color[4], SLEcolor:req.session.color[5], NFcolor:req.session.color[6], MEcolor:req.session.color[7]}
-        colors.SFcolor = req.session.color[8]
-        colors.SF2color = req.session.color[9]
-        var colorArray = []
+          infoArray.SFinfo = req.session.data[8]
+          infoArray.SF2info = req.session.data[9]
+          var colors = {SBcolor:req.session.color[0], VBcolor:req.session.color[1], LPcolor: req.session.color[2], FPcolor:req.session.color[3], JBcolor:req.session.color[4], SLEcolor:req.session.color[5], NFcolor:req.session.color[6], MEcolor:req.session.color[7]}
+          colors.SFcolor = req.session.color[8]
+          colors.SF2color = req.session.color[9]
+          var colorArray = []
 
-        var SBToVBChunk1, SBToVBChunk2color, SBToVBChunk3color, SBToVBChunk4color, SBToVBChunk5color, SBToVBChunk6color, SBToVBChunk7color
-        if (colors.SBcolor == "green" && colors.VBcolor == "green") {
-          SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "#08ff00"
-          colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
-        } else if (colors.SBcolor == "red" && colors.VBcolor == "red") {
-          SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "red"
-          colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1color, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          var SBToVBChunk1, SBToVBChunk2color, SBToVBChunk3color, SBToVBChunk4color, SBToVBChunk5color, SBToVBChunk6color, SBToVBChunk7color
+          if (colors.SBcolor == "green" && colors.VBcolor == "green") {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "#08ff00"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          } else if (colors.SBcolor == "red" && colors.VBcolor == "red") {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "red"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1color, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
 
-        } else {
-          SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "purple"
-          colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
+          } else {
+            SBToVBChunk1 = SBToVBChunk2color = SBToVBChunk3color = SBToVBChunk4color = SBToVBChunk5color = SBToVBChunk6color = SBToVBChunk7color = "purple"
+            colorArray.push({SBToVB:{SBToVBChunk1:SBToVBChunk1, SBToVBChunk2color:SBToVBChunk2color, SBToVBChunk3color:SBToVBChunk3color, SBToVBChunk4color:SBToVBChunk4color, SBToVBChunk5color:SBToVBChunk5color, SBToVBChunk6color:SBToVBChunk6color, SBToVBChunk7color:SBToVBChunk7color}})
 
-        }
+          }
 
-        var VBToLPcolor
-        if (colors.VBcolor == "green" && colors.LPcolor == "green") {
-          VBToLPcolor = '#08ff00'
-          colorArray.push({VBToLP: {VBToLPcolor}})
-        } else if (colors.VBcolor == "red" && colors.LPcolor == "red") {
-          VBToLPcolor = "red"
-          colorArray.push({VBToLP: {VBToLPcolor}})
-        } else {
-          VBToLPcolor = "purple"
-          colorArray.push({VBToLP: {VBToLPcolor}})
-        }
+          var VBToLPcolor
+          if (colors.VBcolor == "green" && colors.LPcolor == "green") {
+            VBToLPcolor = '#08ff00'
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          } else if (colors.VBcolor == "red" && colors.LPcolor == "red") {
+            VBToLPcolor = "red"
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          } else {
+            VBToLPcolor = "purple"
+            colorArray.push({VBToLP: {VBToLPcolor}})
+          }
 
-        var LPToFPcolor
-        if (colors.LPcolor == "green" && colors.FPcolor == "green") {
-          LPToFPcolor = '#08ff00'
-          colorArray.push({LPToFP: {LPToFPcolor}})
-        } else if (colors.LPcolor == "red" && colors.FPcolor == "red") {
-            LPToFPcolor = "red"
+          var LPToFPcolor
+          if (colors.LPcolor == "green" && colors.FPcolor == "green") {
+            LPToFPcolor = '#08ff00'
             colorArray.push({LPToFP: {LPToFPcolor}})
-        } else {
-            LPToFPcolor = "purple"
-            colorArray.push({LPToFP: {LPToFPcolor}})
-        }
+          } else if (colors.LPcolor == "red" && colors.FPcolor == "red") {
+              LPToFPcolor = "red"
+              colorArray.push({LPToFP: {LPToFPcolor}})
+          } else {
+              LPToFPcolor = "purple"
+              colorArray.push({LPToFP: {LPToFPcolor}})
+          }
 
-        var FPToJBcolor
-        if (colors.JBcolor == "green" && colors.FPcolor == "green") {
-          FPToJBcolor = '#08ff00'
-          colorArray.push({FPToJB: {FPToJBcolor}})
-        } else if (colors.JBcolor == "red" && colors.FPcolor == "red") {
-            FPToJBcolor = "red"
+          var FPToJBcolor
+          if (colors.JBcolor == "green" && colors.FPcolor == "green") {
+            FPToJBcolor = '#08ff00'
             colorArray.push({FPToJB: {FPToJBcolor}})
-        } else {
-            FPToJBcolor = "purple"
-            colorArray.push({FPToJB: {FPToJBcolor}})
-        }
+          } else if (colors.JBcolor == "red" && colors.FPcolor == "red") {
+              FPToJBcolor = "red"
+              colorArray.push({FPToJB: {FPToJBcolor}})
+          } else {
+              FPToJBcolor = "purple"
+              colorArray.push({FPToJB: {FPToJBcolor}})
+          }
 
-        var JBToSLEcolor
-        if (colors.JBcolor == "green" && colors.SLEcolor == "green") {
-          JBToSLEcolor = '#08ff00'
-          colorArray.push({JBToSLE: {JBToSLEcolor}})
-        } else if (colors.JBcolor == "red" && colors.SLEcolor == "red") {
-            JBToSLEcolor = "red"
+          var JBToSLEcolor
+          if (colors.JBcolor == "green" && colors.SLEcolor == "green") {
+            JBToSLEcolor = '#08ff00'
             colorArray.push({JBToSLE: {JBToSLEcolor}})
-        } else {
-            JBToSLEcolor = "purple"
-            colorArray.push({JBToSLE: {JBToSLEcolor}})
-        }
+          } else if (colors.JBcolor == "red" && colors.SLEcolor == "red") {
+              JBToSLEcolor = "red"
+              colorArray.push({JBToSLE: {JBToSLEcolor}})
+          } else {
+              JBToSLEcolor = "purple"
+              colorArray.push({JBToSLE: {JBToSLEcolor}})
+          }
 
-        var leftOfMEcolor
-        if (colors.MEcolor == "green") {
-          leftOfMEcolor = '#08ff00'
-          colorArray.push({leftOfME: {leftOfMEcolor}})
-        } else {
-          leftOfMEcolor = 'red'
-          colorArray.push({leftOfME: {leftOfMEcolor}})
-        }
+          var leftOfMEcolor
+          if (colors.MEcolor == "green") {
+            leftOfMEcolor = '#08ff00'
+            colorArray.push({leftOfME: {leftOfMEcolor}})
+          } else {
+            leftOfMEcolor = 'red'
+            colorArray.push({leftOfME: {leftOfMEcolor}})
+          }
 
-        var topOfNFcolor
-        if (colors.MEcolor == "green") {
-          topOfNFcolor = '#08ff00'
-          colorArray.push({topOfNF: {topOfNFcolor}})
-        } else {
-          topOfNFcolor = 'red'
-          colorArray.push({topOfNF: {topOfNFcolor}})
-        }
+          var topOfNFcolor
+          if (colors.MEcolor == "green") {
+            topOfNFcolor = '#08ff00'
+            colorArray.push({topOfNF: {topOfNFcolor}})
+          } else {
+            topOfNFcolor = 'red'
+            colorArray.push({topOfNF: {topOfNFcolor}})
+          }
 
-        var aroundSFcolor
-        if (colors.MEcolor == "green") {
-          aroundSFcolor = '#08ff00'
-          colorArray.push({aroundSF: {aroundSFcolor}})
-        } else {
-          aroundSFcolor = 'red'
-          colorArray.push({aroundSF: {aroundSFcolor}})
-        }
+          var aroundSFcolor
+          if (colors.MEcolor == "green") {
+            aroundSFcolor = '#08ff00'
+            colorArray.push({aroundSF: {aroundSFcolor}})
+          } else {
+            aroundSFcolor = 'red'
+            colorArray.push({aroundSF: {aroundSFcolor}})
+          }
 
 
-        var SFToNFcolor
-        if (colors.SFcolor == "green" && colors.NFcolor == "green") {
-          SFToNFcolor = '#08ff00'
-          colorArray.push({SFToNF: {SFToNFcolor}})
-        } else if (colors.SFcolor == "red" && colors.NFcolor == "red") {
-            SFToNFcolor = "red"
+          var SFToNFcolor
+          if (colors.SFcolor == "green" && colors.NFcolor == "green") {
+            SFToNFcolor = '#08ff00'
             colorArray.push({SFToNF: {SFToNFcolor}})
-        } else {
-            SFToNFcolor = "purple"
-            colorArray.push({SFToNF: {SFToNFcolor}})
-        }
+          } else if (colors.SFcolor == "red" && colors.NFcolor == "red") {
+              SFToNFcolor = "red"
+              colorArray.push({SFToNF: {SFToNFcolor}})
+          } else {
+              SFToNFcolor = "purple"
+              colorArray.push({SFToNF: {SFToNFcolor}})
+          }
 
-        var METoBordercolor
-        if (colors.MEcolor == "green") {
-          METoBordercolor = '#08ff00'
-          colorArray.push({METoBorder: {METoBordercolor}})
-        } else {
-          METoBordercolor = 'red'
-          colorArray.push({METoBorder: {METoBordercolor}})
-        }
+          var METoBordercolor
+          if (colors.MEcolor == "green") {
+            METoBordercolor = '#08ff00'
+            colorArray.push({METoBorder: {METoBordercolor}})
+          } else {
+            METoBordercolor = 'red'
+            colorArray.push({METoBorder: {METoBordercolor}})
+          }
 
-        var aroundSF2color
-        if (colors.MEcolor == "green") {
-          aroundSF2color = '#08ff00'
-          colorArray.push({aroundSF2: {aroundSF2color}})
-        } else {
-          aroundSF2color = 'red'
-          colorArray.push({aroundSF2: {aroundSF2color}})
-        }
+          var aroundSF2color
+          if (colors.MEcolor == "green") {
+            aroundSF2color = '#08ff00'
+            colorArray.push({aroundSF2: {aroundSF2color}})
+          } else {
+            aroundSF2color = 'red'
+            colorArray.push({aroundSF2: {aroundSF2color}})
+          }
 
 
 
         console.log(colorArray);
+        req.session.reasonAndMethodOverlays = []
+        function finalModifiedReasonForBloomOverlays(site, day, req) {
+          if (req.session.possibleAlgaeBlooms.indexOf(site) > -1 ) {
+            modifiedReasonForBloomOverlays("site", day, req)
+          } else {
+            req.session.reasonAndMethodOverlays.push({reasonForAlgaeBloom: "No Chance Of Algae Bloom", protectionMethod: "For General Estuary Health, Reduce Fertilizer Use"})
 
-        res.render('overlays', {infoArray: infoArray, colorArray:colorArray, possibleBlooms:req.session.possibleAlgaeBlooms} )
+          }
+        }
+
+
+        finalModifiedReasonForBloomOverlays('SB', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('VB', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('LP', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('FP', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('JB', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('SLE', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('NF', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('ME', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('SF', req.session.overlayDay, req)
+        finalModifiedReasonForBloomOverlays('SF2', req.session.overlayDay, req)
+
+
+
+        setTimeout(function () {
+          console.log("===============");
+          console.log(req.session.reasonAndMethodOverlays);
+
+          res.render('overlays', {infoArray: infoArray, colorArray:colorArray, possibleBlooms:req.session.possibleAlgaeBlooms} )
+        },600)
 
 
 
@@ -16077,8 +16511,8 @@ app.post('/searchWithOverlays', function(req, res) {
       }
 
 
-
-      console.log(colorArray);
+      console.log("===============");
+      console.log(req.session.possibleAlgaeBloomsForSearch);
 
       res.render('searchWithOverlays', {infoArray: infoArray, colorArray:colorArray, date: req.body.date, possibleBlooms: req.session.possibleAlgaeBloomsForSearch} )
 
