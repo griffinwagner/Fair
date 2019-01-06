@@ -89,6 +89,11 @@ $('.glyphicon-search').click(function () {
   window.location.replace("/metaSearch");
 })
 
+$('.glyphicon-circle-arrow-down').click(function () {
+  window.location.replace("/download");
+
+})
+
 
 
 //

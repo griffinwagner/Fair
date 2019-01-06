@@ -406,14 +406,15 @@
       <span class="glyphicon glyphicon-remove removeOther"></span>
 
       <div class="shiftedRight">
-        <h3> <u> Bloom Information</u> </h3>
+        <h3> <u> Bloom Information</u> <small> <%=date%></small> </h3>
         <% if (possibleBlooms.length == 0){%>
           <p>No Chance Of Algae Bloom <p>
         <%} else {%>
+
           <%for (var i = 0; i < possibleBlooms.length; i++) {%>
             <b><%= possibleBlooms[i]%></b>:
-            <% var index = siteList.indexOf(possibleBlooms[i])%>
-            <%=reasonAndMethod[index].reasonForAlgaeBloom%> <br>
+            <b> <%=reasonAndMethod[i].cause%> Related %></b>
+            <%=reasonAndMethod[i].reasonForAlgaeBloom%> <br>
             <% if(i + 1 != possibleBlooms.length) {%>
               <br>
             <%}%>
@@ -426,8 +427,7 @@
         <%} else {%>
           <%for (var i = 0; i < possibleBlooms.length; i++) {%>
             <b><%= possibleBlooms[i]%></b>:
-            <% var index = siteList.indexOf(possibleBlooms[i])%>
-            <%=reasonAndMethod[index].protectionMethod%> <br> <br>
+            <%=reasonAndMethod[i].protectionMethod%> <br> <br>
           <%}%>
         <%}%>
 

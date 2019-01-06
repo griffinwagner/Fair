@@ -13,7 +13,7 @@
 
 
 
-        <title>LP DATA</title
+        <title>VB DATA</title
 
         <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
@@ -113,20 +113,22 @@
       <div class="container">
         <u> <h3>IRL-VB</h3> </u>
         <h4>NitrateSalineScore: <br> <%=monthData.thirdWeekNitrateSalineScore%> → <%=monthData.secondWeekNitrateSalineScore%> →  <%=monthData.firstWeekNitrateSalineScore%></h4>
-        <i><h4>Optimal: 6.85</h4></i> <br>
+        <i><h4>Optimal For Bloom: 6.85 + </h4></i>
+        <i><h4>Ranges From 0.0525 to 10.5</h4></i> <br>
 
         <h4>TemperatureScore: <br> <%=monthData.thirdWeekTempScore%> → <%=monthData.secondWeekTempScore%> →  <%=monthData.firstWeekTempScore%></h4>
-        <i><h4>Optimal: 7.15</h4></i> <br>
+        <i><h4>Optimal For Bloom: 7.15 + </h4></i>
+        <i><h4>Ranges From 3.5 to 8.75</h4></i> <br>
 
         <u> <h3>Today</h3> </u>
         <h4>Nitrate Level: <br> <%=conditions.nitrateLevel%>mM</h4>
-        <i><h4>Optimal: 6-9mM</h4></i> <br>
+        <i><h4>Optimal: > 6mM </h4></i> <br>
 
         <h4>Saline Level: <br> <%=conditions.salineLevel%>ppt</h4>
-        <i><h4>Optimal: 15-23ppt</h4></i> <br>
+        <i><h4>Optimal: < 15ppt </h4></i> <br>
 
         <h4>Temperature: <br> <%=conditions.tempLevel%> °C </h4>
-        <i><h4>Optimal: 31.4 C</h4></i> <br>
+        <i><h4>Optimal: < 31.4 C</h4></i> <br>
 
       </div>
       <div id="map"></div>
@@ -199,6 +201,19 @@
     <div class="leftSection">
 
       <div class="alert <%=alert%>" role="alert">  <div style="text-align:center; font-size:3vh"> <%=StringChanceOfAnAlgaeBloom%></div> </div>
+      <div class="alert <%=alert%>" role="alert" style="opacity:0.9">  <div style="text-align:center; font-size:3vh">
+        <% if (alert == 'alert-success'){%>
+          For General Estuary Health, Reduce Fertilizer Use
+        <%} else {%>
+
+            <h4><b> Reason For Bloom </b>: <%=reasonAndMethod.reasonForAlgaeBloom%> <br>
+            <b> Prevention Method </b>: <%=reasonAndMethod.protectionMethod%></h4>
+
+        <%}%>
+
+
+
+      </div> </div>
 
 
 
