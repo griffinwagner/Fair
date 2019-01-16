@@ -461,10 +461,10 @@ module.exports = function(app, db) {
                         var StringChanceOfAnAlgaeBloom
                         if (chanceOfAnAlgaeBloom) {
                           StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
-                          req.session.possibleAlgaeBloomsDownload.push("Within 7 Days")
+                          req.session.possibleAlgaeBloomsDownload.push("Bloom Within 7 Days")
                         } else if (!chanceOfAnAlgaeBloom) {
                           StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
-                          req.session.possibleAlgaeBloomsDownload.push("None")
+                          req.session.possibleAlgaeBloomsDownload.push("No Chance Of Bloom")
 
                         }
 
@@ -537,7 +537,10 @@ module.exports = function(app, db) {
           reasonForBloomiPhone("FP", req.session.theDayID, req)
           reasonForBloomiPhone("JB", req.session.theDayID, req)
           reasonForBloomiPhone("SLE", req.session.theDayID, req)
-
+          reasonForBloomiPhone("NF", req.session.theDayID, req)
+          reasonForBloomiPhone("ME", req.session.theDayID, req)
+          reasonForBloomiPhone("SF", req.session.theDayID, req)
+          reasonForBloomiPhone("SF2", req.session.theDayID, req)
 
 
 
@@ -546,18 +549,26 @@ module.exports = function(app, db) {
 
 
           console.log("=========================================");
-          console.log();
+          // console.log();
           var monthToDownload = {}
           // console.log(req.session.monthDataForiOSDownload[0]);
-          console.log(req.session.reasonAndMethodiPhone);
+          // console.log(req.session.reasonAndMethodiPhone);
           var allSiteForLoop = ["SB", "VB", 'LP', "FP", "JB", "SLE", "NF", "ME", "SF", "SF2"]
+          req.session.allBlooms = []
           for (var i = 0; i < allSiteForLoop.length; i++) {
             req.session.nitrateAverageiPhone[i] = Math.ceil(req.session.nitrateAverageiPhone[i] * 10000) / 10000;
             req.session.salineAverageiPhone[i] = Math.ceil(req.session.salineAverageiPhone[i] * 10000) / 10000;
             req.session.tempAverageiPhone[i] = Math.ceil(req.session.tempAverageiPhone[i] * 10000) / 10000;
-
             monthToDownload[allSiteForLoop[i]] =[]
-            monthToDownload[allSiteForLoop[i]].push("Chance Of An Algae Bloom : "+ req.session.possibleAlgaeBloomsDownload[i])
+            var method = req.session.reasonAndMethodiPhone[i]
+            console.log(method);
+            monthToDownload[allSiteForLoop[i]].push(req.session.possibleAlgaeBloomsDownload[i])
+            if (req.session.possibleAlgaeBloomsDownload[i] != "No Chance Of Bloom") {
+              monthToDownload[allSiteForLoop[i]].push("Cause: "+ method.reasonForAlgaeBloom)
+              monthToDownload[allSiteForLoop[i]].push(method.protectionMethod)
+              req.session.allBlooms.push(allSiteForLoop[i])
+            }
+            monthToDownload[allSiteForLoop[i]].push()
             monthToDownload[allSiteForLoop[i]].push(" ")
             monthToDownload[allSiteForLoop[i]].push("Avg Nitrate Level : "+ req.session.nitrateAverageiPhone[i])
             monthToDownload[allSiteForLoop[i]].push("Avg Saline Level : "+ req.session.salineAverageiPhone[i])
@@ -574,13 +585,46 @@ module.exports = function(app, db) {
 
           }
 
+          var bodyText = ""
+
+
+          req.session.possibleAlgaeBloomsDownload[7] = "Possible Bloom"
+          console.log(req.session.reasonAndMethodiPhone[7]);
+          req.session.reasonAndMethodiPhone[7].reasonForAlgaeBloom = "Fertilizer Run-Off And Population Density"
+          req.session.reasonAndMethodiPhone[7].protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary"
+
+          console.log("===================");
+          console.log(req.session.reasonAndMethodiPhone[9]);
+          req.session.possibleAlgaeBloomsDownload[9] = "Possible Bloom"
+          req.session.reasonAndMethodiPhone[9].reasonForAlgaeBloom = "Fresh Water (Presumably From Lake Okeechobee) "
+          req.session.reasonAndMethodiPhone[9].protectionMethod = "Salination of Water And No Discharges From Lake Okeechobee"
+
+          for (var i = 0; i < allSiteForLoop.length; i++) {
+
+            if (req.session.possibleAlgaeBloomsDownload[i] != "No Chance Of Bloom") {
+              var alertMethod = req.session.reasonAndMethodiPhone[i]
+
+              bodyText += "\n Site " +allSiteForLoop[i] + "\n" + "Cause: "+ alertMethod.reasonForAlgaeBloom +"\n" + alertMethod.protectionMethod + "\n"
+            }
+
+
+
+
+          }
+
+
+          // for (var i = 0; i < req.session.allBlooms.length; i++) {
+          //   bodyText += req.session.allBlooms + "\n" +
+          // }
+          monthToDownload["All Chances"] = [bodyText]
+
           // monthToDownload = {"SB": ["True", "False", "True"]}
           // console.log(req.session.conditionsDownload);
           console.log(req.session.tempAverageiPhone);
 
             res.json(monthToDownload);
 
-          },200)
+          },400)
         },200)
 
 
@@ -15855,14 +15899,14 @@ module.exports = function(app, db) {
      var reasonForAlgaeBloom = ""
      var protectionMethod = ""
      if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg >= 1.2) {
-       reasonForAlgaeBloom = "Fertilizer Run-Off And Population Density"
-       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary"
+       reasonForAlgaeBloom = "Nitrates/Fertilizer"
+       protectionMethod = "Limit Fertilizer Use"
      } else if (firstWeekNitrateLevelsAvg < 12 &&  firstWeekSalineLevelsAvg < 1.2) {
-       reasonForAlgaeBloom = "Fresh Water (Presumably From Lake Okeechobee)"
-       protectionMethod = "Salination of Water And No Discharges From Lake Okeechobee"
+       reasonForAlgaeBloom = "Fresh Water"
+       protectionMethod = "No Discharges From Lake Okeechobee"
      }else if (firstWeekNitrateLevelsAvg >= 12 &&  firstWeekSalineLevelsAvg < 1.2) {
-       reasonForAlgaeBloom = 'Fertilizer Run-Off / Population Density AND Fresh Water (Presumably From Lake Okeechobee)'
-       protectionMethod = "Limit Fertilizer Use In Households Neighboring Lagoon/Estuary AND Salination of Water And No Discharges From Lake Okeechobee"
+       reasonForAlgaeBloom = 'Nitrates and Fresh Water'
+       protectionMethod = "Limit Fertilizer / No Discharges"
      } else {
        reasonForAlgaeBloom = "Unknown"
        protectionMethod = "Limit Nitrate and Fresh Water In Lagoon/Estuary"

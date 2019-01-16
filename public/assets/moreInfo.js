@@ -90,9 +90,10 @@ $('.glyphicon-search').click(function () {
 })
 
 $('.glyphicon-circle-arrow-down').click(function () {
-  window.location.replace("/download");
+  window.location.replace("/downloadForiPhoneApp");
 
 })
+
 
 
 
