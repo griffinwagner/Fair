@@ -62,9 +62,11 @@
           </div>
 
           <h2>Algae Bloom Predictamator <small>How It Works</small> </h2>
-          <p>The Algae Bloom Predictamator is a privately funded and developed algorithm to detect algae blooms in the Indian River Lagoon at various sites. It relies on privately collected data in addition to publicly available data. </p> <p>Privately collected data includes the nitrate, saline, and temperature levels at which are needed for an algae bloom to occur. This data was collected from 2015 through 2017 in a Science Fair setting. Publicly available data includes the current and past nitrate, saline, and temperature levels in the Indian River Lagoon. This data has been collected since 2014 through Harbor Branch Oceanographic Institute’s LOBO Network. </p>
-          <p>This computer program compared current and past levels in the lagoon to the required nitrate, saline, and temperature conditions needed for an algae bloom. Accounting for the synergistic relationship between nitrate and saline (discovered in 2016/2017)  and the relationship temperature has, a NitrateSalineScore and a TemperatureScore are created. </p> <p> The NitrateSaline score runs from 0.525 to 10.5 and the TemperatureScore runs from 3.5 to 8.75. An algae bloom’s optimal conditions are a NitrateSaline score of 6.85 and a TemperatureScore of 7.15. The computer program also looks at the Nitrate and Saline trend (slope) and the temperatures trend (slope) to determine if an algae bloom is possible.</p>
-          <p>Overall, this program is able to predict Blue-Green Algae Blooms in the Indian River Lagoon. Using the procedures tested and performed in the 2015 to 2019 research, this algae could be grown in a lab-setting and then could be used to grow crops in an agricultural setting.</p>
+          <p>The Algae Bloom Predictamator has the ability to predict blue-green algae blooms in the Indian River Lagoon and St. Lucie Estuary 4 to 7 days before the bloom occurs. As blue-green algae blooms will cause $4 billion in damages to Indian River County over the next decade and blue-green algae blooms can have devastating effects on the health of the Indian River Lagoon.</p>
+          <p>Privately collected data includes the nitrate, saline, and temperature levels at which are needed for an algae bloom to occur. This data was collected from 2015 through 2017 in a Science Fair setting. Publicly available data includes the current and past nitrate, saline, and temperature levels in the Indian River Lagoon. This data has been collected since 2014 through Harbor Branch Oceanographic Institute’s LOBO Network. </p>
+          <p>This computer program compares current and past levels in the lagoon to the required nitrate, saline, and temperature conditions needed for an algae bloom. Accounting for the synergistic relationship between nitrate and saline (discovered in 2016/2017)  and the relationship temperature has, a NitrateSalineScore and a TemperatureScore is created. </p>
+          <p> The NitrateSaline score runs from 0.525 to 10.5 and the TemperatureScore runs from 3.5 to 8.75. An algae bloom’s optimal conditions are a NitrateSaline score of 6.85 and a TemperatureScore of 7.15. The computer program also looks at the Nitrate and Saline trend (slope) and the temperatures trend (slope) to determine if an algae bloom is possible.</p>
+          <p>Overall, this program is able to predict Blue-Green Algae Blooms in the IRL and SLE preventing billions of dollars in damages to the Indian River Lagoon. Between June and August of 2018, 28 algae blooms were reported by local Vero Beach newspapers. At a 93% success rate, the computer prorgam predicted 26 out of the 28 algae blooms 4 to 7 days in advance.</p>
           <br>
           <h2>LOBO Network<small>  How It Works</small> </h2>
 
@@ -187,7 +189,7 @@
     });
 
     var sanFranciscoLandmarks = [
-        { coordinate: new mapkit.Coordinate(27.53500000, -80.34217888888889), title: "IRL-LP",url: "/lpdata", website: "/search", newData: '/lp', create: "/createLP", delete: "/deleteLP"},
+        { coordinate: new mapkit.Coordinate(27.53500000, -80.34217888888889), title: "IRL-LP",url: "/lpdata", website: "/search"},
         { coordinate: new mapkit.Coordinate(27.475569444444442, -80.3266), title: "IRL-FP", url: "/fpdata",  website: "/searchForSiteFP", newData: "/fp", create: "/createFP", delete:"/deleteFP"},
         { coordinate: new mapkit.Coordinate(27.18815, -80.261425), title: "SFE-SF", url: "/sfdata",  website: "/searchForSiteSF", newData: "/sf", create: "/createSF", delete:"/deleteSF"},
         { coordinate: new mapkit.Coordinate(27.839125, -80.47081944444444), title: "IRL-SB", url: "/sbdata",  website: "/searchForSiteSB", newData: "/sb", create: "/createSB", delete:"/deleteSB"},
@@ -201,7 +203,7 @@
     ];
 
     // Landmark annotation callout delegate
-    var CALLOUT_OFFSET = new DOMPoint(-148, -162);
+    var CALLOUT_OFFSET = new DOMPoint(-148, -80);
     var landmarkAnnotationCallout = {
         calloutElementForAnnotation: function(annotation) {
             return calloutForLandmarkAnnotation(annotation);
@@ -260,26 +262,26 @@
         a2.href = annotation.landmark.website;
         a2.textContent = "Search";
 
-        var linkA2 = a2.appendChild(document.createElement("p"));
-        link.className = "homepage";
-
-        var a3 = linkA2.appendChild(document.createElement("a"));
-        a3.href = annotation.landmark.newData;
-        a3.textContent = "Analyze New Data";
-
-        var linkA3 = a3.appendChild(document.createElement("p"));
-        link.className = "homepage";
-
-        var a4 = linkA3.appendChild(document.createElement("a"));
-        a4.href = annotation.landmark.create;
-        a4.textContent = "Create Databases";
-
-        var linkA4 = a4.appendChild(document.createElement("p"));
-        link.className = "homepage";
-
-        var a5 = linkA4.appendChild(document.createElement("a"));
-        a5.href = annotation.landmark.delete;
-        a5.textContent = "Delete Databases";
+        // var linkA2 = a2.appendChild(document.createElement("p"));
+        // link.className = "homepage";
+        //
+        // var a3 = linkA2.appendChild(document.createElement("a"));
+        // a3.href = annotation.landmark.newData;
+        // a3.textContent = "Analyze New Data";
+        //
+        // var linkA3 = a3.appendChild(document.createElement("p"));
+        // link.className = "homepage";
+        //
+        // var a4 = linkA3.appendChild(document.createElement("a"));
+        // a4.href = annotation.landmark.create;
+        // a4.textContent = "Create Databases";
+        //
+        // var linkA4 = a4.appendChild(document.createElement("p"));
+        // link.className = "homepage";
+        //
+        // var a5 = linkA4.appendChild(document.createElement("a"));
+        // a5.href = annotation.landmark.delete;
+        // a5.textContent = "Delete Databases";
 
 
         return div;

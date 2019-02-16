@@ -460,10 +460,10 @@ module.exports = function(app, db) {
 
                         var StringChanceOfAnAlgaeBloom
                         if (chanceOfAnAlgaeBloom) {
-                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                           req.session.possibleAlgaeBloomsDownload.push("Bloom Within 7 Days")
                         } else if (!chanceOfAnAlgaeBloom) {
-                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                           req.session.possibleAlgaeBloomsDownload.push("No Chance Of Bloom")
 
                         }
@@ -1366,10 +1366,10 @@ module.exports = function(app, db) {
                     var alert
                     var StringChanceOfAnAlgaeBloom
                     if (chanceOfAnAlgaeBloom) {
-                      StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                      StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                       alert = "alert-danger"
                     } else if (!chanceOfAnAlgaeBloom) {
-                      StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                      StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                       alert = "alert-success"
                     }
                     var dataForNitrate = []
@@ -1959,10 +1959,10 @@ module.exports = function(app, db) {
                       var StringChanceOfAnAlgaeBloom
                       var alert
                       if (chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                         alert = 'alert-danger'
                       } else if (!chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                         alert = 'alert-success'
                       }
                       var dataForNitrateForSearch = []
@@ -2845,10 +2845,10 @@ module.exports = function(app, db) {
                         var alert
                         var StringChanceOfAnAlgaeBloom
                         if (chanceOfAnAlgaeBloom) {
-                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                           alert = "alert-danger"
                         } else if (!chanceOfAnAlgaeBloom) {
-                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                           alert = "alert-success"
                         }
                         var dataForNitrateForSearch = []
@@ -3453,10 +3453,10 @@ module.exports = function(app, db) {
                       var StringChanceOfAnAlgaeBloom
                       var alert
                       if (chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                         alert = "alert-danger"
                       } else if (!chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                         alert = "alert-success"
                       }
                       var dataForNitrate = []
@@ -4382,10 +4382,10 @@ module.exports = function(app, db) {
                            var alert
                            var StringChanceOfAnAlgaeBloom
                            if (chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                              alert = "alert-danger"
                            } else if (!chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                              alert = "alert-success"
                            }
                            var dataForNitrateForSearch = []
@@ -4965,6 +4965,8 @@ module.exports = function(app, db) {
                             thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
                             thirdWeekTempScore:TwoWeeksAgoTempScore
                           }
+                          
+                          console.log(monthData)
                           function slopeMaker (first, second, third) {
                             var addedFirstValues = second - first
                             var firstSlope = addedFirstValues / 2
@@ -4991,10 +4993,10 @@ module.exports = function(app, db) {
                       var StringChanceOfAnAlgaeBloom
                       var alert
                       if (chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                         alert = "alert-danger"
                       } else if (!chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                         alert = "alert-success"
                       }
                       var dataForNitrate = []
@@ -5878,10 +5880,10 @@ module.exports = function(app, db) {
                            var alert
                            var StringChanceOfAnAlgaeBloom
                            if (chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                              alert = "alert-danger"
                            } else if (!chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                              alert = "alert-success"
                            }
                            var dataForNitrateForSearch = []
@@ -6461,6 +6463,7 @@ module.exports = function(app, db) {
                                  thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
                                  thirdWeekTempScore:TwoWeeksAgoTempScore
                                }
+                               console.log(monthData)
                                function slopeMaker (first, second, third) {
                                  var addedFirstValues = second - first
                                  var firstSlope = addedFirstValues / 2
@@ -6487,10 +6490,10 @@ module.exports = function(app, db) {
                            var StringChanceOfAnAlgaeBloom
                            var alert
                            if (chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                              alert = "alert-danger"
                            } else if (!chanceOfAnAlgaeBloom) {
-                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                             StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                              alert = "alert-success"
                            }
                            var dataForNitrate = []
@@ -7371,10 +7374,10 @@ module.exports = function(app, db) {
                               var alert
                               var StringChanceOfAnAlgaeBloom
                               if (chanceOfAnAlgaeBloom) {
-                                StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                 alert = "alert-danger"
                               } else if (!chanceOfAnAlgaeBloom) {
-                                StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                 alert = "alert-success"
                               }
                               var dataForNitrateForSearch = []
@@ -7982,10 +7985,10 @@ module.exports = function(app, db) {
                          var StringChanceOfAnAlgaeBloom
                          var alert
                          if (chanceOfAnAlgaeBloom) {
-                           StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                           StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                            alert = "alert-danger"
                          } else if (!chanceOfAnAlgaeBloom) {
-                           StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                           StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                            alert = "alert-success"
                          }
                          var dataForNitrate = []
@@ -8874,10 +8877,10 @@ module.exports = function(app, db) {
                                var alert
                                var StringChanceOfAnAlgaeBloom
                                if (chanceOfAnAlgaeBloom) {
-                                 StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                 StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                  alert = "alert-danger"
                                } else if (!chanceOfAnAlgaeBloom) {
-                                 StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                 StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                  alert = "alert-success"
                                }
                                var dataForNitrateForSearch = []
@@ -9483,10 +9486,10 @@ module.exports = function(app, db) {
                           var StringChanceOfAnAlgaeBloom
                           var alert
                           if (chanceOfAnAlgaeBloom) {
-                            StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                            StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                             alert = "alert-danger"
                           } else if (!chanceOfAnAlgaeBloom) {
-                            StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                            StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                             alert = "alert-success"
                           }
                           var dataForNitrate = []
@@ -10371,10 +10374,10 @@ module.exports = function(app, db) {
                                  var alert
                                  var StringChanceOfAnAlgaeBloom
                                  if (chanceOfAnAlgaeBloom) {
-                                   StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                   StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                    alert = "alert-danger"
                                  } else if (!chanceOfAnAlgaeBloom) {
-                                   StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                   StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                    alert = "alert-success"
                                  }
                                  var dataForNitrateForSearch = []
@@ -10980,10 +10983,10 @@ module.exports = function(app, db) {
                                 var StringChanceOfAnAlgaeBloom
                                 var alert
                                 if (chanceOfAnAlgaeBloom) {
-                                  StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                  StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                   alert = "alert-danger"
                                 } else if (!chanceOfAnAlgaeBloom) {
-                                  StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                  StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                   alert = "alert-success"
                                 }
                                 var dataForNitrate = []
@@ -11867,10 +11870,10 @@ module.exports = function(app, db) {
                                  var alert
                                  var StringChanceOfAnAlgaeBloom
                                  if (chanceOfAnAlgaeBloom) {
-                                   StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                   StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                    alert = "alert-danger"
                                  } else if (!chanceOfAnAlgaeBloom) {
-                                   StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                   StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                    alert = "alert-success"
                                  }
                                  var dataForNitrateForSearch = []
@@ -12476,10 +12479,10 @@ module.exports = function(app, db) {
                                 var StringChanceOfAnAlgaeBloom
                                 var alert
                                 if (chanceOfAnAlgaeBloom) {
-                                  StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                  StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                   alert = "alert-danger"
                                 } else if (!chanceOfAnAlgaeBloom) {
-                                  StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                  StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                   alert = "alert-success"
                                 }
                                 var dataForNitrate = []
@@ -13365,10 +13368,10 @@ module.exports = function(app, db) {
                                    var alert
                                    var StringChanceOfAnAlgaeBloom
                                    if (chanceOfAnAlgaeBloom) {
-                                     StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                     StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                      alert = "alert-danger"
                                    } else if (!chanceOfAnAlgaeBloom) {
-                                     StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                     StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                      alert = "alert-success"
                                    }
                                    var dataForNitrateForSearch = []
@@ -13977,10 +13980,10 @@ module.exports = function(app, db) {
                                         var StringChanceOfAnAlgaeBloom
                                         var alert
                                         if (chanceOfAnAlgaeBloom) {
-                                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                          StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                           alert = "alert-danger"
                                         } else if (!chanceOfAnAlgaeBloom) {
-                                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                          StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                           alert = "alert-success"
                                         }
                                         var dataForNitrate = []
@@ -14873,10 +14876,10 @@ module.exports = function(app, db) {
                                   var alert
                                   var StringChanceOfAnAlgaeBloom
                                   if (chanceOfAnAlgaeBloom) {
-                                    StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                    StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                     alert = "alert-danger"
                                   } else if (!chanceOfAnAlgaeBloom) {
-                                    StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                    StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                     alert = "alert-success"
                                   }
                                   var dataForNitrateForSearch = []
@@ -15480,10 +15483,10 @@ module.exports = function(app, db) {
                                                var StringChanceOfAnAlgaeBloom
                                                var alert
                                                if (chanceOfAnAlgaeBloom) {
-                                                 StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                                                 StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                                                  alert = "alert-danger"
                                                } else if (!chanceOfAnAlgaeBloom) {
-                                                 StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                                                 StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                                                  alert = "alert-success"
                                                }
                                                var dataForNitrate = []
@@ -16399,11 +16402,11 @@ app.get('/overlays', function (req, res) {
 
                       var StringChanceOfAnAlgaeBloom
                       if (chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                         req.session.color.push("red")
                         req.session.possibleAlgaeBlooms.push(site)
                       } else if (!chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                         req.session.color.push("green")
                       }
 
@@ -17103,12 +17106,12 @@ app.post('/searchWithOverlays', function(req, res) {
                       var alert
                       var StringChanceOfAnAlgaeBloom
                       if (chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is a possible algae bloom within next 4 to 7 days"
                         alert = "alert-danger"
                         req.session.colorForSearch.push("red")
                         req.session.possibleAlgaeBloomsForSearch.push(site)
                       } else if (!chanceOfAnAlgaeBloom) {
-                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom soon"
+                        StringChanceOfAnAlgaeBloom = "There is NOT a possible algae bloom within next 4 to 7 days"
                         alert = "alert-success"
                         req.session.colorForSearch.push("green")
 
