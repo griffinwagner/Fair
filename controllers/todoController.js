@@ -4965,7 +4965,7 @@ module.exports = function(app, db) {
                             thirdWeekTempScoreArray:TwoWeeksAgoTempScoreArray,
                             thirdWeekTempScore:TwoWeeksAgoTempScore
                           }
-                          
+
                           console.log(monthData)
                           function slopeMaker (first, second, third) {
                             var addedFirstValues = second - first
@@ -6062,6 +6062,7 @@ module.exports = function(app, db) {
   app.get('/SBdata', function (req, res) {
            let sql = 'SELECT COUNT(*) FROM SB'
            db.query (sql, (err, result)=>{
+             console.log(result);
              var day = result[0]["COUNT(*)"]
              var week = day - 7
              let sql2 = `SELECT * FROM SB WHERE id > ` + week + ';'
@@ -15975,6 +15976,8 @@ app.get('/overlays', function (req, res) {
     function findColor (site) {
       let sql = 'SELECT COUNT(*) FROM '+site+';'
       db.query (sql, (err, result)=>{
+        console.log("_________________________________");
+        console.log(result);
         var day = result[0]["COUNT(*)"]
         req.session.overlayDay = day
         var week = day - 7
@@ -16672,6 +16675,8 @@ app.post('/searchWithOverlays', function(req, res) {
 
     let sql10 = `SELECT * FROM `+site+` WHERE date ="` + date + `";`
     db.query (sql10, (err, result)=>{
+      console.log(site);
+      console.log(result);
       var specificDayNitrate = result[0].nitrateLevel;
       var specificDayDate = result[0].date;
       var specificDaySaline = result[0].salineLevel;
